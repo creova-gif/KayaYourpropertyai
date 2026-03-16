@@ -1,0 +1,111 @@
+<?php
+// ─── KAYA PROPTECH MVP — Laravel API Routes ───────────────────────────────────
+// File: routes/api.php
+// Auth: Laravel Sanctum (token-based for mobile + web)
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\{
+    ApplicationController,
+    DocumentController,
+    ScreeningController,
+    LeaseController,
+    PaymentController,
+    UnitController,
+    NoticeController,
+    MaintenanceController,
+    DashboardController,
+    AuthController,
+};
+
+// ── Public routes ──────────────────────────────────────────────────────────
+Route::prefix('v1')->group(function () {
+
+    // Auth
+    Route::post('/auth/register',       [AuthController::class, 'register']);
+    Route::post('/auth/login',          [AuthController::class, 'login']);
+    Route::post('/auth/forgot-password',[AuthController::class, 'forgotPassword']);
+
+    // Public listing (for tenant apply link)
+    Route::get('/units/{unit}/listing', [UnitController::class, 'publicListing']);
+
+    // ── Authenticated routes ───────────────────────────────────────────────
+    Route::middleware('auth:sanctum')->group(function () {
+
+        // Auth
+        Route::post('/auth/logout',  [AuthController::class, 'logout']);
+        Route::get('/auth/me',       [AuthController::class, 'me']);
+
+        // ── LANDLORD ROUTES ──────────────────────────────────────────────
+        Route::middleware('role:landlord,property_manager')->group(function () {
+
+            // Dashboard
+            Route::get('/dashboard',                  [DashboardController::class, 'index']);
+            Route::get('/dashboard/analytics',        [DashboardController::class, 'analytics']);
+            Route::get('/dashboard/ai-insights',      [DashboardController::class, 'aiInsights']);
+
+            // Units
+            Route::apiResource('units', UnitController::class);
+            Route::post('/units/{unit}/generate-listing',  [UnitController::class, 'generateListing']); // AI listing description
+
+            // Applications
+            Route::get('/applications',               [ApplicationController::class, 'index']);
+            Route::get('/applications/{application}', [ApplicationController::class, 'show']);
+            Route::patch('/applications/{application}/approve', [ApplicationController::class, 'approve']);
+            Route::patch('/applications/{application}/reject',  [ApplicationController::class, 'reject']);
+            Route::patch('/applications/{application}/request-info', [ApplicationController::class, 'requestInfo']);
+
+            // AI Screening
+            Route::post('/applications/{application}/screen',  [ScreeningController::class, 'run']);
+            Route::get('/applications/{application}/screening',[ScreeningController::class, 'show']);
+
+            // Leases
+            Route::post('/leases/generate',           [LeaseController::class, 'generate']); // AI lease generator
+            Route::get('/leases',                     [LeaseController::class, 'index']);
+            Route::get('/leases/{lease}',             [LeaseController::class, 'show']);
+            Route::patch('/leases/{lease}/sign',      [LeaseController::class, 'landlordSign']);
+
+            // Payments
+            Route::get('/payments',                   [PaymentController::class, 'index']);
+            Route::get('/payments/summary',           [PaymentController::class, 'summary']);
+            Route::post('/payments/{payment}/send-reminder', [PaymentController::class, 'sendReminder']);
+
+            // LTB Notices
+            Route::post('/notices/generate',          [NoticeController::class, 'generate']); // AI N4/N5/N12
+            Route::get('/notices',                    [NoticeController::class, 'index']);
+            Route::post('/notices/{notice}/serve',    [NoticeController::class, 'serve']);
+        });
+
+        // ── TENANT ROUTES ────────────────────────────────────────────────
+        Route::middleware('role:tenant')->group(function () {
+
+            // Apply
+            Route::post('/applications',              [ApplicationController::class, 'store']);
+            Route::get('/applications/my',            [ApplicationController::class, 'myApplications']);
+            Route::get('/applications/{application}/status', [ApplicationController::class, 'trackStatus']);
+
+            // Documents
+            Route::post('/applications/{application}/documents', [DocumentController::class, 'upload']);
+            Route::get('/applications/{application}/documents',  [DocumentController::class, 'index']);
+
+            // Lease
+            Route::get('/leases/my',                  [LeaseController::class, 'myLease']);
+            Route::patch('/leases/{lease}/sign',      [LeaseController::class, 'tenantSign']);
+
+            // Payments
+            Route::get('/payments/my',                [PaymentController::class, 'myPayments']);
+            Route::post('/payments/{payment}/pay',    [PaymentController::class, 'pay']); // Stripe
+            Route::get('/payments/{payment}/receipt', [PaymentController::class, 'receipt']);
+
+            // Maintenance
+            Route::post('/maintenance',               [MaintenanceController::class, 'store']);
+            Route::get('/maintenance/my',             [MaintenanceController::class, 'myRequests']);
+
+            // Notices
+            Route::get('/notices/my',                 [NoticeController::class, 'myNotices']);
+        });
+
+        // ── SHARED ROUTES ────────────────────────────────────────────────
+        Route::get('/maintenance/{request}',          [MaintenanceController::class, 'show']);
+        Route::patch('/maintenance/{request}',        [MaintenanceController::class, 'update']);
+    });
+});

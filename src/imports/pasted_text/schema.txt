@@ -1,0 +1,421 @@
+-- ─────────────────────────────────────────────────────────────────────────────
+-- KAYA PROPTECH MVP — PostgreSQL Database Schema
+-- Stack: Supabase (PostgreSQL 15) + Row Level Security
+-- ─────────────────────────────────────────────────────────────────────────────
+
+-- Enable UUID generation
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm"; -- for fuzzy search on names/addresses
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- ENUMS
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TYPE user_role           AS ENUM ('landlord', 'property_manager', 'tenant', 'admin');
+CREATE TYPE property_type       AS ENUM ('condo', 'house', 'townhouse', 'commercial', 'apartment');
+CREATE TYPE unit_status         AS ENUM ('available', 'occupied', 'maintenance', 'pending');
+CREATE TYPE application_status  AS ENUM ('draft', 'submitted', 'documents_pending', 'ai_screening', 'under_review', 'approved', 'rejected', 'lease_sent', 'lease_signed');
+CREATE TYPE risk_level          AS ENUM ('low', 'medium', 'high');
+CREATE TYPE recommendation_type AS ENUM ('approve', 'review', 'decline');
+CREATE TYPE document_type       AS ENUM ('government_id', 'pay_stub', 'bank_statement', 'credit_report', 'employer_letter', 'landlord_reference', 'other');
+CREATE TYPE verification_status AS ENUM ('pending', 'processing', 'verified', 'fraud_flagged', 'rejected');
+CREATE TYPE lease_status        AS ENUM ('draft', 'sent', 'signed', 'active', 'expired', 'terminated');
+CREATE TYPE payment_status      AS ENUM ('pending', 'paid', 'overdue', 'failed', 'refunded');
+CREATE TYPE payment_method      AS ENUM ('stripe', 'etransfer', 'moneris', 'cheque');
+CREATE TYPE employment_status   AS ENUM ('employed', 'part_time', 'self_employed', 'student', 'retired', 'other');
+CREATE TYPE maintenance_priority AS ENUM ('low', 'medium', 'high', 'emergency');
+CREATE TYPE maintenance_status  AS ENUM ('open', 'in_progress', 'resolved', 'closed');
+CREATE TYPE maintenance_category AS ENUM ('plumbing', 'electrical', 'hvac', 'appliance', 'structural', 'cosmetic', 'other');
+CREATE TYPE ltb_notice_type     AS ENUM ('N1', 'N2', 'N4', 'N5', 'N8', 'N12', 'N13');
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- USERS (extends Supabase auth.users)
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE users (
+  id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  auth_id      UUID UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+  name         TEXT NOT NULL,
+  email        TEXT UNIQUE NOT NULL,
+  phone        TEXT,
+  role         user_role NOT NULL DEFAULT 'tenant',
+  avatar_url   TEXT,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- PROPERTIES
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE properties (
+  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  owner_id      UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  address       TEXT NOT NULL,
+  city          TEXT NOT NULL DEFAULT 'Toronto',
+  province      TEXT NOT NULL DEFAULT 'ON',
+  postal_code   TEXT NOT NULL,
+  property_type property_type NOT NULL DEFAULT 'apartment',
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_properties_owner ON properties(owner_id);
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- UNITS
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE units (
+  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id   UUID NOT NULL REFERENCES properties(id) ON DELETE CASCADE,
+  unit_number   TEXT NOT NULL,
+  bedrooms      SMALLINT NOT NULL DEFAULT 1,
+  bathrooms     SMALLINT NOT NULL DEFAULT 1,
+  sqft          SMALLINT,
+  rent_amount   NUMERIC(10, 2) NOT NULL,
+  status        unit_status NOT NULL DEFAULT 'available',
+  description   TEXT,
+  photos        TEXT[],              -- array of Storage URLs
+  amenities     TEXT[],
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(property_id, unit_number)
+);
+
+CREATE INDEX idx_units_property   ON units(property_id);
+CREATE INDEX idx_units_status     ON units(status);
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- APPLICANTS (tenant profile, separate from users for pre-auth applications)
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE applicants (
+  id                       UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id                  UUID REFERENCES users(id),
+  name                     TEXT NOT NULL,
+  email                    TEXT NOT NULL,
+  phone                    TEXT,
+  date_of_birth            DATE,
+  current_address          TEXT,
+  monthly_income           NUMERIC(10, 2),
+  employment_status        employment_status,
+  employer_name            TEXT,
+  employment_duration_months SMALLINT,
+  credit_score             SMALLINT,
+  has_cosigner             BOOLEAN DEFAULT FALSE,
+  cosigner_id              UUID REFERENCES applicants(id),
+  created_at               TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_applicants_user  ON applicants(user_id);
+CREATE INDEX idx_applicants_email ON applicants(email);
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- APPLICATIONS
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE applications (
+  id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  unit_id           UUID NOT NULL REFERENCES units(id) ON DELETE RESTRICT,
+  applicant_id      UUID NOT NULL REFERENCES applicants(id) ON DELETE CASCADE,
+  status            application_status NOT NULL DEFAULT 'draft',
+  -- AI results (populated after screening)
+  ai_score          SMALLINT,               -- 0–100
+  ai_risk_level     risk_level,
+  ai_recommendation recommendation_type,
+  -- Timestamps
+  submitted_at      TIMESTAMPTZ,
+  decided_at        TIMESTAMPTZ,
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(unit_id, applicant_id)
+);
+
+CREATE INDEX idx_applications_unit      ON applications(unit_id);
+CREATE INDEX idx_applications_applicant ON applications(applicant_id);
+CREATE INDEX idx_applications_status    ON applications(status);
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- DOCUMENTS
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE documents (
+  id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  application_id      UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+  type                document_type NOT NULL,
+  file_url            TEXT NOT NULL,             -- Supabase Storage URL
+  file_name           TEXT NOT NULL,
+  file_size           INTEGER,                   -- bytes
+  verification_status verification_status NOT NULL DEFAULT 'pending',
+  -- AI-extracted structured data (JSONB for flexibility)
+  extracted_data      JSONB,
+  -- Fraud detection
+  fraud_signals       TEXT[],
+  fraud_confidence    NUMERIC(4,3),              -- 0.000–1.000
+  verified_at         TIMESTAMPTZ,
+  created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_documents_application ON documents(application_id);
+CREATE INDEX idx_documents_type        ON documents(type);
+CREATE INDEX idx_documents_status      ON documents(verification_status);
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- AI SCREENINGS
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE ai_screenings (
+  id                          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  application_id              UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+  overall_score               SMALLINT NOT NULL CHECK (overall_score BETWEEN 0 AND 100),
+  risk_level                  risk_level NOT NULL,
+  recommendation              recommendation_type NOT NULL,
+  -- Component scores
+  income_ratio                NUMERIC(5,2),        -- e.g. 3.70
+  income_ratio_score          SMALLINT,
+  credit_score                SMALLINT,
+  credit_score_normalized     SMALLINT,
+  employment_stability_score  SMALLINT,
+  rental_history_score        SMALLINT,
+  fraud_risk_score            SMALLINT,            -- 0 = clean, 100 = high fraud
+  -- Signals
+  fraud_signals               TEXT[],
+  missing_documents           document_type[],
+  -- AI narrative
+  ai_summary                  TEXT,
+  ai_insights                 TEXT[],
+  -- Performance
+  screening_duration_ms       INTEGER,
+  model_version               TEXT DEFAULT 'kaya-screen-v1',
+  created_at                  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(application_id)       -- one screening result per application
+);
+
+CREATE INDEX idx_screenings_application ON ai_screenings(application_id);
+CREATE INDEX idx_screenings_score       ON ai_screenings(overall_score);
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- LEASES
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE leases (
+  id                    UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  application_id        UUID REFERENCES applications(id),
+  tenant_id             UUID NOT NULL REFERENCES users(id),
+  unit_id               UUID NOT NULL REFERENCES units(id),
+  status                lease_status NOT NULL DEFAULT 'draft',
+  rent_amount           NUMERIC(10,2) NOT NULL,
+  deposit_amount        NUMERIC(10,2) NOT NULL,
+  start_date            DATE NOT NULL,
+  end_date              DATE NOT NULL,
+  term_months           SMALLINT NOT NULL DEFAULT 12,
+  -- Utilities
+  utilities_included    TEXT[],
+  tenant_pays           TEXT[],
+  -- Rules
+  pets_allowed          BOOLEAN DEFAULT FALSE,
+  smoking_allowed       BOOLEAN DEFAULT FALSE,
+  additional_terms      TEXT,
+  -- Compliance
+  ltb_compliant         BOOLEAN DEFAULT TRUE,
+  generated_by_ai       BOOLEAN DEFAULT TRUE,
+  -- Signatures
+  tenant_signed_at      TIMESTAMPTZ,
+  landlord_signed_at    TIMESTAMPTZ,
+  -- Document
+  lease_document_url    TEXT,                    -- PDF in Storage
+  created_at            TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_leases_tenant ON leases(tenant_id);
+CREATE INDEX idx_leases_unit   ON leases(unit_id);
+CREATE INDEX idx_leases_status ON leases(status);
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- PAYMENTS
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE payments (
+  id                        UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  lease_id                  UUID NOT NULL REFERENCES leases(id) ON DELETE RESTRICT,
+  tenant_id                 UUID NOT NULL REFERENCES users(id),
+  amount                    NUMERIC(10,2) NOT NULL,
+  late_fee                  NUMERIC(10,2) DEFAULT 0,
+  due_date                  DATE NOT NULL,
+  paid_at                   TIMESTAMPTZ,
+  status                    payment_status NOT NULL DEFAULT 'pending',
+  method                    payment_method,
+  receipt_url               TEXT,
+  stripe_payment_intent_id  TEXT,
+  created_at                TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_payments_lease   ON payments(lease_id);
+CREATE INDEX idx_payments_tenant  ON payments(tenant_id);
+CREATE INDEX idx_payments_status  ON payments(status);
+CREATE INDEX idx_payments_due     ON payments(due_date);
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- LTB NOTICES
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE ltb_notices (
+  id               UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  lease_id         UUID NOT NULL REFERENCES leases(id),
+  landlord_id      UUID NOT NULL REFERENCES users(id),
+  tenant_id        UUID NOT NULL REFERENCES users(id),
+  type             ltb_notice_type NOT NULL,
+  reason           TEXT NOT NULL,
+  notice_period_days SMALLINT NOT NULL,
+  served_at        TIMESTAMPTZ,
+  effective_date   DATE NOT NULL,
+  document_url     TEXT,
+  generated_by_ai  BOOLEAN DEFAULT TRUE,
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_notices_lease    ON ltb_notices(lease_id);
+CREATE INDEX idx_notices_tenant   ON ltb_notices(tenant_id);
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- MAINTENANCE REQUESTS
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE maintenance_requests (
+  id                    UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  unit_id               UUID NOT NULL REFERENCES units(id),
+  tenant_id             UUID NOT NULL REFERENCES users(id),
+  title                 TEXT NOT NULL,
+  description           TEXT,
+  category              maintenance_category,
+  priority              maintenance_priority NOT NULL DEFAULT 'medium',
+  status                maintenance_status NOT NULL DEFAULT 'open',
+  photo_urls            TEXT[],
+  -- AI analysis
+  ai_category           maintenance_category,
+  ai_priority           maintenance_priority,
+  ai_estimated_cost     NUMERIC(10,2),
+  ai_suggested_action   TEXT,
+  -- Resolution
+  assigned_contractor   TEXT,
+  resolved_at           TIMESTAMPTZ,
+  created_at            TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_maint_unit    ON maintenance_requests(unit_id);
+CREATE INDEX idx_maint_tenant  ON maintenance_requests(tenant_id);
+CREATE INDEX idx_maint_status  ON maintenance_requests(status);
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- UPDATED_AT TRIGGERS
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE OR REPLACE FUNCTION update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN NEW.updated_at = NOW(); RETURN NEW; END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_users_updated BEFORE UPDATE ON users
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- AUTO-STATUS: update unit status when lease changes
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE OR REPLACE FUNCTION sync_unit_status()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.status = 'active' THEN
+    UPDATE units SET status = 'occupied' WHERE id = NEW.unit_id;
+  ELSIF NEW.status IN ('expired', 'terminated') THEN
+    UPDATE units SET status = 'available' WHERE id = NEW.unit_id;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_lease_unit_status AFTER UPDATE ON leases
+  FOR EACH ROW WHEN (OLD.status IS DISTINCT FROM NEW.status)
+  EXECUTE FUNCTION sync_unit_status();
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- VIEWS (useful for landlord dashboard queries)
+-- ─────────────────────────────────────────────────────────────────────────────
+
+-- Active applications with AI scores and applicant info
+CREATE VIEW v_active_applications AS
+SELECT
+  a.id, a.status, a.ai_score, a.ai_risk_level, a.ai_recommendation, a.created_at,
+  ap.name AS applicant_name, ap.email, ap.monthly_income, ap.credit_score,
+  u.unit_number, u.rent_amount, u.property_id,
+  s.overall_score, s.income_ratio, s.fraud_risk_score, s.ai_summary
+FROM applications a
+JOIN applicants ap ON ap.id = a.applicant_id
+JOIN units u ON u.id = a.unit_id
+LEFT JOIN ai_screenings s ON s.application_id = a.id
+WHERE a.status NOT IN ('rejected', 'lease_signed');
+
+-- Payment summary per property
+CREATE VIEW v_payment_summary AS
+SELECT
+  p.property_id,
+  COUNT(*) FILTER (WHERE pay.status = 'paid') AS paid_count,
+  COUNT(*) FILTER (WHERE pay.status = 'overdue') AS overdue_count,
+  SUM(pay.amount) FILTER (WHERE pay.status = 'paid') AS total_collected,
+  SUM(pay.amount) FILTER (WHERE pay.status = 'overdue') AS total_overdue
+FROM payments pay
+JOIN leases l ON l.id = pay.lease_id
+JOIN units u ON u.id = l.unit_id
+JOIN properties p ON p.id = u.property_id
+GROUP BY p.property_id;
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- ROW LEVEL SECURITY (RLS)
+-- ─────────────────────────────────────────────────────────────────────────────
+ALTER TABLE properties         ENABLE ROW LEVEL SECURITY;
+ALTER TABLE units              ENABLE ROW LEVEL SECURITY;
+ALTER TABLE applications       ENABLE ROW LEVEL SECURITY;
+ALTER TABLE documents          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ai_screenings      ENABLE ROW LEVEL SECURITY;
+ALTER TABLE leases             ENABLE ROW LEVEL SECURITY;
+ALTER TABLE payments           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE maintenance_requests ENABLE ROW LEVEL SECURITY;
+
+-- Landlords see only their own properties
+CREATE POLICY landlord_own_properties ON properties
+  FOR ALL USING (owner_id = (SELECT id FROM users WHERE auth_id = auth.uid()));
+
+-- Tenants see only their own applications
+CREATE POLICY tenant_own_applications ON applications
+  FOR SELECT USING (
+    applicant_id = (SELECT id FROM applicants WHERE user_id = (SELECT id FROM users WHERE auth_id = auth.uid()))
+  );
+
+-- Landlords see applications for their units
+CREATE POLICY landlord_unit_applications ON applications
+  FOR SELECT USING (
+    unit_id IN (
+      SELECT u.id FROM units u
+      JOIN properties p ON p.id = u.property_id
+      WHERE p.owner_id = (SELECT id FROM users WHERE auth_id = auth.uid())
+    )
+  );
+
+-- Tenants can only see their own documents
+CREATE POLICY tenant_own_documents ON documents
+  FOR ALL USING (
+    application_id IN (
+      SELECT a.id FROM applications a
+      JOIN applicants ap ON ap.id = a.applicant_id
+      WHERE ap.user_id = (SELECT id FROM users WHERE auth_id = auth.uid())
+    )
+  );
+
+-- Tenants see their own leases
+CREATE POLICY tenant_own_leases ON leases
+  FOR SELECT USING (tenant_id = (SELECT id FROM users WHERE auth_id = auth.uid()));
+
+-- Tenants see their own payments
+CREATE POLICY tenant_own_payments ON payments
+  FOR SELECT USING (tenant_id = (SELECT id FROM users WHERE auth_id = auth.uid()));
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- SEED DATA (development only)
+-- ─────────────────────────────────────────────────────────────────────────────
+INSERT INTO users (id, name, email, phone, role) VALUES
+  ('00000000-0000-0000-0000-000000000001', 'Justin Mafie',  'justin@creova.ca',       '+1-905-555-0100', 'landlord'),
+  ('00000000-0000-0000-0000-000000000002', 'Sarah Kim',     'sarah.kim@email.com',    '+1-647-555-0192', 'tenant'),
+  ('00000000-0000-0000-0000-000000000003', 'Michael Patel', 'michael.patel@email.com','+1-416-555-0340', 'tenant');
+
+INSERT INTO properties (id, owner_id, address, city, postal_code) VALUES
+  ('00000000-0000-0000-0001-000000000001', '00000000-0000-0000-0000-000000000001',
+   '123 King St',  'Toronto', 'M5V 1J2');
+
+INSERT INTO units (id, property_id, unit_number, bedrooms, bathrooms, rent_amount, status) VALUES
+  ('00000000-0000-0000-0002-000000000001', '00000000-0000-0000-0001-000000000001', '4A', 2, 2, 2300.00, 'available'),
+  ('00000000-0000-0000-0002-000000000002', '00000000-0000-0000-0001-000000000001', '2B', 1, 1, 1950.00, 'occupied'),
+  ('00000000-0000-0000-0002-000000000003', '00000000-0000-0000-0001-000000000001', '7C', 2, 1, 2100.00, 'available');
