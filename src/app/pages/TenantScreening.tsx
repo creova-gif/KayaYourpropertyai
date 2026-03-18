@@ -101,128 +101,145 @@ export function TenantScreening() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-8 py-12">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-3">
-              <UserCheck className="size-8 text-[#0A0A0A]" />
-              <h1 className="text-[48px] font-semibold text-[#0A0A0A] leading-tight tracking-tight">
-                Tenant Screening
-              </h1>
-            </div>
-            <button
-              onClick={() => setShowNewScreening(true)}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#0A0A0A] text-white text-[14px] font-medium rounded-lg hover:bg-[#1C1C1C] transition-colors"
-            >
-              <Search className="size-4" />
-              New Screening
-            </button>
-          </div>
-          <p className="text-[14px] text-[#9CA3AF] font-normal mb-6">
-            Comprehensive credit checks and background verification via Equifax Canada
-          </p>
-
-          {/* Equifax Partnership Banner */}
-          <div className="bg-gradient-to-br from-[#EF4444]/10 to-[#DC2626]/10 border border-[#EF4444]/20 rounded-xl p-4">
-            <div className="flex items-start gap-3">
-              <Shield className="size-5 text-[#EF4444] flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-[13px] font-medium text-[#0A0A0A] mb-1">
-                  🇨🇦 Powered by Equifax Canada • FCRA Compliant • Instant Reports
-                </p>
-                <p className="text-[12px] text-[#6B7280]">
-                  Credit scores, income verification, rental history, eviction records, and criminal background checks.
-                  All screening requests require applicant consent per Canadian privacy laws.
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+      <div className="max-w-7xl mx-auto px-8 py-12" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+        <div className="mb-8">
+          <p className="text-[10px] font-semibold text-[#767570] uppercase tracking-wider mb-2">AI Screening</p>
+          <h1 className="text-[48px] font-normal text-[#0E0F0C] tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>Tenant Screening</h1>
+          <p className="mt-2 text-[14px] text-[#767570]">AI-powered tenant verification and background checks</p>
+        </div>
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white border border-black/[0.08] rounded-xl p-6">
-            <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">
+          <div className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6 hover:shadow-lg transition-all duration-200">
+            <p 
+              className="text-[11px] text-[#767570] uppercase tracking-wider font-semibold mb-3"
+              style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+            >
               Total Screenings
             </p>
-            <h2 className="text-[32px] font-semibold text-[#0A0A0A] leading-none mb-1">
+            <h2 
+              className="text-[36px] font-normal text-[#0E0F0C] leading-none mb-2"
+              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+            >
               247
             </h2>
-            <p className="text-[11px] text-[#22C55E]">+18 this month</p>
+            <p 
+              className="text-[12px] text-[#0A7A52] font-medium"
+              style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+            >
+              +18 this month
+            </p>
           </div>
 
-          <div className="bg-white border border-black/[0.08] rounded-xl p-6">
-            <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">
+          <div className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6 hover:shadow-lg transition-all duration-200">
+            <p 
+              className="text-[11px] text-[#767570] uppercase tracking-wider font-semibold mb-3"
+              style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+            >
               Avg Credit Score
             </p>
-            <h2 className="text-[32px] font-semibold text-[#6366F1] leading-none mb-1">
+            <h2 
+              className="text-[36px] font-normal text-[#0A7A52] leading-none mb-2"
+              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+            >
               718
             </h2>
-            <p className="text-[11px] text-[#6B7280]">National avg: 650</p>
+            <p 
+              className="text-[12px] text-[#767570]"
+              style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+            >
+              National avg: 650
+            </p>
           </div>
 
-          <div className="bg-white border border-black/[0.08] rounded-xl p-6">
-            <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">
+          <div className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6 hover:shadow-lg transition-all duration-200">
+            <p 
+              className="text-[11px] text-[#767570] uppercase tracking-wider font-semibold mb-3"
+              style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+            >
               Approval Rate
             </p>
-            <h2 className="text-[32px] font-semibold text-[#22C55E] leading-none mb-1">
+            <h2 
+              className="text-[36px] font-normal text-[#0A7A52] leading-none mb-2"
+              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+            >
               76%
             </h2>
-            <p className="text-[11px] text-[#6B7280]">Above average</p>
+            <p 
+              className="text-[12px] text-[#767570]"
+              style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+            >
+              Above average
+            </p>
           </div>
 
-          <div className="bg-white border border-black/[0.08] rounded-xl p-6">
-            <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">
+          <div className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6 hover:shadow-lg transition-all duration-200">
+            <p 
+              className="text-[11px] text-[#767570] uppercase tracking-wider font-semibold mb-3"
+              style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+            >
               Avg Processing
             </p>
-            <h2 className="text-[32px] font-semibold text-[#0A0A0A] leading-none mb-1">
+            <h2 
+              className="text-[36px] font-normal text-[#0E0F0C] leading-none mb-2"
+              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+            >
               4.2m
             </h2>
-            <p className="text-[11px] text-[#6B7280]">minutes</p>
+            <p 
+              className="text-[12px] text-[#767570]"
+              style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+            >
+              minutes
+            </p>
           </div>
         </div>
 
         {/* Screening Reports */}
-        <div className="bg-white border border-black/[0.08] rounded-xl overflow-hidden mb-8">
-          <div className="px-6 py-4 border-b border-black/[0.04]">
-            <h3 className="text-[16px] font-semibold text-[#0A0A0A]">
+        <div className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl overflow-hidden mb-8 shadow-sm">
+          <div className="px-6 py-5 border-b border-[rgba(0,0,0,0.07)] bg-[#F8F7F4]">
+            <h3 
+              className="text-[18px] font-normal text-[#0E0F0C]"
+              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+            >
               Recent Screening Reports
             </h3>
           </div>
 
-          <div className="divide-y divide-black/[0.04]">
+          <div className="divide-y divide-[rgba(0,0,0,0.05)]">
             {mockReports.map((report, idx) => (
               <motion.div
                 key={report.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.05 }}
-                className="px-6 py-5 hover:bg-[#F5F5F5] transition-colors cursor-pointer"
+                className="px-6 py-6 hover:bg-[#F8F7F4] transition-all duration-200 cursor-pointer group"
                 onClick={() => setSelectedReport(report)}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className="size-14 rounded-full bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center">
-                      <UserCheck className="size-7 text-white" />
+                  <div className="flex items-center gap-5 flex-1">
+                    <div className="size-14 rounded-full bg-gradient-to-br from-[#0A7A52] to-[#085D3D] flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
+                      <UserCheck className="size-7 text-white" strokeWidth={2.5} />
                     </div>
                     <div className="flex-1">
-                      <p className="text-[15px] font-semibold text-[#0A0A0A] mb-1">
+                      <p 
+                        className="text-[16px] font-semibold text-[#0E0F0C] mb-1.5"
+                        style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+                      >
                         {report.applicantName}
                       </p>
-                      <div className="flex items-center gap-4 text-[13px] text-[#9CA3AF]">
+                      <div 
+                        className="flex items-center gap-3 text-[13px] text-[#767570]"
+                        style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+                      >
                         <span>{report.property}</span>
-                        <span>•</span>
+                        <span className="text-[#D1D5DB]">•</span>
                         <span>{report.requestDate}</span>
                         {report.status === "pending" && (
                           <>
-                            <span>•</span>
-                            <div className="flex items-center gap-1 text-[#F59E0B]">
-                              <Clock className="size-3" />
+                            <span className="text-[#D1D5DB]">•</span>
+                            <div className="flex items-center gap-1.5 text-[#F59E0B] font-medium">
+                              <Clock className="size-3.5" strokeWidth={2.5} />
                               <span>Processing...</span>
                             </div>
                           </>
@@ -235,125 +252,57 @@ export function TenantScreening() {
                     <div className="flex items-center gap-6">
                       {/* Credit Score */}
                       {report.creditScore && (
-                        <div className="text-center">
-                          <p className="text-[11px] text-[#9CA3AF] mb-1">Credit Score</p>
-                          <p className="text-[20px] font-bold text-[#6366F1]">
+                        <div className="text-center px-4">
+                          <p 
+                            className="text-[10px] text-[#767570] uppercase tracking-wider font-semibold mb-2"
+                            style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+                          >
+                            Credit Score
+                          </p>
+                          <p 
+                            className="text-[24px] font-normal text-[#0A7A52]"
+                            style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                          >
                             {report.creditScore}
                           </p>
                         </div>
                       )}
 
                       {/* Risk Score */}
-                      <div className="text-center">
-                        <p className="text-[11px] text-[#9CA3AF] mb-1">Risk Score</p>
-                        <p className={`text-[20px] font-bold ${getRiskColor(report.riskScore)}`}>
+                      <div className="text-center px-4">
+                        <p 
+                          className="text-[10px] text-[#767570] uppercase tracking-wider font-semibold mb-2"
+                          style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+                        >
+                          Risk Score
+                        </p>
+                        <p 
+                          className={`text-[24px] font-normal ${getRiskColor(report.riskScore)}`}
+                          style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                        >
                           {report.riskScore}%
                         </p>
                       </div>
 
                       {/* Recommendation */}
-                      <div className={`px-4 py-2 rounded-full border ${getRecommendationColor(report.recommendation)}`}>
-                        <p className="text-[12px] font-medium capitalize">
+                      <div className={`px-5 py-2.5 rounded-full border ${getRecommendationColor(report.recommendation)}`}>
+                        <p 
+                          className="text-[12px] font-semibold capitalize uppercase tracking-wide"
+                          style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+                        >
                           {report.recommendation}
                         </p>
                       </div>
 
                       {/* Actions */}
-                      <button className="px-4 py-2 border border-black/[0.08] text-[#6B7280] text-[13px] font-medium rounded-lg hover:bg-white transition-colors">
-                        <FileText className="size-4" />
+                      <button className="p-3 border border-[rgba(0,0,0,0.07)] text-[#767570] rounded-lg hover:bg-[#E5F4EE] hover:border-[#0A7A52] hover:text-[#0A7A52] transition-all duration-200 group">
+                        <FileText className="size-5" strokeWidth={2.5} />
                       </button>
                     </div>
                   )}
                 </div>
               </motion.div>
             ))}
-          </div>
-        </div>
-
-        {/* Equifax Features */}
-        <div className="bg-gradient-to-br from-[#6366F1]/5 to-[#8B5CF6]/5 border border-[#6366F1]/20 rounded-xl p-8">
-          <h3 className="text-[20px] font-semibold text-[#0A0A0A] mb-6">
-            What's Included in Equifax Screening
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl p-6 border border-black/[0.04]">
-              <div className="size-12 rounded-full bg-[#6366F1]/10 flex items-center justify-center mb-4">
-                <CreditCard className="size-6 text-[#6366F1]" />
-              </div>
-              <h4 className="text-[16px] font-semibold text-[#0A0A0A] mb-2">
-                Credit Report
-              </h4>
-              <p className="text-[13px] text-[#6B7280] mb-3">
-                Full credit score, payment history, debt-to-income ratio, and credit utilization
-              </p>
-              <ul className="space-y-1 text-[12px] text-[#6B7280]">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="size-3 text-[#22C55E]" />
-                  Equifax credit score (300-900)
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="size-3 text-[#22C55E]" />
-                  Payment history (7 years)
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="size-3 text-[#22C55E]" />
-                  Outstanding debts
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 border border-black/[0.04]">
-              <div className="size-12 rounded-full bg-[#22C55E]/10 flex items-center justify-center mb-4">
-                <DollarSign className="size-6 text-[#22C55E]" />
-              </div>
-              <h4 className="text-[16px] font-semibold text-[#0A0A0A] mb-2">
-                Income Verification
-              </h4>
-              <p className="text-[13px] text-[#6B7280] mb-3">
-                Employment verification, income stability, and rent-to-income ratio analysis
-              </p>
-              <ul className="space-y-1 text-[12px] text-[#6B7280]">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="size-3 text-[#22C55E]" />
-                  Employment status
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="size-3 text-[#22C55E]" />
-                  Monthly income
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="size-3 text-[#22C55E]" />
-                  Rent affordability (30% rule)
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 border border-black/[0.04]">
-              <div className="size-12 rounded-full bg-[#EF4444]/10 flex items-center justify-center mb-4">
-                <Shield className="size-6 text-[#EF4444]" />
-              </div>
-              <h4 className="text-[16px] font-semibold text-[#0A0A0A] mb-2">
-                Background Check
-              </h4>
-              <p className="text-[13px] text-[#6B7280] mb-3">
-                Rental history, eviction records, and criminal background screening
-              </p>
-              <ul className="space-y-1 text-[12px] text-[#6B7280]">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="size-3 text-[#22C55E]" />
-                  Eviction history (Canada-wide)
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="size-3 text-[#22C55E]" />
-                  Previous landlord references
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="size-3 text-[#22C55E]" />
-                  Criminal record check
-                </li>
-              </ul>
-            </div>
           </div>
         </div>
 

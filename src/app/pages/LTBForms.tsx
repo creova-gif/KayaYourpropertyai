@@ -14,6 +14,7 @@ import {
   FileCheck,
   Info,
   ExternalLink,
+  Scale,
 } from "lucide-react";
 
 interface LTBForm {
@@ -138,37 +139,23 @@ export function LTBForms() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-8 py-12">
+      <div className="max-w-7xl mx-auto px-8 py-12" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-12"
         >
-          <div className="flex items-center gap-3 mb-3">
-            <FileText className="size-8 text-[#0A0A0A]" />
-            <h1 className="text-[48px] font-semibold text-[#0A0A0A] leading-tight tracking-tight">
-              Ontario LTB Forms
+          <p className="text-[10px] font-semibold text-[#767570] uppercase tracking-wider mb-2">Legal Compliance</p>
+          <div className="flex items-center gap-4 mb-3">
+            <Scale className="size-10 text-[#0A7A52]" strokeWidth={2} />
+            <h1 className="text-[52px] font-normal text-[#0E0F0C] leading-tight tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1.5px' }}>
+              LTB Forms
             </h1>
           </div>
-          <p className="text-[14px] text-[#9CA3AF] font-normal mb-6">
-            AI-generated, legally compliant forms for the Landlord and Tenant Board (LTB) of Ontario
+          <p className="text-[14px] text-[#767570] font-normal">
+            Landlord and Tenant Board forms for Ontario landlords
           </p>
-
-          {/* Legal Compliance Banner */}
-          <div className="bg-gradient-to-br from-[#22C55E]/10 to-[#16A34A]/10 border border-[#22C55E]/20 rounded-xl p-4">
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="size-5 text-[#22C55E] flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-[13px] font-medium text-[#0A0A0A] mb-1">
-                  ✅ RTA Compliant • ✅ Updated for 2026 Guidelines • ✅ AI-Verified Legal Language
-                </p>
-                <p className="text-[12px] text-[#6B7280]">
-                  All forms follow the Residential Tenancies Act (RTA) 2006. Automatically updated with provincial rent increase guidelines and legal requirements.
-                </p>
-              </div>
-            </div>
-          </div>
         </motion.div>
 
         {/* Category Tabs */}

@@ -25,30 +25,30 @@ export function PaymentCalendar() {
   const statusConfig = {
     paid: {
       icon: CheckCircle2,
-      bg: "bg-green-50",
-      border: "border-green-200",
-      text: "text-green-700",
+      bg: "bg-[#E5F4EE]",
+      border: "border-[#0A7A52]/20",
+      text: "text-[#0A7A52]",
       label: "Paid"
     },
     "due-soon": {
       icon: Clock,
-      bg: "bg-amber-50",
-      border: "border-amber-200",
-      text: "text-amber-700",
+      bg: "bg-[#FEF3E2]",
+      border: "border-[#F59E0B]/20",
+      text: "text-[#F59E0B]",
       label: "Due Soon"
     },
     overdue: {
       icon: AlertTriangle,
-      bg: "bg-red-50",
-      border: "border-red-200",
-      text: "text-red-700",
+      bg: "bg-[#FEE2E2]",
+      border: "border-[#EF4444]/20",
+      text: "text-[#EF4444]",
       label: "Overdue"
     },
     upcoming: {
       icon: Calendar,
-      bg: "bg-blue-50",
-      border: "border-blue-200",
-      text: "text-blue-700",
+      bg: "bg-[#EFF6FF]",
+      border: "border-[#3B82F6]/20",
+      text: "text-[#3B82F6]",
       label: "Upcoming"
     }
   };
@@ -67,45 +67,45 @@ export function PaymentCalendar() {
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white">
+        <div className="bg-gradient-to-br from-[#0A7A52] to-[#0D9B68] rounded-xl p-6 text-white">
           <div className="flex items-center gap-3 mb-3">
             <CheckCircle2 className="size-6" />
-            <span className="text-sm text-white/80">Collected</span>
+            <span className="text-[12px] text-white/80 uppercase tracking-wider">Collected</span>
           </div>
-          <p className="text-3xl font-bold text-[#ffffff]">${totalPaid.toLocaleString()}</p>
-          <p className="text-sm text-white/80 mt-1">{groupedPayments.paid.length} payments</p>
+          <p className="text-[36px] font-normal text-white leading-none" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>${totalPaid.toLocaleString()}</p>
+          <p className="text-[13px] text-white/80 mt-2">{groupedPayments.paid.length} payments</p>
         </div>
 
-        <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-6 text-white">
+        <div className="bg-gradient-to-br from-[#F59E0B] to-[#F97316] rounded-xl p-6 text-white">
           <div className="flex items-center gap-3 mb-3">
             <AlertTriangle className="size-6" />
-            <span className="text-sm text-white/80">Outstanding</span>
+            <span className="text-[12px] text-white/80 uppercase tracking-wider">Outstanding</span>
           </div>
-          <p className="text-3xl font-bold text-[#ffffff]">${totalDue.toLocaleString()}</p>
-          <p className="text-sm text-white/80 mt-1">
+          <p className="text-[36px] font-normal text-white leading-none" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>${totalDue.toLocaleString()}</p>
+          <p className="text-[13px] text-white/80 mt-2">
             {groupedPayments["due-soon"].length + groupedPayments.overdue.length} payments
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-6 text-white">
+        <div className="bg-gradient-to-br from-[#3B82F6] to-[#6366F1] rounded-xl p-6 text-white">
           <div className="flex items-center gap-3 mb-3">
             <Calendar className="size-6" />
-            <span className="text-sm text-white/80">Next Month</span>
+            <span className="text-[12px] text-white/80 uppercase tracking-wider">Next Month</span>
           </div>
-          <p className="text-3xl font-bold text-[#ffffff]">
+          <p className="text-[36px] font-normal text-white leading-none" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
             ${groupedPayments.upcoming.reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
           </p>
-          <p className="text-sm text-white/80 mt-1">{groupedPayments.upcoming.length} payments expected</p>
+          <p className="text-[13px] text-white/80 mt-2">{groupedPayments.upcoming.length} payments expected</p>
         </div>
       </div>
 
       {/* Timeline */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-6">Payment Timeline</h3>
+      <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-6">
+        <h3 className="text-[24px] font-normal text-[#0E0F0C] mb-6" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Payment Timeline</h3>
         
         <div className="relative">
           {/* Timeline Line */}
-          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-slate-200" />
+          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-[rgba(0,0,0,0.07)]" />
 
           <div className="space-y-6">
             {Object.entries(groupedPayments).map(([status, items]) => {
@@ -120,7 +120,7 @@ export function PaymentCalendar() {
                     <div className={`relative z-10 p-2 rounded-full ${config.bg} border-2 ${config.border}`}>
                       <Icon className={`size-5 ${config.text}`} />
                     </div>
-                    <h4 className="font-semibold text-slate-900">{config.label}</h4>
+                    <h4 className="text-[14px] font-semibold text-[#0E0F0C] uppercase tracking-wider">{config.label}</h4>
                   </div>
 
                   <div className="ml-16 space-y-3">
@@ -131,20 +131,20 @@ export function PaymentCalendar() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.05 }}
                         whileHover={{ scale: 1.02, x: 4 }}
-                        className={`p-4 rounded-lg border-2 ${config.border} ${config.bg} cursor-pointer`}
+                        className={`p-4 rounded-lg border ${config.border} ${config.bg} cursor-pointer hover:shadow-md transition-shadow`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
                             <div>
-                              <p className="font-semibold text-slate-900">{payment.tenant}</p>
-                              <p className="text-sm text-slate-600">Unit {payment.unit}</p>
+                              <p className="font-normal text-[16px] text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>{payment.tenant}</p>
+                              <p className="text-[13px] text-[#767570]">Unit {payment.unit}</p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold text-slate-900 text-lg">
+                            <p className="font-normal text-[#0E0F0C] text-[20px]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                               ${payment.amount.toLocaleString()}
                             </p>
-                            <p className="text-xs text-slate-500">
+                            <p className="text-[12px] text-[#767570]">
                               {payment.paidDate ? `Paid ${payment.paidDate}` : `Due ${payment.dueDate}`}
                             </p>
                           </div>
@@ -160,18 +160,18 @@ export function PaymentCalendar() {
       </div>
 
       {/* AI Predictive Alert */}
-      <div className="p-6 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200">
+      <div className="p-6 rounded-xl bg-[#FEF3E2] border border-[#F59E0B]/20">
         <div className="flex items-start gap-3">
-          <div className="p-2 rounded-lg bg-amber-100">
-            <AlertTriangle className="size-5 text-amber-600" />
+          <div className="p-2 rounded-lg bg-[#FED7AA]">
+            <AlertTriangle className="size-5 text-[#F59E0B]" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-amber-900 mb-2">⚠️ AI Payment Prediction</h3>
-            <p className="text-sm text-amber-800 mb-3">
+            <h3 className="font-normal text-[18px] text-[#0E0F0C] mb-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>AI Payment Prediction</h3>
+            <p className="text-[14px] text-[#767570] mb-3">
               Based on historical data, there's a 78% probability that Lisa Park (Unit 1B) will pay late this month. 
               Consider sending a friendly reminder 3 days before the due date.
             </p>
-            <button className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm font-medium transition-colors">
+            <button className="px-4 py-2 bg-[#0A7A52] hover:bg-[#096A46] text-white rounded-lg text-[13px] font-semibold transition-colors">
               Send Auto-Reminder
             </button>
           </div>

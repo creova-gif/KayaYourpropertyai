@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "motion/react";
-import { Mic, X, Sparkles, TrendingUp, Users, AlertTriangle } from "lucide-react";
+import { Mic, X, Sparkles, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { projectId, publicAnonKey } from "/utils/supabase/info";
 
 interface VoiceCommandPanelProps {
   isOpen: boolean;
@@ -11,7 +12,8 @@ export function VoiceCommandPanel({ isOpen, onClose }: VoiceCommandPanelProps) {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [response, setResponse] = useState<string | null>(null);
-  const [suggestions, setSuggestions] = useState([
+  const [isLoading, setIsLoading] = useState(false);
+  const [suggestions] = useState([
     "Show me high-risk tenants",
     "What's my total revenue this month?",
     "Show maintenance requests",
@@ -23,40 +25,60 @@ export function VoiceCommandPanel({ isOpen, onClose }: VoiceCommandPanelProps) {
       setIsListening(false);
       setTranscript("");
       setResponse(null);
+      setIsLoading(false);
     }
   }, [isOpen]);
 
   const handleStartListening = () => {
     setIsListening(true);
-    // Simulate voice recognition
+    // Simulate voice recognition (2.5 seconds)
     setTimeout(() => {
       const command = "Show me high-risk tenants across all properties";
       setTranscript(command);
       setIsListening(false);
-      
-      // Simulate AI processing
-      setTimeout(() => {
-        setResponse("Found 2 high-risk tenants: Bob Johnson (Unit 3A) with 78% risk score due to late payments, and Jason Lee (Unit 1C) with 65% risk score due to upcoming lease end.");
-      }, 1000);
+      handleProcessCommand(command);
     }, 2500);
+  };
+
+  const handleProcessCommand = async (command: string) => {
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-2071350e/ai/voice-command`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${publicAnonKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            command: command,
+            userId: 'demo-user',
+            userContext: "Voice Commands - Quick AI Actions"
+          }),
+        }
+      );
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setResponse(data.response);
+      } else {
+        setResponse("I apologize, but I couldn't process that command. Please try again.");
+      }
+    } catch (error) {
+      console.error('Voice command error:', error);
+      setResponse("I'm having trouble connecting right now. Please try again in a moment.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setTranscript(suggestion);
     setIsListening(false);
-    
-    // Simulate AI response
-    setTimeout(() => {
-      if (suggestion.includes("revenue")) {
-        setResponse("Your total revenue this month is $27,600, which is 12% higher than last month. All 10 occupied units have paid on time.");
-      } else if (suggestion.includes("maintenance")) {
-        setResponse("You have 5 maintenance requests: 2 open, 2 in progress, and 1 completed. The highest priority is 'Heating issue' in Unit 1A.");
-      } else if (suggestion.includes("applications")) {
-        setResponse("You have 6 pending applications. AI recommends approving Sarah Kim (score: 92) and Michael Patel (score: 87) immediately.");
-      } else {
-        setResponse("Found 2 high-risk tenants based on payment history and lease status. Recommend reviewing their accounts.");
-      }
-    }, 1000);
+    handleProcessCommand(suggestion);
   };
 
   if (!isOpen) return null;
@@ -86,7 +108,7 @@ export function VoiceCommandPanel({ isOpen, onClose }: VoiceCommandPanelProps) {
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-white">Voice AI Assistant</h2>
-                  <p className="text-white/80 text-sm">Speak or type your command</p>
+                  <p className="text-white/80 text-sm">Powered by Claude AI</p>
                 </div>
               </div>
               <button
@@ -98,112 +120,123 @@ export function VoiceCommandPanel({ isOpen, onClose }: VoiceCommandPanelProps) {
             </div>
 
             {/* Voice Input Button */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleStartListening}
-              disabled={isListening}
-              className={`w-full py-6 rounded-xl font-semibold text-lg transition-all ${
-                isListening
-                  ? "bg-red-500 text-white"
-                  : "bg-white text-indigo-600 hover:bg-white/90"
-              }`}
-            >
-              <div className="flex items-center justify-center gap-3">
-                <motion.div
-                  animate={isListening ? { scale: [1, 1.2, 1] } : { scale: 1 }}
-                  transition={{ repeat: isListening ? Infinity : 0, duration: 1 }}
-                >
-                  <Mic className="size-6" />
-                </motion.div>
-                <span>{isListening ? "Listening..." : "Tap to Speak"}</span>
-              </div>
-            </motion.button>
+            <div className="flex justify-center">
+              <button
+                onClick={handleStartListening}
+                disabled={isListening || isLoading}
+                className={`size-24 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  isListening
+                    ? "bg-red-500 scale-110 animate-pulse"
+                    : "bg-white hover:bg-white/90 hover:scale-105"
+                } disabled:opacity-50`}
+              >
+                {isListening ? (
+                  <Mic className="size-12 text-white" />
+                ) : (
+                  <Mic className="size-12 text-indigo-600" />
+                )}
+              </button>
+            </div>
+            <p className="text-white/90 text-center mt-3 text-sm">
+              {isListening ? "Listening..." : "Click to speak (simulated)"}
+            </p>
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-6 space-y-6 max-h-[50vh] overflow-y-auto">
             {/* Transcript */}
             {transcript && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 rounded-lg bg-indigo-50 border-2 border-indigo-200"
+                className="bg-gray-50 rounded-xl p-4 border border-gray-200"
               >
-                <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-lg bg-indigo-100">
-                    <Users className="size-4 text-indigo-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-indigo-600 font-medium mb-1">You asked:</p>
-                    <p className="text-slate-900">{transcript}</p>
-                  </div>
-                </div>
+                <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">
+                  You said:
+                </p>
+                <p className="text-gray-900">{transcript}</p>
               </motion.div>
             )}
 
-            {/* AI Response */}
-            {response && (
+            {/* Loading */}
+            {isLoading && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex items-center justify-center gap-3 py-4"
+              >
+                <Loader2 className="size-6 text-indigo-600 animate-spin" />
+                <p className="text-gray-600">Claude is processing your command...</p>
+              </motion.div>
+            )}
+
+            {/* Response */}
+            {response && !isLoading && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200"
+                className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-5 border border-indigo-100"
               >
                 <div className="flex items-start gap-3">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                    className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600"
-                  >
-                    <Sparkles className="size-4 text-white" />
-                  </motion.div>
-                  <div>
-                    <p className="text-sm text-green-600 font-medium mb-1">AI Response:</p>
-                    <p className="text-slate-900">{response}</p>
+                  <div className="p-2 rounded-lg bg-white shadow-sm">
+                    <Sparkles className="size-5 text-indigo-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs text-indigo-600 font-medium uppercase tracking-wider mb-2">
+                      AI Response:
+                    </p>
+                    <p className="text-gray-900 leading-relaxed whitespace-pre-line">
+                      {response}
+                    </p>
                   </div>
                 </div>
               </motion.div>
             )}
 
             {/* Suggestions */}
-            {!transcript && (
+            {!transcript && !response && (
               <div>
-                <p className="text-sm text-slate-600 mb-3 font-medium">Try asking:</p>
-                <div className="grid grid-cols-1 gap-2">
+                <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">
+                  Try these commands:
+                </p>
+                <div className="grid grid-cols-2 gap-3">
                   {suggestions.map((suggestion, idx) => (
                     <motion.button
                       key={idx}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                      whileHover={{ scale: 1.02, x: 4 }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 + idx * 0.05 }}
                       onClick={() => handleSuggestionClick(suggestion)}
-                      className="text-left p-4 rounded-lg border-2 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                      className="p-3 bg-white border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all text-left text-sm text-gray-700"
                     >
-                      <p className="text-slate-900 font-medium">{suggestion}</p>
+                      {suggestion}
                     </motion.button>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Quick Actions */}
-            {response && (
-              <div className="mt-6 pt-6 border-t border-slate-200">
-                <p className="text-sm text-slate-600 mb-3 font-medium">Quick Actions:</p>
-                <div className="flex flex-wrap gap-2">
-                  <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors">
-                    View Details
-                  </button>
-                  <button className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-colors">
-                    Export Report
-                  </button>
-                  <button className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-colors">
-                    Ask Another Question
-                  </button>
-                </div>
+            {/* Reset Button */}
+            {(transcript || response) && (
+              <div className="flex justify-center pt-4">
+                <button
+                  onClick={() => {
+                    setTranscript("");
+                    setResponse(null);
+                  }}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                >
+                  New Command
+                </button>
               </div>
             )}
+          </div>
+
+          {/* Footer */}
+          <div className="border-t border-gray-200 p-4 bg-gray-50">
+            <p className="text-xs text-gray-500 text-center">
+              Note: Voice recognition is simulated. Type commands using suggestion buttons or the text input in AI Chat.
+            </p>
           </div>
         </motion.div>
       </motion.div>

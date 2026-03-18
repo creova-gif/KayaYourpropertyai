@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Send, Sparkles, TrendingUp, FileText, Building2 } from "lucide-react";
+import { Send, Sparkles, TrendingUp, FileText, Building2, Loader2 } from "lucide-react";
+import { projectId, publicAnonKey } from "/utils/supabase/info";
 
 export function AIAssistantPremium() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([
     {
       role: "assistant" as const,
-      content: "Hello Justin! I'm your AI property assistant. I can help you with tenant screening, lease generation, payment tracking, and more. What would you like to know?",
+      content: "Hello! I'm KAYA AI powered by Claude, your expert property management assistant. I can help you with tenant screening, lease generation, payment tracking, and more. What would you like to know?",
     },
   ]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const suggestions = [
     { icon: TrendingUp, text: "Show risky applicants", query: "Show me all high-risk tenant applicants" },
@@ -17,23 +19,64 @@ export function AIAssistantPremium() {
     { icon: Building2, text: "Property overview", query: "Give me an overview of all my properties" },
   ];
 
-  const handleSend = () => {
-    if (!message.trim()) return;
+  const handleSend = async () => {
+    if (!message.trim() || isLoading) return;
 
     // Add user message
     const userMessage = { role: "user" as const, content: message };
-    setMessages((prev) => [...prev, userMessage]);
-
-    // Simulate AI response
-    setTimeout(() => {
-      const aiResponse = {
-        role: "assistant" as const,
-        content: `I understand you want to ${message}. Let me help you with that. Based on your current portfolio, I've analyzed the data and here's what I found...`,
-      };
-      setMessages((prev) => [...prev, aiResponse]);
-    }, 1000);
-
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setMessage("");
+    setIsLoading(true);
+
+    try {
+      // Prepare conversation history for API
+      const conversationHistory = newMessages.slice(1).map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
+
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-2071350e/ai/chat`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${publicAnonKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: userMessage.content,
+            context: "Canadian landlord property management platform - assisting with tenant management, legal compliance, and property operations",
+            conversationHistory: conversationHistory.slice(0, -1)
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        const aiResponse = {
+          role: "assistant" as const,
+          content: data.response,
+        };
+        setMessages([...newMessages, aiResponse]);
+      } else {
+        const errorResponse = {
+          role: "assistant" as const,
+          content: "I apologize, but I encountered an error. Please try again.",
+        };
+        setMessages([...newMessages, errorResponse]);
+      }
+    } catch (error) {
+      console.error('AI chat error:', error);
+      const errorResponse = {
+        role: "assistant" as const,
+        content: "I'm having trouble connecting right now. Please try again in a moment.",
+      };
+      setMessages([...newMessages, errorResponse]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSuggestionClick = (query: string) => {
@@ -60,7 +103,7 @@ export function AIAssistantPremium() {
             </div>
           </div>
           <p className="text-[14px] text-[#9CA3AF]">
-            Ask anything about tenants, rent, or leases
+            Powered by Claude AI • Ask anything about tenants, rent, or leases
           </p>
         </motion.div>
 
@@ -117,7 +160,7 @@ export function AIAssistantPremium() {
                         <Sparkles className="size-5 text-white" />
                       </div>
                       <div className="bg-[#F5F5F5] rounded-2xl rounded-tl-none p-6">
-                        <p className="text-[14px] text-[#0A0A0A] leading-relaxed">
+                        <p className="text-[14px] text-[#0A0A0A] leading-relaxed whitespace-pre-line">
                           {msg.content}
                         </p>
                       </div>
@@ -132,6 +175,24 @@ export function AIAssistantPremium() {
                   )}
                 </motion.div>
               ))}
+              
+              {isLoading && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex justify-start"
+                >
+                  <div className="flex items-start gap-3 max-w-2xl">
+                    <div className="size-10 rounded-full bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center flex-shrink-0">
+                      <Sparkles className="size-5 text-white" />
+                    </div>
+                    <div className="bg-[#F5F5F5] rounded-2xl rounded-tl-none p-6 flex items-center gap-2">
+                      <Loader2 className="size-4 animate-spin text-[#6366F1]" />
+                      <p className="text-[14px] text-[#0A0A0A]">Claude is thinking...</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
         </div>
@@ -151,19 +212,24 @@ export function AIAssistantPremium() {
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSend()}
                 placeholder="Ask anything about your properties..."
-                className="flex-1 px-4 py-3 bg-transparent border-none outline-none text-[14px] text-[#0A0A0A] placeholder:text-[#9CA3AF]"
+                disabled={isLoading}
+                className="flex-1 px-4 py-3 bg-transparent border-none outline-none text-[14px] text-[#0A0A0A] placeholder:text-[#9CA3AF] disabled:opacity-50"
               />
               <button
                 onClick={handleSend}
-                disabled={!message.trim()}
+                disabled={!message.trim() || isLoading}
                 className="size-12 rounded-xl bg-[#0A0A0A] hover:bg-[#1C1C1C] disabled:bg-[#F5F5F5] disabled:cursor-not-allowed flex items-center justify-center transition-colors"
               >
-                <Send className={`size-5 ${message.trim() ? "text-white" : "text-[#9CA3AF]"}`} />
+                {isLoading ? (
+                  <Loader2 className="size-5 text-white animate-spin" />
+                ) : (
+                  <Send className={`size-5 ${message.trim() ? "text-white" : "text-[#9CA3AF]"}`} />
+                )}
               </button>
             </div>
           </div>
           <p className="text-[12px] text-[#9CA3AF] text-center mt-3">
-            Powered by AI • Ontario RTA 2006 compliant
+            Powered by Claude AI • Canada RTA compliant
           </p>
         </motion.div>
       </div>

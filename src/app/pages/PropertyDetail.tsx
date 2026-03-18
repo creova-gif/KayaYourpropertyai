@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router";
+import { useParams, Link, useNavigate } from "react-router";
 import {
   ArrowLeft,
   Building2,
@@ -31,6 +31,7 @@ import {
 export function PropertyDetail() {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("overview");
+  const navigate = useNavigate();
 
   // Mock property data - in production this would come from API/state
   const property = {
@@ -122,45 +123,18 @@ export function PropertyDetail() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         {/* Header */}
-        <div className="mb-6">
-          <Link
-            to="/colorful/properties"
-            className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium mb-4"
+        <div className="mb-8">
+          <button
+            onClick={() => navigate("/colorful/properties")}
+            className="flex items-center gap-2 text-[#767570] hover:text-[#0E0F0C] mb-4 text-[13px] font-medium"
           >
-            <ArrowLeft className="size-4" />
-            Back to Properties
-          </Link>
-
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">{property.name}</h1>
-              <div className="flex items-center gap-2 text-slate-600">
-                <MapPin className="size-5" />
-                <span>
-                  {property.address}, {property.city}, {property.province} {property.postalCode}
-                </span>
-              </div>
-              <div className="flex items-center gap-4 mt-4">
-                <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-md text-sm font-medium">
-                  {property.propertyType}
-                </span>
-                <span className="text-sm text-slate-600">Built in {property.yearBuilt}</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
-                <Edit className="size-5 text-slate-600" />
-                <span className="font-medium text-slate-700">Edit</span>
-              </button>
-              <button className="flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
-                <Trash2 className="size-5" />
-                <span className="font-medium">Delete</span>
-              </button>
-            </div>
-          </div>
+            ← Back to Properties
+          </button>
+          <p className="text-[10px] font-semibold text-[#767570] uppercase tracking-wider mb-2">Property Management</p>
+          <h1 className="text-[48px] font-normal text-[#0E0F0C] tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>123 King Street West</h1>
+          <p className="mt-2 text-[14px] text-[#767570]">Multi-unit residential property overview and details</p>
         </div>
 
         {/* Stats Overview */}

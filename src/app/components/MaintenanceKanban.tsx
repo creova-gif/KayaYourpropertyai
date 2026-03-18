@@ -114,8 +114,8 @@ const KanbanColumn = ({ title, status, requests, onDrop, icon: Icon, color }: Ka
         <div className="flex items-center gap-3 text-white">
           <Icon className="size-6" />
           <div className="flex-1">
-            <h3 className="font-semibold text-lg text-[#ffffff]">{title}</h3>
-            <p className="text-sm text-white/80">{requests.length} requests</p>
+            <h3 className="font-normal text-[20px] text-white" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>{title}</h3>
+            <p className="text-[13px] text-white/80">{requests.length} requests</p>
           </div>
         </div>
       </div>
@@ -123,14 +123,14 @@ const KanbanColumn = ({ title, status, requests, onDrop, icon: Icon, color }: Ka
       <div
         ref={drop}
         className={`min-h-[400px] p-4 rounded-xl border-2 border-dashed transition-colors ${
-          isOver ? "bg-indigo-50 border-indigo-400" : "bg-slate-50 border-slate-200"
+          isOver ? "bg-[#E5F4EE] border-[#0A7A52]" : "bg-white border-[rgba(0,0,0,0.07)]"
         }`}
       >
         {requests.map((request) => (
           <DraggableCard key={request.id} request={request} />
         ))}
         {requests.length === 0 && (
-          <div className="flex items-center justify-center h-32 text-slate-400 text-sm">
+          <div className="flex items-center justify-center h-32 text-[#767570] text-[14px]">
             No requests
           </div>
         )}

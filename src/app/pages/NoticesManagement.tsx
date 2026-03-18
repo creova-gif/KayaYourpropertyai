@@ -158,79 +158,71 @@ export function NoticesManagement() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900">Notices Management</h1>
-            <p className="mt-2 text-slate-600">Send LTB-compliant notices and announcements to tenants</p>
-          </div>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-2 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors shadow-lg shadow-indigo-200"
-          >
-            <Plus className="size-5" />
-            Create Notice
-          </button>
+        <div className="mb-8">
+          <p className="text-[10px] font-semibold text-[#767570] uppercase tracking-wider mb-2">Tenant Communication</p>
+          <h1 className="text-[48px] font-normal text-[#0E0F0C] tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>Notices Management</h1>
+          <p className="mt-2 text-[14px] text-[#767570]">Send compliant notices to tenants with AI-powered templates</p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-indigo-50">
-                <FileText className="size-5 text-indigo-600" />
+          <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-6 hover:border-[#0A7A52]/20 transition-all">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2.5 rounded-xl bg-[#0A7A52]/5">
+                <FileText className="size-5 text-[#0A7A52]" />
               </div>
-              <span className="text-sm text-slate-600">Total Notices</span>
+              <span className="text-sm font-medium text-slate-600">Total Notices</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">{notices.length}</p>
+            <p className="text-3xl font-serif font-semibold text-slate-900">{notices.length}</p>
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-green-50">
-                <Check className="size-5 text-green-600" />
+          <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-6 hover:border-[#0A7A52]/20 transition-all">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2.5 rounded-xl bg-emerald-50">
+                <Check className="size-5 text-emerald-600" />
               </div>
-              <span className="text-sm text-slate-600">Sent</span>
+              <span className="text-sm font-medium text-slate-600">Sent</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">
+            <p className="text-3xl font-serif font-semibold text-slate-900">
               {notices.filter((n) => n.status === "sent").length}
             </p>
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-blue-50">
-                <Clock className="size-5 text-blue-600" />
+          <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-6 hover:border-[#0A7A52]/20 transition-all">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2.5 rounded-xl bg-amber-50">
+                <Clock className="size-5 text-amber-600" />
               </div>
-              <span className="text-sm text-slate-600">Scheduled</span>
+              <span className="text-sm font-medium text-slate-600">Scheduled</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">
+            <p className="text-3xl font-serif font-semibold text-slate-900">
               {notices.filter((n) => n.status === "scheduled").length}
             </p>
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-slate-50">
+          <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-6 hover:border-[#0A7A52]/20 transition-all">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2.5 rounded-xl bg-slate-100">
                 <FileText className="size-5 text-slate-600" />
               </div>
-              <span className="text-sm text-slate-600">Drafts</span>
+              <span className="text-sm font-medium text-slate-600">Drafts</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">
+            <p className="text-3xl font-serif font-semibold text-slate-900">
               {notices.filter((n) => n.status === "draft").length}
             </p>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
+        <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-5 mb-6">
           <div className="flex items-center gap-4">
-            <Filter className="size-5 text-slate-400" />
+            <Filter className="size-5 text-[#0A7A52]" />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-4 py-2.5 border border-[#0A7A52]/20 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#0A7A52] focus:border-[#0A7A52] hover:border-[#0A7A52]/40 transition-all text-sm font-medium text-slate-700"
             >
               <option value="all">All Status</option>
               <option value="sent">Sent</option>
@@ -241,7 +233,7 @@ export function NoticesManagement() {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-4 py-2.5 border border-[#0A7A52]/20 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#0A7A52] focus:border-[#0A7A52] hover:border-[#0A7A52]/40 transition-all text-sm font-medium text-slate-700"
             >
               <option value="all">All Types</option>
               <option value="rent_increase">Rent Increase</option>

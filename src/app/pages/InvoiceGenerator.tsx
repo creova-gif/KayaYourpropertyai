@@ -59,8 +59,23 @@ export function InvoiceGenerator() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Invoice Generator</h1>
-            <p className="mt-2 text-slate-600">Create professional invoices for tenants</p>
+            <h1 
+              className="text-3xl font-bold text-[#0E0F0C]"
+              style={{
+                fontFamily: "'Instrument Serif', serif",
+                letterSpacing: "-0.5px"
+              }}
+            >
+              Invoice Generator
+            </h1>
+            <p 
+              className="mt-2 text-[#767570]"
+              style={{
+                fontFamily: "'DM Sans', system-ui, sans-serif"
+              }}
+            >
+              Create professional invoices for tenants
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <button className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
@@ -75,47 +90,47 @@ export function InvoiceGenerator() {
         </div>
 
         {/* Invoice Form */}
-        <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-sm">
+        <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-8 shadow-lg" style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}>
           {/* Company Header */}
-          <div className="border-b border-slate-200 pb-6 mb-6">
+          <div className="border-b border-[rgba(0,0,0,0.05)] pb-6 mb-6">
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">KAYA</h2>
-                <p className="text-slate-600">123 Business Street</p>
-                <p className="text-slate-600">Toronto, ON M5H 1A1</p>
-                <p className="text-slate-600">info@kaya.ca</p>
+                <h2 className="text-[32px] font-normal text-[#0E0F0C] mb-3" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Kaya<span className="text-[#0A7A52]">.</span></h2>
+                <p className="text-[13px] text-[#767570]">123 Business Street</p>
+                <p className="text-[13px] text-[#767570]">Toronto, ON M5H 1A1</p>
+                <p className="text-[13px] text-[#767570]">info@kaya.ca</p>
               </div>
               <div className="text-right">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-lg mb-4">
-                  <FileText className="size-5 text-indigo-600" />
-                  <span className="text-xl font-bold text-indigo-900">INVOICE</span>
+                <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#E5F4EE] rounded-xl mb-4">
+                  <FileText className="size-5 text-[#0A7A52]" />
+                  <span className="text-[20px] font-normal text-[#0A7A52]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>INVOICE</span>
                 </div>
-                <div className="space-y-1 text-sm">
+                <div className="space-y-2 text-[13px]">
                   <div className="flex items-center gap-2 justify-end">
-                    <span className="text-slate-600">Invoice #:</span>
+                    <span className="text-[#767570] font-medium">Invoice #:</span>
                     <input
                       type="text"
                       value={invoiceNumber}
                       onChange={(e) => setInvoiceNumber(e.target.value)}
-                      className="px-2 py-1 border border-slate-300 rounded text-slate-900 font-medium w-32"
+                      className="px-3 py-1.5 border border-[rgba(0,0,0,0.1)] rounded-lg text-[#0E0F0C] font-medium w-32 focus:outline-none focus:ring-2 focus:ring-[#0A7A52]"
                     />
                   </div>
                   <div className="flex items-center gap-2 justify-end">
-                    <span className="text-slate-600">Issue Date:</span>
+                    <span className="text-[#767570] font-medium">Issue Date:</span>
                     <input
                       type="date"
                       value={issueDate}
                       onChange={(e) => setIssueDate(e.target.value)}
-                      className="px-2 py-1 border border-slate-300 rounded text-slate-900 font-medium"
+                      className="px-3 py-1.5 border border-[rgba(0,0,0,0.1)] rounded-lg text-[#0E0F0C] font-medium focus:outline-none focus:ring-2 focus:ring-[#0A7A52]"
                     />
                   </div>
                   <div className="flex items-center gap-2 justify-end">
-                    <span className="text-slate-600">Due Date:</span>
+                    <span className="text-[#767570] font-medium">Due Date:</span>
                     <input
                       type="date"
                       value={dueDate}
                       onChange={(e) => setDueDate(e.target.value)}
-                      className="px-2 py-1 border border-slate-300 rounded text-slate-900 font-medium"
+                      className="px-3 py-1.5 border border-[rgba(0,0,0,0.1)] rounded-lg text-[#0E0F0C] font-medium focus:outline-none focus:ring-2 focus:ring-[#0A7A52]"
                     />
                   </div>
                 </div>
@@ -126,41 +141,41 @@ export function InvoiceGenerator() {
           {/* Bill To */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Bill To</label>
+              <label className="block text-[11px] font-semibold text-[#767570] uppercase tracking-wider mb-3">Bill To</label>
               <div className="space-y-3">
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-400" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-[#767570]" />
                   <input
                     type="text"
                     value={tenant}
                     onChange={(e) => setTenant(e.target.value)}
                     placeholder="Tenant Name"
-                    className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-2.5 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
                   />
                 </div>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Property Details</label>
+              <label className="block text-[11px] font-semibold text-[#767570] uppercase tracking-wider mb-3">Property Details</label>
               <div className="space-y-3">
                 <div className="relative">
-                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-400" />
+                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-[#767570]" />
                   <input
                     type="text"
                     value={property}
                     onChange={(e) => setProperty(e.target.value)}
                     placeholder="Property Address"
-                    className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-2.5 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
                   />
                 </div>
                 <div className="relative">
-                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-400" />
+                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-[#767570]" />
                   <input
                     type="text"
                     value={unit}
                     onChange={(e) => setUnit(e.target.value)}
                     placeholder="Unit Number"
-                    className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-2.5 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
                   />
                 </div>
               </div>
@@ -170,45 +185,45 @@ export function InvoiceGenerator() {
           {/* Invoice Items */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <label className="block text-sm font-medium text-slate-700">Invoice Items</label>
+              <label className="block text-[11px] font-semibold text-[#767570] uppercase tracking-wider">Invoice Items</label>
               <button
                 onClick={addItem}
-                className="flex items-center gap-2 px-3 py-1.5 text-sm bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg font-medium transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-[13px] bg-[#E5F4EE] hover:bg-[#0A7A52] text-[#0A7A52] hover:text-white rounded-lg font-semibold transition-all"
               >
                 <Plus className="size-4" />
                 Add Item
               </button>
             </div>
 
-            <div className="border border-slate-200 rounded-lg overflow-hidden">
+            <div className="border border-[rgba(0,0,0,0.07)] rounded-xl overflow-hidden">
               <table className="w-full">
-                <thead className="bg-slate-50">
+                <thead className="bg-[#F8F7F4]">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">
+                    <th className="px-4 py-3 text-left text-[11px] font-semibold text-[#767570] uppercase tracking-wide">
                       Description
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase w-24">
+                    <th className="px-4 py-3 text-left text-[11px] font-semibold text-[#767570] uppercase tracking-wide w-24">
                       Quantity
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase w-32">
+                    <th className="px-4 py-3 text-left text-[11px] font-semibold text-[#767570] uppercase tracking-wide w-32">
                       Rate
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase w-32">
+                    <th className="px-4 py-3 text-left text-[11px] font-semibold text-[#767570] uppercase tracking-wide w-32">
                       Amount
                     </th>
                     <th className="px-4 py-3 w-12"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200">
+                <tbody className="divide-y divide-[rgba(0,0,0,0.05)]">
                   {items.map((item, index) => (
-                    <tr key={index}>
+                    <tr key={index} className="hover:bg-[#F8F7F4] transition-colors">
                       <td className="px-4 py-3">
                         <input
                           type="text"
                           value={item.description}
                           onChange={(e) => updateItem(index, "description", e.target.value)}
                           placeholder="Item description"
-                          className="w-full px-2 py-1 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="w-full px-3 py-2 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
                         />
                       </td>
                       <td className="px-4 py-3">
@@ -216,29 +231,29 @@ export function InvoiceGenerator() {
                           type="number"
                           value={item.quantity}
                           onChange={(e) => updateItem(index, "quantity", parseFloat(e.target.value) || 0)}
-                          className="w-full px-2 py-1 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="w-full px-3 py-2 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
                         />
                       </td>
                       <td className="px-4 py-3">
                         <div className="relative">
-                          <DollarSign className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                          <DollarSign className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-[#767570]" />
                           <input
                             type="number"
                             value={item.rate}
                             onChange={(e) => updateItem(index, "rate", parseFloat(e.target.value) || 0)}
-                            className="w-full pl-7 pr-2 py-1 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full pl-7 pr-2 py-2 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
                           />
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="font-semibold text-slate-900">
+                        <span className="font-semibold text-[#0E0F0C]">
                           ${item.amount.toFixed(2)}
                         </span>
                       </td>
                       <td className="px-4 py-3">
                         <button
                           onClick={() => removeItem(index)}
-                          className="p-1 hover:bg-red-50 rounded transition-colors"
+                          className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <X className="size-5 text-red-600" />
                         </button>
@@ -254,34 +269,34 @@ export function InvoiceGenerator() {
           <div className="flex justify-end mb-8">
             <div className="w-80 space-y-3">
               <div className="flex items-center justify-between py-2">
-                <span className="text-slate-600">Subtotal</span>
-                <span className="font-semibold text-slate-900">${subtotal.toFixed(2)}</span>
+                <span className="text-[14px] text-[#767570] font-medium">Subtotal</span>
+                <span className="font-semibold text-[#0E0F0C]">${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex items-center justify-between py-2">
-                <span className="text-slate-600">HST (13%)</span>
-                <span className="font-semibold text-slate-900">${tax.toFixed(2)}</span>
+                <span className="text-[14px] text-[#767570] font-medium">HST (13%)</span>
+                <span className="font-semibold text-[#0E0F0C]">${tax.toFixed(2)}</span>
               </div>
-              <div className="flex items-center justify-between py-3 border-t-2 border-slate-300">
-                <span className="text-lg font-semibold text-slate-900">Total</span>
-                <span className="text-2xl font-bold text-indigo-600">${total.toFixed(2)}</span>
+              <div className="flex items-center justify-between py-3 border-t-2 border-[rgba(0,0,0,0.1)]">
+                <span className="text-[16px] font-semibold text-[#0E0F0C]">Total</span>
+                <span className="text-[28px] font-normal text-[#0A7A52]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>${total.toFixed(2)}</span>
               </div>
             </div>
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Notes / Terms</label>
+            <label className="block text-[11px] font-semibold text-[#767570] uppercase tracking-wider mb-3">Notes / Terms</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
-              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
               placeholder="Payment terms, thank you note, etc."
             />
           </div>
 
           {/* Footer */}
-          <div className="mt-8 pt-6 border-t border-slate-200 text-center text-sm text-slate-600">
+          <div className="mt-8 pt-6 border-t border-[rgba(0,0,0,0.05)] text-center text-[13px] text-[#767570]">
             <p>Thank you for your business!</p>
             <p className="mt-1">For questions, contact: info@kaya.ca</p>
           </div>

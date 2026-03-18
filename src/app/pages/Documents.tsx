@@ -115,69 +115,70 @@ export function Documents() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Documents</h1>
-          <p className="mt-2 text-slate-600">Manage leases, notices, receipts, and all property documents</p>
+          <p className="text-[10px] font-semibold text-[#767570] uppercase tracking-wider mb-2">Document Management</p>
+          <h1 className="text-[48px] font-normal text-[#0E0F0C] tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>Documents</h1>
+          <p className="mt-2 text-[14px] text-[#767570]">Organize and access all property documents in one place</p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-6">
             <div className="flex items-center gap-3 mb-2">
-              <FileText className="size-5 text-indigo-600" />
-              <span className="text-sm text-slate-600">Total Documents</span>
+              <FileText className="size-5 text-[#0A7A52]" />
+              <span className="text-[12px] text-[#767570] uppercase tracking-wider">Total Documents</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">{documents.length}</p>
+            <p className="text-[36px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>{documents.length}</p>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-6">
             <div className="flex items-center gap-3 mb-2">
-              <FileText className="size-5 text-purple-600" />
-              <span className="text-sm text-slate-600">Active Leases</span>
+              <FileText className="size-5 text-[#9333EA]" />
+              <span className="text-[12px] text-[#767570] uppercase tracking-wider">Active Leases</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">
+            <p className="text-[36px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
               {documents.filter(d => d.type === "lease" && d.status === "signed").length}
             </p>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-6">
             <div className="flex items-center gap-3 mb-2">
-              <AlertCircle className="size-5 text-amber-600" />
-              <span className="text-sm text-slate-600">Pending Notices</span>
+              <AlertCircle className="size-5 text-[#F59E0B]" />
+              <span className="text-[12px] text-[#767570] uppercase tracking-wider">Pending Notices</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">
+            <p className="text-[36px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
               {documents.filter(d => d.type === "notice" && d.status === "pending").length}
             </p>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-6">
             <div className="flex items-center gap-3 mb-2">
-              <CreditCard className="size-5 text-green-600" />
-              <span className="text-sm text-slate-600">Receipts</span>
+              <CreditCard className="size-5 text-[#0A7A52]" />
+              <span className="text-[12px] text-[#767570] uppercase tracking-wider">Receipts</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">
+            <p className="text-[36px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
               {documents.filter(d => d.type === "receipt").length}
             </p>
           </div>
         </div>
 
         {/* Search and Filter */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+        <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-6 mb-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-[#767570]" />
               <input
                 type="text"
                 placeholder="Search documents, tenants, properties..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full pl-10 pr-4 py-3 bg-[#F8F7F4] border border-[rgba(0,0,0,0.07)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52]/20 text-[#0E0F0C] text-[14px]"
               />
             </div>
             <div className="relative">
-              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-400" />
+              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-[#767570]" />
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="pl-10 pr-8 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
+                className="pl-10 pr-8 py-3 bg-[#F8F7F4] border border-[rgba(0,0,0,0.07)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52]/20 appearance-none cursor-pointer text-[#0E0F0C] text-[14px]"
               >
                 <option value="all">All Types</option>
                 <option value="lease">Leases</option>
@@ -192,70 +193,70 @@ export function Documents() {
         </div>
 
         {/* Documents List */}
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-slate-50 border-b border-slate-200">
+              <thead className="bg-[#F8F7F4] border-b border-[rgba(0,0,0,0.07)]">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">Document</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">Type</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">Property</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">Tenant</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">Date</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">Status</th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-slate-900">Actions</th>
+                  <th className="px-6 py-4 text-left text-[12px] font-semibold text-[#767570] uppercase tracking-wider">Document</th>
+                  <th className="px-6 py-4 text-left text-[12px] font-semibold text-[#767570] uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-4 text-left text-[12px] font-semibold text-[#767570] uppercase tracking-wider">Property</th>
+                  <th className="px-6 py-4 text-left text-[12px] font-semibold text-[#767570] uppercase tracking-wider">Tenant</th>
+                  <th className="px-6 py-4 text-left text-[12px] font-semibold text-[#767570] uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-4 text-left text-[12px] font-semibold text-[#767570] uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-right text-[12px] font-semibold text-[#767570] uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200">
+              <tbody className="divide-y divide-[rgba(0,0,0,0.04)]">
                 {filteredDocs.map((doc) => {
                   const docType = documentTypes[doc.type as keyof typeof documentTypes];
                   const Icon = docType.icon;
                   
                   return (
-                    <tr key={doc.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className={`p-2 rounded-lg bg-${docType.color}-50`}>
+                    <tr key={doc.id} className="hover:bg-[#F8F7F4] transition-colors">
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-4">
+                          <div className={`p-3 rounded-xl bg-${docType.color}-50 border border-${docType.color}-100`}>
                             <Icon className={`size-5 text-${docType.color}-600`} />
                           </div>
                           <div>
-                            <p className="font-medium text-slate-900">{doc.name}</p>
-                            <p className="text-sm text-slate-500">{doc.size}</p>
+                            <p className="font-semibold text-slate-900 text-sm">{doc.name}</p>
+                            <p className="text-xs text-slate-600 mt-1">{doc.size}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium bg-${docType.color}-100 text-${docType.color}-700`}>
+                      <td className="px-6 py-5">
+                        <span className={`inline-flex px-3 py-1.5 rounded-xl text-[11px] font-semibold uppercase tracking-wider bg-${docType.color}-50 text-${docType.color}-600 border border-${docType.color}-100`}>
                           {docType.label}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-sm text-slate-900">{doc.property}</p>
-                        <p className="text-xs text-slate-500">{doc.unit}</p>
+                        <p className="text-[14px] text-[#0E0F0C] font-medium">{doc.property}</p>
+                        <p className="text-[12px] text-[#767570]">{doc.unit}</p>
                       </td>
-                      <td className="px-6 py-4 text-sm text-slate-900">{doc.tenant}</td>
+                      <td className="px-6 py-4 text-[14px] text-[#0E0F0C]">{doc.tenant}</td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 text-sm text-slate-600">
+                        <div className="flex items-center gap-2 text-[13px] text-[#767570]">
                           <Calendar className="size-4" />
                           <span>{doc.date}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${
+                        <span className={`px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider capitalize ${
                           doc.status === "signed" || doc.status === "active" || doc.status === "approved" || doc.status === "completed" || doc.status === "processed"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-amber-100 text-amber-700"
+                            ? "bg-[#E5F4EE] text-[#0A7A52] border border-[#0A7A52]/20"
+                            : "bg-[#FEF3E2] text-[#F59E0B] border border-[#F59E0B]/20"
                         }`}>
                           {doc.status}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-2">
-                          <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                            <Eye className="size-4 text-slate-600" />
+                          <button className="p-2 hover:bg-[#F8F7F4] rounded-lg transition-colors">
+                            <Eye className="size-4 text-[#767570]" />
                           </button>
-                          <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                            <Download className="size-4 text-slate-600" />
+                          <button className="p-2 hover:bg-[#F8F7F4] rounded-lg transition-colors">
+                            <Download className="size-4 text-[#767570]" />
                           </button>
                         </div>
                       </td>
@@ -269,8 +270,8 @@ export function Documents() {
 
         {filteredDocs.length === 0 && (
           <div className="text-center py-12">
-            <FileText className="size-12 text-slate-300 mx-auto mb-4" />
-            <p className="text-slate-500">No documents found</p>
+            <FileText className="size-12 text-[#767570] opacity-30 mx-auto mb-4" />
+            <p className="text-[#767570] text-[14px]">No documents found</p>
           </div>
         )}
       </div>

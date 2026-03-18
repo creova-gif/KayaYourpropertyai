@@ -46,14 +46,19 @@ export function Layout() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#F8F7F4]">
       {/* Sidebar - Desktop */}
-      <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 hidden lg:block">
+      <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-[rgba(0,0,0,0.08)] hidden lg:block">
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="h-16 flex items-center px-6 border-b border-slate-200">
-            <Building2 className="size-8 text-indigo-600" />
-            <span className="ml-3 text-xl font-semibold text-slate-900">LandlordOS</span>
+          <div className="h-16 flex items-center px-6 border-b border-[rgba(0,0,0,0.08)]">
+            <Building2 className="size-8 text-[#0A7A52]" strokeWidth={2.5} />
+            <span 
+              className="ml-3 text-xl font-semibold text-[#0E0F0C]"
+              style={{ fontFamily: "'Instrument Serif', serif" }}
+            >
+              Kaya
+            </span>
           </div>
 
           {/* Navigation */}
@@ -67,11 +72,11 @@ export function Layout() {
                   to={item.href}
                   className={`flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     active
-                      ? "bg-indigo-50 text-indigo-600"
-                      : "text-slate-700 hover:bg-slate-100"
+                      ? "bg-[#E5F4EE] text-[#0A7A52]"
+                      : "text-[#767570] hover:bg-[#F8F7F4] hover:text-[#0E0F0C]"
                   }`}
                 >
-                  <Icon className="size-5 mr-3" />
+                  <Icon className="size-5 mr-3" strokeWidth={2.5} />
                   {item.name}
                 </Link>
               );
@@ -79,19 +84,20 @@ export function Layout() {
           </nav>
 
           {/* AI Assistant Button */}
-          <div className="p-4 border-t border-slate-200">
+          <div className="p-4 border-t border-[rgba(0,0,0,0.08)]">
             <button
               onClick={() => setVoiceOpen(true)}
-              className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg shadow-purple-200 mb-3"
+              className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-[#0A7A52] to-[#085D3D] text-white rounded-lg font-medium hover:shadow-lg transition-all shadow-md mb-3"
+              style={{ boxShadow: '0 2px 8px rgba(10,122,82,0.2)' }}
             >
-              <Mic className="size-5 mr-2" />
+              <Mic className="size-5 mr-2" strokeWidth={2.5} />
               Voice AI
             </button>
             <button
               onClick={() => setAssistantOpen(true)}
-              className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg shadow-indigo-200"
+              className="w-full flex items-center justify-center px-4 py-3 border border-[rgba(0,0,0,0.08)] bg-white text-[#0A7A52] rounded-lg font-medium hover:bg-[#F8F7F4] transition-all"
             >
-              <MessageSquare className="size-5 mr-2" />
+              <MessageSquare className="size-5 mr-2" strokeWidth={2.5} />
               AI Chat
             </button>
           </div>
@@ -99,15 +105,20 @@ export function Layout() {
       </aside>
 
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-slate-200">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-[rgba(0,0,0,0.08)]">
         <div className="flex items-center justify-between h-16 px-4">
           <div className="flex items-center">
-            <Building2 className="size-7 text-indigo-600" />
-            <span className="ml-2 text-lg font-semibold text-slate-900">LandlordOS</span>
+            <Building2 className="size-7 text-[#0A7A52]" strokeWidth={2.5} />
+            <span 
+              className="ml-2 text-lg font-semibold text-[#0E0F0C]"
+              style={{ fontFamily: "'Instrument Serif', serif" }}
+            >
+              Kaya
+            </span>
           </div>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg hover:bg-slate-100"
+            className="p-2 rounded-lg hover:bg-[#F8F7F4]"
           >
             {mobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
           </button>
@@ -128,11 +139,11 @@ export function Layout() {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center px-3 py-3 rounded-lg text-sm font-medium ${
                     active
-                      ? "bg-indigo-50 text-indigo-600"
-                      : "text-slate-700 hover:bg-slate-100"
+                      ? "bg-[#E5F4EE] text-[#0A7A52]"
+                      : "text-[#767570] hover:bg-[#F8F7F4] hover:text-[#0E0F0C]"
                   }`}
                 >
-                  <Icon className="size-5 mr-3" />
+                  <Icon className="size-5 mr-3" strokeWidth={2.5} />
                   {item.name}
                 </Link>
               );
@@ -144,9 +155,9 @@ export function Layout() {
                 setVoiceOpen(true);
                 setMobileMenuOpen(false);
               }}
-              className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-medium mb-3"
+              className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-[#0A7A52] to-[#085D3D] text-white rounded-lg font-medium mb-3"
             >
-              <Mic className="size-5 mr-2" />
+              <Mic className="size-5 mr-2" strokeWidth={2.5} />
               Voice AI
             </button>
             <button
@@ -154,9 +165,9 @@ export function Layout() {
                 setAssistantOpen(true);
                 setMobileMenuOpen(false);
               }}
-              className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium"
+              className="w-full flex items-center justify-center px-4 py-3 border border-[rgba(0,0,0,0.08)] bg-white text-[#0A7A52] rounded-lg font-medium"
             >
-              <MessageSquare className="size-5 mr-2" />
+              <MessageSquare className="size-5 mr-2" strokeWidth={2.5} />
               AI Chat
             </button>
           </div>

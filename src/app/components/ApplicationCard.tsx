@@ -45,65 +45,123 @@ export function ApplicationCard({ application, onSwipeLeft, onSwipeRight, onClic
       style={{ x, opacity, rotateZ, backgroundColor }}
       onDragEnd={handleDragEnd}
       onClick={onClick}
-      className="relative bg-white rounded-2xl border-2 border-slate-200 p-6 cursor-grab active:cursor-grabbing shadow-lg"
+      className="relative bg-white rounded-2xl border-2 border-[rgba(0,0,0,0.07)] p-6 cursor-grab active:cursor-grabbing shadow-lg"
     >
       {/* Swipe Indicators */}
       <motion.div
         style={{ opacity: useTransform(x, [-200, -50, 0], [1, 0.3, 0]) }}
         className="absolute top-6 right-6 flex items-center gap-2 text-red-600"
       >
-        <X className="size-8" />
-        <span className="font-bold text-xl">Reject</span>
+        <X className="size-8" strokeWidth={2.5} />
+        <span 
+          className="font-bold text-xl"
+          style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+        >
+          Reject
+        </span>
       </motion.div>
       
       <motion.div
         style={{ opacity: useTransform(x, [0, 50, 200], [0, 0.3, 1]) }}
-        className="absolute top-6 left-6 flex items-center gap-2 text-green-600"
+        className="absolute top-6 left-6 flex items-center gap-2 text-[#0A7A52]"
       >
-        <CheckCircle2 className="size-8" />
-        <span className="font-bold text-xl">Approve</span>
+        <CheckCircle2 className="size-8" strokeWidth={2.5} />
+        <span 
+          className="font-bold text-xl"
+          style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+        >
+          Approve
+        </span>
       </motion.div>
 
       {/* Card Content */}
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-center gap-4">
-          <div className="size-16 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">
-            <Users className="size-8 text-indigo-600" />
+          <div className="size-16 rounded-full bg-gradient-to-br from-[#E5F4EE] to-[#9FD8C0] flex items-center justify-center">
+            <Users className="size-8 text-[#0A7A52]" strokeWidth={2.5} />
           </div>
           <div>
-            <h3 className="text-xl font-semibold text-slate-900">{application.name}</h3>
-            <p className="text-slate-500">{application.unit}</p>
+            <h3 
+              className="text-xl font-semibold text-[#0E0F0C]"
+              style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+            >
+              {application.name}
+            </h3>
+            <p 
+              className="text-[#767570]"
+              style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+            >
+              {application.unit}
+            </p>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-4xl font-bold text-slate-900 mb-1">{application.score}</div>
-          <span className={`text-xs px-3 py-1.5 rounded-full font-medium ${
-            application.risk === "low" ? "bg-green-100 text-green-700" :
-            application.risk === "medium" ? "bg-amber-100 text-amber-700" :
-            "bg-red-100 text-red-700"
+          <div 
+            className="text-4xl font-bold text-[#0E0F0C] mb-1"
+            style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+          >
+            {application.score}
+          </div>
+          <span className={`text-xs px-3 py-1.5 rounded-full font-medium uppercase tracking-wide ${
+            application.risk === "low" ? "bg-[#E5F4EE] text-[#0A7A52]" :
+            application.risk === "medium" ? "bg-[#FEF3C7] text-[#F59E0B]" :
+            "bg-[#FEE2E2] text-[#EF4444]"
           }`}>
             {application.risk} risk
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl">
+      <div className="grid grid-cols-3 gap-4 p-4 bg-[#F8F7F4] rounded-xl border border-[rgba(0,0,0,0.05)]">
         <div>
-          <p className="text-xs text-slate-500 mb-1">Credit Score</p>
-          <p className="text-lg font-bold text-slate-900">{application.creditScore}</p>
+          <p 
+            className="text-xs text-[#767570] mb-1 uppercase tracking-wide font-medium"
+            style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+          >
+            Credit Score
+          </p>
+          <p 
+            className="text-lg font-bold text-[#0E0F0C]"
+            style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+          >
+            {application.creditScore}
+          </p>
         </div>
         <div>
-          <p className="text-xs text-slate-500 mb-1">Income</p>
-          <p className="text-lg font-bold text-slate-900">${application.income.toLocaleString()}</p>
+          <p 
+            className="text-xs text-[#767570] mb-1 uppercase tracking-wide font-medium"
+            style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+          >
+            Income
+          </p>
+          <p 
+            className="text-lg font-bold text-[#0E0F0C]"
+            style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+          >
+            ${application.income.toLocaleString()}
+          </p>
         </div>
         <div>
-          <p className="text-xs text-slate-500 mb-1">Ratio</p>
-          <p className="text-lg font-bold text-slate-900">{application.incomeRatio}x</p>
+          <p 
+            className="text-xs text-[#767570] mb-1 uppercase tracking-wide font-medium"
+            style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+          >
+            Ratio
+          </p>
+          <p 
+            className="text-lg font-bold text-[#0E0F0C]"
+            style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+          >
+            {application.incomeRatio}x
+          </p>
         </div>
       </div>
 
-      <div className="mt-6 pt-4 border-t border-slate-200">
-        <p className="text-sm text-slate-500 text-center">
+      <div className="mt-6 pt-4 border-t border-[rgba(0,0,0,0.07)]">
+        <p 
+          className="text-sm text-[#767570] text-center"
+          style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+        >
           👈 Swipe left to reject • Swipe right to approve 👉
         </p>
       </div>

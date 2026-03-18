@@ -118,7 +118,7 @@ export function TaxTracker() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-8 py-12">
+      <div className="max-w-7xl mx-auto px-8 py-12" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -126,17 +126,20 @@ export function TaxTracker() {
           className="mb-12"
         >
           <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-3">
-              <Calculator className="size-8 text-[#0A0A0A]" />
-              <h1 className="text-[48px] font-semibold text-[#0A0A0A] leading-tight tracking-tight">
-                HST/GST Tracker
-              </h1>
+            <div>
+              <p className="text-[10px] font-semibold text-[#767570] uppercase tracking-wider mb-2">Tax Compliance</p>
+              <div className="flex items-center gap-4">
+                <Calculator className="size-10 text-[#0A7A52]" strokeWidth={2} />
+                <h1 className="text-[52px] font-normal text-[#0E0F0C] leading-tight tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1.5px' }}>
+                  HST/GST Tracker
+                </h1>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(Number(e.target.value))}
-                className="px-4 py-2 border border-black/[0.08] rounded-lg text-[14px] font-medium focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                className="px-4 py-2.5 border border-[rgba(0,0,0,0.1)] rounded-lg text-[14px] font-medium focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C] bg-white"
               >
                 <option value={2026}>2026</option>
                 <option value={2025}>2025</option>
@@ -144,81 +147,81 @@ export function TaxTracker() {
               </select>
               <button
                 onClick={() => setShowAddExpense(true)}
-                className="flex items-center gap-2 px-5 py-2.5 bg-[#0A0A0A] text-white text-[14px] font-medium rounded-lg hover:bg-[#1C1C1C] transition-colors"
+                className="flex items-center gap-2 px-5 py-2.5 bg-[#0A7A52] text-white text-[14px] font-semibold rounded-lg hover:bg-[#085D3D] transition-colors"
               >
                 <Plus className="size-4" />
                 Add Expense
               </button>
             </div>
           </div>
-          <p className="text-[14px] text-[#9CA3AF] font-normal">
+          <p className="text-[14px] text-[#767570] font-normal mt-2">
             Track deductible expenses and HST/GST for Canadian tax compliance
           </p>
         </motion.div>
 
         {/* Tax Year Summary - Canadian Focus */}
-        <div className="bg-gradient-to-br from-[#6366F1]/5 to-[#8B5CF6]/5 border border-[#6366F1]/20 rounded-xl p-8 mb-12">
+        <div className="bg-gradient-to-br from-[#E5F4EE] to-[#F8F7F4] border border-[rgba(10,122,82,0.15)] rounded-xl p-8 mb-12 shadow-lg">
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h3 className="text-[20px] font-semibold text-[#0A0A0A] mb-2">
+              <h3 className="text-[24px] font-normal text-[#0E0F0C] mb-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                 {selectedYear} Tax Year Summary
               </h3>
-              <p className="text-[13px] text-[#6B7280]">
+              <p className="text-[13px] text-[#767570]">
                 HST/GST calculations for CRA reporting • Ontario rate: 13%
               </p>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-black/[0.04]">
-              <CheckCircle2 className="size-5 text-[#22C55E]" />
-              <span className="text-[13px] font-medium text-[#0A0A0A]">CRA Compliant</span>
+            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-[rgba(0,0,0,0.05)] shadow-sm">
+              <CheckCircle2 className="size-5 text-[#0A7A52]" />
+              <span className="text-[13px] font-semibold text-[#0E0F0C]">CRA Compliant</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white rounded-xl p-6 border border-black/[0.04]">
-              <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">
+            <div className="bg-white rounded-xl p-6 border border-[rgba(0,0,0,0.07)] hover:shadow-lg transition-all">
+              <p className="text-[11px] text-[#767570] uppercase tracking-wider font-semibold mb-3">
                 Total Expenses (Excl. Tax)
               </p>
-              <h2 className="text-[32px] font-semibold text-[#0A0A0A] leading-none mb-1">
+              <h2 className="text-[36px] font-normal text-[#0E0F0C] leading-none mb-1" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                 ${totalExpenses.toLocaleString()}
               </h2>
-              <p className="text-[11px] text-[#6B7280]">Before HST/GST</p>
+              <p className="text-[11px] text-[#767570]">Before HST/GST</p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 border border-black/[0.04]">
-              <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">
+            <div className="bg-white rounded-xl p-6 border border-[rgba(0,0,0,0.07)] hover:shadow-lg transition-all">
+              <p className="text-[11px] text-[#767570] uppercase tracking-wider font-semibold mb-3">
                 HST/GST Paid
               </p>
-              <h2 className="text-[32px] font-semibold text-[#6366F1] leading-none mb-1">
+              <h2 className="text-[36px] font-normal text-[#0A7A52] leading-none mb-1" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                 ${totalHST.toLocaleString()}
               </h2>
-              <p className="text-[11px] text-[#6B7280]">Input Tax Credits</p>
+              <p className="text-[11px] text-[#767570]">Input Tax Credits</p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 border border-black/[0.04]">
-              <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">
+            <div className="bg-white rounded-xl p-6 border border-[rgba(0,0,0,0.07)] hover:shadow-lg transition-all">
+              <p className="text-[11px] text-[#767570] uppercase tracking-wider font-semibold mb-3">
                 Deductible Expenses
               </p>
-              <h2 className="text-[32px] font-semibold text-[#22C55E] leading-none mb-1">
+              <h2 className="text-[36px] font-normal text-[#0A7A52] leading-none mb-1" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                 ${deductibleExpenses.toLocaleString()}
               </h2>
-              <p className="text-[11px] text-[#6B7280]">CRA Line 8710-9200</p>
+              <p className="text-[11px] text-[#767570]">CRA Line 8710-9200</p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 border border-black/[0.04]">
-              <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">
+            <div className="bg-white rounded-xl p-6 border border-[rgba(0,0,0,0.07)] hover:shadow-lg transition-all">
+              <p className="text-[11px] text-[#767570] uppercase tracking-wider font-semibold mb-3">
                 YTD Total
               </p>
-              <h2 className="text-[32px] font-semibold text-[#0A0A0A] leading-none mb-1">
+              <h2 className="text-[36px] font-normal text-[#0E0F0C] leading-none mb-1" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                 ${ytdExpenses.toLocaleString()}
               </h2>
-              <p className="text-[11px] text-[#6B7280]">All expenses incl. tax</p>
+              <p className="text-[11px] text-[#767570]">All expenses incl. tax</p>
             </div>
           </div>
         </div>
 
         {/* HST Breakdown by Category */}
-        <div className="bg-white border border-black/[0.08] rounded-xl p-8 mb-8">
-          <h3 className="text-[18px] font-semibold text-[#0A0A0A] mb-6">
+        <div className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-8 mb-8 shadow-lg">
+          <h3 className="text-[20px] font-normal text-[#0E0F0C] mb-6" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
             HST/GST Breakdown by Category
           </h3>
 
@@ -232,18 +235,18 @@ export function TaxTracker() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="flex items-center justify-between p-4 bg-[#F5F5F5] rounded-lg"
+                  className="flex items-center justify-between p-5 bg-[#F8F7F4] rounded-xl hover:shadow-md transition-all"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-white">
-                      <Icon className="size-5 text-[#6366F1]" />
+                    <div className="p-2.5 rounded-lg bg-[#E5F4EE]">
+                      <Icon className="size-5 text-[#0A7A52]" />
                     </div>
                     <div>
-                      <p className="text-[14px] font-medium text-[#0A0A0A]">{item.category}</p>
-                      <p className="text-[12px] text-[#6B7280]">{percentage}% of total HST</p>
+                      <p className="text-[14px] font-semibold text-[#0E0F0C]">{item.category}</p>
+                      <p className="text-[12px] text-[#767570]">{percentage}% of total HST</p>
                     </div>
                   </div>
-                  <p className="text-[16px] font-semibold text-[#6366F1]">
+                  <p className="text-[18px] font-normal text-[#0A7A52]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                     ${item.amount.toFixed(2)}
                   </p>
                 </motion.div>
@@ -253,18 +256,18 @@ export function TaxTracker() {
         </div>
 
         {/* Expense List */}
-        <div className="bg-white border border-black/[0.08] rounded-xl overflow-hidden mb-8">
-          <div className="px-6 py-4 border-b border-black/[0.04] flex items-center justify-between">
-            <h3 className="text-[16px] font-semibold text-[#0A0A0A]">
+        <div className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl overflow-hidden mb-8 shadow-lg">
+          <div className="px-6 py-5 border-b border-[rgba(0,0,0,0.05)] flex items-center justify-between">
+            <h3 className="text-[20px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
               Recent Expenses
             </h3>
-            <button className="flex items-center gap-2 px-4 py-2 border border-black/[0.08] text-[#6B7280] text-[13px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2 border border-[rgba(0,0,0,0.1)] text-[#0E0F0C] text-[13px] font-semibold rounded-lg hover:bg-[#F8F7F4] transition-colors">
               <Download className="size-4" />
               Export for CRA
             </button>
           </div>
 
-          <div className="divide-y divide-black/[0.04]">
+          <div className="divide-y divide-[rgba(0,0,0,0.05)]">
             {expenses.map((expense, idx) => {
               const category = expenseCategories.find(c => c.id === expense.category);
               const Icon = category?.icon || Receipt;
@@ -275,18 +278,18 @@ export function TaxTracker() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="px-6 py-4 hover:bg-[#F5F5F5] transition-colors"
+                  className="px-6 py-5 hover:bg-[#F8F7F4] transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 flex-1">
-                      <div className="size-12 rounded-full bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center">
+                      <div className="size-12 rounded-full bg-gradient-to-br from-[#0A7A52] to-[#085D3D] flex items-center justify-center">
                         <Icon className="size-6 text-white" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-[15px] font-semibold text-[#0A0A0A] mb-1">
+                        <p className="text-[15px] font-semibold text-[#0E0F0C] mb-1">
                           {expense.description}
                         </p>
-                        <div className="flex items-center gap-4 text-[13px] text-[#9CA3AF]">
+                        <div className="flex items-center gap-4 text-[13px] text-[#767570]">
                           <span>{expense.vendor}</span>
                           <span>•</span>
                           <span>{expense.property}</span>
@@ -298,22 +301,22 @@ export function TaxTracker() {
 
                     <div className="flex items-center gap-6">
                       <div className="text-right">
-                        <p className="text-[16px] font-semibold text-[#0A0A0A]">
+                        <p className="text-[18px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                           ${expense.amount.toFixed(2)}
                         </p>
-                        <p className="text-[12px] text-[#6366F1]">
+                        <p className="text-[12px] text-[#0A7A52] font-medium">
                           +${expense.hst.toFixed(2)} HST
                         </p>
                       </div>
 
                       {expense.deductible && (
-                        <div className="px-3 py-1.5 bg-[#22C55E]/10 text-[#22C55E] text-[11px] font-medium rounded-full flex items-center gap-1">
+                        <div className="px-3 py-1.5 bg-[#E5F4EE] text-[#0A7A52] text-[11px] font-semibold rounded-full flex items-center gap-1 uppercase tracking-wide">
                           <CheckCircle2 className="size-3" />
                           Deductible
                         </div>
                       )}
 
-                      <button className="px-4 py-2 border border-black/[0.08] text-[#6B7280] text-[13px] font-medium rounded-lg hover:bg-white transition-colors">
+                      <button className="p-2 border border-[rgba(0,0,0,0.1)] text-[#767570] rounded-lg hover:bg-[#F8F7F4] transition-colors">
                         <Receipt className="size-4" />
                       </button>
                     </div>
@@ -325,14 +328,14 @@ export function TaxTracker() {
         </div>
 
         {/* CRA Tax Tips - Canadian Specific */}
-        <div className="bg-gradient-to-br from-[#22C55E]/5 to-[#16A34A]/5 border border-[#22C55E]/20 rounded-xl p-8">
+        <div className="bg-gradient-to-br from-[#E5F4EE] to-[#F8F7F4] border border-[rgba(10,122,82,0.2)] rounded-xl p-8 shadow-lg">
           <div className="flex items-start gap-3 mb-6">
-            <Info className="size-6 text-[#22C55E] flex-shrink-0 mt-1" />
+            <Info className="size-6 text-[#0A7A52] flex-shrink-0 mt-1" />
             <div>
-              <h3 className="text-[18px] font-semibold text-[#0A0A0A] mb-2">
+              <h3 className="text-[20px] font-normal text-[#0E0F0C] mb-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                 CRA Deductible Expenses for Rental Properties
               </h3>
-              <p className="text-[13px] text-[#6B7280] mb-4">
+              <p className="text-[13px] text-[#767570] mb-4">
                 Common deductions you can claim on your T776 Statement of Real Estate Rentals
               </p>
             </div>
@@ -351,17 +354,17 @@ export function TaxTracker() {
             ].map((tip, idx) => (
               <div
                 key={idx}
-                className="flex items-start gap-3 p-4 bg-white rounded-lg border border-black/[0.04]"
+                className="flex items-start gap-3 p-5 bg-white rounded-xl border border-[rgba(0,0,0,0.07)] hover:shadow-md transition-all"
               >
-                <CheckCircle2 className="size-5 text-[#22C55E] flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="size-5 text-[#0A7A52] flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="text-[14px] font-semibold text-[#0A0A0A]">{tip.label}</p>
-                    <span className="px-2 py-0.5 bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-medium rounded">
+                    <p className="text-[14px] font-semibold text-[#0E0F0C]">{tip.label}</p>
+                    <span className="px-2 py-0.5 bg-[#E5F4EE] text-[#0A7A52] text-[10px] font-semibold rounded uppercase tracking-wide">
                       Line {tip.line}
                     </span>
                   </div>
-                  <p className="text-[12px] text-[#6B7280]">{tip.desc}</p>
+                  <p className="text-[12px] text-[#767570]">{tip.desc}</p>
                 </div>
               </div>
             ))}
@@ -374,21 +377,22 @@ export function TaxTracker() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-auto"
+              className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-auto shadow-2xl"
+              style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
             >
               <div className="p-8">
                 <div className="flex items-start justify-between mb-6">
                   <div>
-                    <h2 className="text-[24px] font-semibold text-[#0A0A0A] mb-2">
+                    <h2 className="text-[28px] font-normal text-[#0E0F0C] mb-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                       Add New Expense
                     </h2>
-                    <p className="text-[14px] text-[#6B7280]">
+                    <p className="text-[14px] text-[#767570]">
                       Track expenses for tax deductions and HST/GST credits
                     </p>
                   </div>
                   <button
                     onClick={() => setShowAddExpense(false)}
-                    className="text-[#6B7280] hover:text-[#0A0A0A]"
+                    className="text-[#767570] hover:text-[#0E0F0C] text-[24px] leading-none"
                   >
                     ✕
                   </button>
@@ -397,20 +401,20 @@ export function TaxTracker() {
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">
+                      <label className="block text-[11px] font-semibold text-[#767570] uppercase tracking-wider mb-2">
                         Date
                       </label>
                       <input
                         type="date"
-                        className="w-full px-4 py-3 border border-black/[0.08] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                        className="w-full px-4 py-3 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">
+                      <label className="block text-[11px] font-semibold text-[#767570] uppercase tracking-wider mb-2">
                         Category
                       </label>
-                      <select className="w-full px-4 py-3 border border-black/[0.08] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366F1]">
+                      <select className="w-full px-4 py-3 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]">
                         <option value="">Select category...</option>
                         {expenseCategories.map(cat => (
                           <option key={cat.id} value={cat.id}>
@@ -422,37 +426,37 @@ export function TaxTracker() {
                   </div>
 
                   <div>
-                    <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">
+                    <label className="block text-[11px] font-semibold text-[#767570] uppercase tracking-wider mb-2">
                       Description
                     </label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 border border-black/[0.08] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                      className="w-full px-4 py-3 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
                       placeholder="e.g., Plumbing repair - Unit 4A"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">
+                      <label className="block text-[11px] font-semibold text-[#767570] uppercase tracking-wider mb-2">
                         Amount (before tax)
                       </label>
                       <input
                         type="number"
                         step="0.01"
-                        className="w-full px-4 py-3 border border-black/[0.08] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                        className="w-full px-4 py-3 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
                         placeholder="0.00"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">
+                      <label className="block text-[11px] font-semibold text-[#767570] uppercase tracking-wider mb-2">
                         HST/GST Amount
                       </label>
                       <input
                         type="number"
                         step="0.01"
-                        className="w-full px-4 py-3 border border-black/[0.08] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366F1] bg-[#F5F5F5]"
+                        className="w-full px-4 py-3 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] bg-[#F8F7F4] text-[#767570]"
                         placeholder="Auto-calculated"
                         disabled
                       />
@@ -460,21 +464,21 @@ export function TaxTracker() {
                   </div>
 
                   <div>
-                    <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">
+                    <label className="block text-[11px] font-semibold text-[#767570] uppercase tracking-wider mb-2">
                       Vendor
                     </label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 border border-black/[0.08] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                      className="w-full px-4 py-3 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
                       placeholder="e.g., Quick Plumbing Services"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">
+                    <label className="block text-[11px] font-semibold text-[#767570] uppercase tracking-wider mb-2">
                       Property
                     </label>
-                    <select className="w-full px-4 py-3 border border-black/[0.08] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366F1]">
+                    <select className="w-full px-4 py-3 border border-[rgba(0,0,0,0.1)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]">
                       <option value="">Select property...</option>
                       <option value="prop1">123 King St - Unit 4A</option>
                       <option value="prop2">123 King St - Unit 2C</option>
@@ -482,14 +486,14 @@ export function TaxTracker() {
                     </select>
                   </div>
 
-                  <div className="flex items-center gap-3 p-4 bg-[#F5F5F5] rounded-lg">
+                  <div className="flex items-center gap-3 p-4 bg-[#E5F4EE] rounded-lg">
                     <input
                       type="checkbox"
                       id="deductible"
-                      className="size-5 rounded border-black/[0.08]"
+                      className="size-5 rounded border-[rgba(0,0,0,0.1)]"
                       defaultChecked
                     />
-                    <label htmlFor="deductible" className="text-[14px] text-[#0A0A0A]">
+                    <label htmlFor="deductible" className="text-[14px] text-[#0E0F0C] font-medium">
                       This expense is tax deductible (CRA eligible)
                     </label>
                   </div>
@@ -498,11 +502,11 @@ export function TaxTracker() {
                 <div className="mt-8 flex gap-3">
                   <button
                     onClick={() => setShowAddExpense(false)}
-                    className="flex-1 px-6 py-3 border border-black/[0.08] text-[#6B7280] text-[14px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors"
+                    className="flex-1 px-6 py-3 border border-[rgba(0,0,0,0.1)] text-[#767570] text-[14px] font-semibold rounded-lg hover:bg-[#F8F7F4] transition-colors"
                   >
                     Cancel
                   </button>
-                  <button className="flex-1 px-6 py-3 bg-[#0A0A0A] text-white text-[14px] font-medium rounded-lg hover:bg-[#1C1C1C] transition-colors">
+                  <button className="flex-1 px-6 py-3 bg-[#0A7A52] text-white text-[14px] font-semibold rounded-lg hover:bg-[#085D3D] transition-colors">
                     Add Expense
                   </button>
                 </div>

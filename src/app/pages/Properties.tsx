@@ -97,15 +97,19 @@ export function Properties() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Properties</h1>
-            <p className="mt-2 text-slate-600">Manage your rental properties and units</p>
+            <p className="text-[10px] font-semibold text-[#767570] uppercase tracking-wider mb-2">Portfolio Overview</p>
+            <h1 className="text-[48px] font-normal text-[#0E0F0C] tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>
+              Properties
+            </h1>
+            <p className="mt-2 text-[14px] text-[#767570]">Manage your rental properties and units</p>
           </div>
           <button 
             onClick={() => navigate("/properties/add")}
-            className="flex items-center gap-2 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors shadow-lg shadow-indigo-200"
+            className="flex items-center gap-2 px-5 py-3 bg-[#0A7A52] hover:bg-[#085D3D] text-white rounded-xl font-medium transition-all shadow-lg"
+            style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
           >
             <Plus className="size-5" />
             Add Property
@@ -114,57 +118,57 @@ export function Properties() {
 
         {/* Overview Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-indigo-50">
-                <Building2 className="size-5 text-indigo-600" />
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-6 hover:shadow-lg transition-shadow">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 rounded-lg bg-[#E5F4EE]">
+                <Building2 className="size-5 text-[#0A7A52]" />
               </div>
-              <span className="text-sm text-slate-600">Total Properties</span>
+              <span className="text-[11px] font-semibold text-[#767570] uppercase tracking-wide">Total Properties</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">{properties.length}</p>
+            <p className="text-[38px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif", lineHeight: 1 }}>{properties.length}</p>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-green-50">
-                <Home className="size-5 text-green-600" />
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-6 hover:shadow-lg transition-shadow">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 rounded-lg bg-[#E5F4EE]">
+                <Home className="size-5 text-[#0A7A52]" />
               </div>
-              <span className="text-sm text-slate-600">Occupancy Rate</span>
+              <span className="text-[11px] font-semibold text-[#767570] uppercase tracking-wide">Occupancy Rate</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">
+            <p className="text-[38px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif", lineHeight: 1 }}>
               {Math.round((occupiedUnits / totalUnits) * 100)}%
             </p>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-purple-50">
-                <DollarSign className="size-5 text-purple-600" />
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-6 hover:shadow-lg transition-shadow">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 rounded-lg bg-[#E5F4EE]">
+                <DollarSign className="size-5 text-[#0A7A52]" />
               </div>
-              <span className="text-sm text-slate-600">Monthly Revenue</span>
+              <span className="text-[11px] font-semibold text-[#767570] uppercase tracking-wide">Monthly Revenue</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">${monthlyRevenue.toLocaleString()}</p>
+            <p className="text-[38px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif", lineHeight: 1 }}>${monthlyRevenue.toLocaleString()}</p>
           </div>
         </div>
 
         {/* Properties List */}
         <div className="space-y-6">
           {properties.map((property) => (
-            <div key={property.id} className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="p-6 border-b border-slate-200">
+            <div key={property.id} className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] overflow-hidden hover:shadow-lg transition-all">
+              <div className="p-6 border-b border-[rgba(0,0,0,0.05)]">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-xl font-semibold text-slate-900 mb-2">{property.address}</h3>
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <h3 className="text-[24px] font-normal text-[#0E0F0C] mb-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>{property.address}</h3>
+                    <div className="flex items-center gap-2 text-[13px] text-[#767570]">
                       <MapPin className="size-4" />
                       <span>{property.city}, {property.province}</span>
                       <span className="mx-2">•</span>
-                      <span className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded-md text-xs font-medium">
+                      <span className="px-3 py-1 bg-[#E5F4EE] text-[#0A7A52] rounded-full text-[11px] font-semibold uppercase tracking-wide">
                         {property.type}
                       </span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-slate-500 mb-1">Units</p>
-                    <p className="text-2xl font-bold text-slate-900">{property.units.length}</p>
+                    <p className="text-[11px] font-semibold text-[#767570] uppercase tracking-wide mb-2">Units</p>
+                    <p className="text-[32px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif", lineHeight: 1 }}>{property.units.length}</p>
                   </div>
                 </div>
               </div>
@@ -172,10 +176,10 @@ export function Properties() {
               {/* Units Grid */}
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="font-semibold text-slate-900">Units</h4>
+                  <h4 className="font-semibold text-[#0E0F0C] text-[16px]">Units</h4>
                   <button
                     onClick={() => setShowAddUnit(property.id)}
-                    className="flex items-center gap-1 px-3 py-1.5 text-sm bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg font-medium transition-colors"
+                    className="flex items-center gap-1 px-4 py-2 text-[13px] bg-[#E5F4EE] hover:bg-[#0A7A52] text-[#0A7A52] hover:text-white rounded-lg font-semibold transition-all"
                   >
                     <Plus className="size-4" />
                     Add Unit
@@ -186,24 +190,24 @@ export function Properties() {
                   {property.units.map((unit) => (
                     <div
                       key={unit.number}
-                      className={`p-4 rounded-lg border-2 ${
+                      className={`p-5 rounded-xl border-2 transition-all hover:shadow-md ${
                         unit.status === "occupied"
-                          ? "border-green-200 bg-green-50"
-                          : "border-indigo-200 bg-indigo-50"
+                          ? "border-[#0A7A52] bg-[#E5F4EE]"
+                          : "border-[rgba(0,0,0,0.1)] bg-[#F8F7F4]"
                       }`}
                     >
                       <div className="flex items-center justify-between mb-3">
-                        <h4 className="font-semibold text-slate-900">{unit.number}</h4>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        <h4 className="font-semibold text-[#0E0F0C] text-[16px]">{unit.number}</h4>
+                        <span className={`px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wide ${
                           unit.status === "occupied"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-indigo-100 text-indigo-700"
+                            ? "bg-[#0A7A52] text-white"
+                            : "bg-white text-[#767570] border border-[rgba(0,0,0,0.1)]"
                         }`}>
                           {unit.status}
                         </span>
                       </div>
                       
-                      <div className="flex items-center gap-4 mb-3 text-sm text-slate-600">
+                      <div className="flex items-center gap-4 mb-3 text-[13px] text-[#767570]">
                         <div className="flex items-center gap-1">
                           <Bed className="size-4" />
                           <span>{unit.bedrooms}</span>
@@ -215,15 +219,15 @@ export function Properties() {
                       </div>
 
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-slate-600">Rent</span>
-                        <span className="font-bold text-slate-900">${unit.rent.toLocaleString()}</span>
+                        <span className="text-[12px] text-[#767570] font-medium">Monthly Rent</span>
+                        <span className="font-semibold text-[#0E0F0C] text-[16px]">${unit.rent.toLocaleString()}</span>
                       </div>
 
                       {unit.tenant && (
-                        <div className="mt-3 pt-3 border-t border-slate-200">
-                          <div className="flex items-center gap-2 text-sm">
-                            <Users className="size-4 text-slate-400" />
-                            <span className="text-slate-700">{unit.tenant}</span>
+                        <div className="mt-3 pt-3 border-t border-[rgba(0,0,0,0.1)]">
+                          <div className="flex items-center gap-2 text-[13px]">
+                            <Users className="size-4 text-[#767570]" />
+                            <span className="text-[#0E0F0C] font-medium">{unit.tenant}</span>
                           </div>
                         </div>
                       )}

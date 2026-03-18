@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaya · YourProperty AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#0A7A52;--gl:#E5F4EE;--gm:#12A06E;--gd:#064D33;
+  --bg:#F8F7F4;--surf:#FFFFFF;--text:#0E0F0C;--muted:#767570;--light:#AEADA8;
+  --bdr:rgba(0,0,0,0.07);--bdrm:rgba(0,0,0,0.12);
+  --amber:#B45309;--amberl:#FEF3C7;
+  --red:#C0392B;--redl:#FDECEA;
+  --blue:#1E5FA8;--bluel:#EBF2FB;
+  --r:14px;--rm:10px;--rs:8px;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--sans);color:var(--text)}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;min-width:220px;background:#fff;border-right:1px solid var(--bdr);display:flex;flex-direction:column;padding:0;overflow:hidden}
+.s-logo{padding:22px 22px 18px;border-bottom:1px solid var(--bdr)}
+.s-logo-text{font-family:var(--serif);font-size:24px;color:var(--text)}
+.s-logo-text span{color:var(--g)}
+.s-tagline{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.5px;margin-top:3px}
+.s-nav{flex:1;padding:14px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--rm);font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;border:none;background:none;font-family:var(--sans);text-align:left;width:100%}
+.nav-item:hover{background:var(--bg);color:var(--text)}
+.nav-item.active{background:var(--gl);color:var(--g);font-weight:600}
+.nav-item svg{flex-shrink:0;opacity:.7}
+.nav-item.active svg{opacity:1}
+.nav-section{font-size:9px;font-weight:700;color:var(--light);letter-spacing:1px;text-transform:uppercase;padding:14px 14px 6px;margin-top:4px}
+.s-user{padding:14px 16px;border-top:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.s-avatar{width:32px;height:32px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--g);flex-shrink:0}
+.s-name{font-size:13px;font-weight:600;color:var(--text)}
+.s-role{font-size:10px;color:var(--muted)}
+
+/* ── MAIN ── */
+.main{flex:1;overflow-y:auto;background:var(--bg)}
+.page{display:none;padding:36px 40px 60px;min-height:100%;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── TYPOGRAPHY ── */
+.page-eyebrow{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+.page-title{font-family:var(--serif);font-size:42px;font-weight:400;color:var(--text);line-height:1;letter-spacing:-1px;margin-bottom:6px}
+.page-title em{font-style:italic;color:var(--g)}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:28px}
+
+/* ── COMPONENTS ── */
+.card{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);transition:box-shadow .2s}
+.card:hover{box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.metric-grid{display:grid;gap:14px;margin-bottom:24px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.metric-card{padding:20px 22px}
+.metric-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px}
+.metric-val{font-family:var(--serif);font-size:34px;color:var(--text);line-height:1;margin-bottom:4px}
+.metric-sub{font-size:12px;color:var(--muted)}
+.metric-trend{font-size:12px;font-weight:600}
+.trend-up{color:var(--g)}.trend-dn{color:var(--red)}
+
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.badge-green{background:var(--gl);color:var(--g)}
+.badge-amber{background:var(--amberl);color:var(--amber)}
+.badge-red{background:var(--redl);color:var(--red)}
+.badge-blue{background:var(--bluel);color:var(--blue)}
+.badge-gray{background:var(--bg);color:var(--muted)}
+
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:var(--rm);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none}
+.btn-primary{background:var(--text);color:#fff}.btn-primary:hover{background:#2a2a28}
+.btn-green{background:var(--g);color:#fff}.btn-green:hover{background:var(--gd)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--bdr)}.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:7px 14px;font-size:12px}
+
+.section-title{font-family:var(--serif);font-size:22px;color:var(--text);margin-bottom:14px}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{padding:10px 18px;text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;background:var(--bg)}
+.tbl td{padding:14px 18px;font-size:13px;color:var(--text);border-top:1px solid var(--bdr)}
+.tbl tr:hover td{background:var(--bg)}
+
+/* ── CHIP FILTERS ── */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.chip{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);border:1px solid var(--bdr);font-family:var(--sans);transition:all .15s}
+.chip.active{background:var(--text);color:#fff;border-color:var(--text)}
+.chip:hover:not(.active){background:var(--bg)}
+
+/* ── SEARCH ── */
+.search-wrap{position:relative;flex:1;max-width:320px}
+.search-wrap input{width:100%;padding:10px 14px 10px 36px;border:1px solid var(--bdr);border-radius:var(--rm);font-family:var(--sans);font-size:13px;color:var(--text);outline:none;background:#fff}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+
+/* ── SCORE RING ── */
+.score-ring{width:52px;height:52px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.score-ring .num{font-size:17px;font-weight:700;line-height:1}
+.score-ring .lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;opacity:.8}
+
+/* ── CHAT ── */
+.chat-layout{display:grid;grid-template-columns:280px 1fr;height:520px;border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;background:#fff}
+.chat-sidebar{border-right:1px solid var(--bdr);overflow-y:auto}
+.chat-item{padding:12px 14px;cursor:pointer;border-bottom:1px solid var(--bdr);transition:background .15s}
+.chat-item:hover{background:var(--bg)}
+.chat-item.active{background:var(--gl);border-left:3px solid var(--g)}
+.chat-main{display:flex;flex-direction:column}
+.chat-hdr{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:72%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.55}
+.msg-in{background:#fff;border:1px solid var(--bdr);border-radius:12px 12px 12px 3px;align-self:flex-start}
+.msg-out{background:var(--text);color:#fff;border-radius:12px 12px 3px 12px;align-self:flex-end}
+.msg-time{font-size:10px;opacity:.5;margin-top:4px}
+.chat-inp{padding:12px 16px;border-top:1px solid var(--bdr);display:flex;gap:8px}
+.chat-inp input{flex:1;padding:10px 14px;border:1px solid var(--bdr);border-radius:var(--rm);font-family:var(--sans);font-size:13px;outline:none}
+.chat-send{width:38px;height:38px;border-radius:var(--rm);background:var(--text);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ── KANBAN ── */
+.kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.kboard{background:var(--bg);border-radius:var(--r);padding:16px}
+.kboard-hdr{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:13px;font-weight:600;color:var(--text)}
+.kcard{background:#fff;border:1px solid var(--bdr);border-radius:var(--rm);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.kcard:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{flex:1;height:5px;background:var(--bdr);border-radius:3px;max-width:100px}
+.progress-fill{height:5px;border-radius:3px;background:var(--g)}
+
+/* ── INVOICE ── */
+.invoice-doc{background:#fff;border:1px solid var(--bdr);border-radius:18px;padding:36px;box-shadow:0 4px 24px rgba(0,0,0,.04)}
+.inv-hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:24px;border-bottom:1px solid var(--bdr);margin-bottom:24px}
+.inv-field{padding:8px 12px;border:1px solid var(--bdr);border-radius:var(--rs);font-family:var(--sans);font-size:13px;color:var(--text);outline:none;background:#fff}
+.inv-field:focus{border-color:var(--g)}
+.inv-table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.inv-table th{padding:9px 12px;text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;background:var(--bg)}
+.inv-table td{padding:10px 12px;border-top:1px solid var(--bdr);font-size:13px}
+
+/* ── AI CHAT PAGE ── */
+.ai-page{max-width:720px}
+.ai-msgs{display:flex;flex-direction:column;gap:14px;margin-bottom:20px;min-height:300px;max-height:400px;overflow-y:auto;padding-right:4px}
+.ai-msg-row{display:flex;align-items:flex-start;gap:10px}
+.ai-msg-row.user{flex-direction:row-reverse}
+.ai-bubble{padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.6}
+.ai-bubble.bot{background:#fff;border:1px solid var(--bdr);border-radius:14px 14px 14px 3px}
+.ai-bubble.user{background:var(--text);color:#fff;border-radius:14px 14px 3px 14px}
+.ai-avatar{width:32px;height:32px;border-radius:10px;background:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-input-row{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--bdr);border-radius:14px;padding:6px 6px 6px 18px;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.ai-input-row input{flex:1;border:none;outline:none;font-family:var(--sans);font-size:13px;color:var(--text);background:transparent;padding:8px 0}
+
+/* ── MODALS ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:999;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:#fff;border-radius:20px;padding:32px;width:440px;box-shadow:0 24px 80px rgba(0,0,0,.2);transform:scale(.94);transition:transform .2s}
+.modal-overlay.open .modal-box{transform:scale(1)}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.topbar-left{}
+.topbar-right{display:flex;gap:10px;align-items:center}
+
+/* ── FORMS ── */
+.form-group{margin-bottom:14px}
+.form-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px}
+.form-input{width:100%;padding:10px 13px;border:1px solid var(--bdr);border-radius:var(--rs);font-family:var(--sans);font-size:13px;color:var(--text);outline:none;background:#fff}
+.form-input:focus{border-color:var(--g)}
+select.form-input{cursor:pointer}
+
+/* ── CHART CONTAINERS ── */
+.chart-box{padding:24px}
+.chart-title{font-family:var(--serif);font-size:18px;color:var(--text);margin-bottom:4px}
+.chart-sub{font-size:11px;color:var(--muted);margin-bottom:16px}
+.chart-wrap{position:relative;height:200px}
+.chart-wrap canvas{max-height:200px}
+
+/* ── NOTICE CARDS ── */
+.notice-card{border-left:3px solid var(--bdr);border-radius:0 var(--rm) var(--rm) 0}
+
+/* ── PROPERTY CARD ── */
+.prop-card{overflow:hidden}
+.prop-hdr{padding:18px 22px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center}
+.unit-row{display:grid;gap:0}
+.unit-cell{padding:14px 20px}
+
+/* ── LTB GRID ── */
+.ltb-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.ltb-card{padding:20px 22px;cursor:pointer;border-left:3px solid var(--bdr)}
+.ltb-card:hover{border-left-color:var(--g)}
+
+/* ─ SCROLLBAR ─ */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:4px}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- ════ SIDEBAR ════ -->
+<div class="sidebar">
+  <div class="s-logo">
+    <div class="s-logo-text">Kaya<span>.</span></div>
+    <div class="s-tagline">YourProperty AI</div>
+  </div>
+  <nav class="s-nav">
+    <div class="nav-section">Overview</div>
+    <button class="nav-item active" onclick="nav('dashboard')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" onclick="nav('analytics')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Analytics
+    </button>
+    <div class="nav-section">Properties</div>
+    <button class="nav-item" onclick="nav('properties')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      Properties
+    </button>
+    <button class="nav-item" onclick="nav('maintenance')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      Maintenance
+    </button>
+    <div class="nav-section">Tenants</div>
+    <button class="nav-item" onclick="nav('applications')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Applications
+    </button>
+    <button class="nav-item" onclick="nav('messages')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Messages
+      <span class="badge badge-red" style="margin-left:auto;font-size:9px;padding:1px 7px">3</span>
+    </button>
+    <div class="nav-section">Finance</div>
+    <button class="nav-item" onclick="nav('payments')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Payments
+    </button>
+    <button class="nav-item" onclick="nav('financial')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Financials
+    </button>
+    <button class="nav-item" onclick="nav('invoices')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Invoices
+    </button>
+    <div class="nav-section">Legal</div>
+    <button class="nav-item" onclick="nav('documents')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Documents
+    </button>
+    <button class="nav-item" onclick="nav('ltb')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      LTB Forms
+    </button>
+    <button class="nav-item" onclick="nav('notices')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Notices
+    </button>
+    <div class="nav-section">AI Tools</div>
+    <button class="nav-item" onclick="nav('ai')">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Kaya AI
+    </button>
+  </nav>
+  <div class="s-user">
+    <div class="s-avatar">JM</div>
+    <div>
+      <div class="s-name">Justin Mafie</div>
+      <div class="s-role">Landlord · CREOVA</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ MAIN ════ -->
+<div class="main">
+
+<!-- ── DASHBOARD ── -->
+<div class="page active" id="p-dashboard">
+  <div class="page-eyebrow">Monday, March 16</div>
+  <h1 class="page-title">Good evening, <em>Justin.</em></h1>
+  <div class="page-sub">3 applications need review · 1 overdue payment · 2 new messages</div>
+
+  <!-- Action banner -->
+  <div onclick="nav('applications')" style="background:var(--text);border-radius:14px;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;cursor:pointer;">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="width:34px;height:34px;background:var(--g);border-radius:9px;display:flex;align-items:center;justify-content:center">
+        <svg width="16" height="16" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div>
+        <p style="color:#fff;font-size:13px;font-weight:600;margin-bottom:2px">AI pre-screened 3 new applicants</p>
+        <p style="color:rgba(255,255,255,.5);font-size:12px">Sarah Kim scores 92/100 — immediate approval recommended</p>
+      </div>
+    </div>
+    <div style="color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px">Review now
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+    </div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="metric-grid g4">
+    <div class="card metric-card"><div class="metric-label">Monthly Revenue</div><div class="metric-val">$27,600</div><div style="display:flex;align-items:center;gap:6px"><span class="metric-trend trend-up">+12%</span><span class="metric-sub">vs last month</span></div></div>
+    <div class="card metric-card"><div class="metric-label">Occupancy</div><div class="metric-val">92%</div><div class="metric-sub">11 of 12 units</div></div>
+    <div class="card metric-card"><div class="metric-label">Applications</div><div class="metric-val">6</div><div class="metric-sub">3 pending review</div></div>
+    <div class="card metric-card"><div class="metric-label">Properties</div><div class="metric-val">3</div><div class="metric-sub">12 units total</div></div>
+  </div>
+
+  <!-- Chart + Alerts -->
+  <div style="display:grid;grid-template-columns:1fr 320px;gap:18px;margin-bottom:22px">
+    <div class="card chart-box">
+      <div class="chart-title">Revenue Trend</div>
+      <div class="chart-sub">6-month view · March 2026</div>
+      <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+    </div>
+    <div class="card" style="padding:22px">
+      <div class="section-title" style="font-size:16px;margin-bottom:14px">AI Insights</div>
+      <div style="display:flex;flex-direction:column;gap:0">
+        <div style="display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--bdr)">
+          <div style="width:7px;height:7px;border-radius:50%;background:#C0392B;flex-shrink:0;margin-top:5px"></div>
+          <div><p style="font-size:13px;color:var(--text);line-height:1.5">Unit 3A — rent overdue by 3 days</p><p style="font-size:11px;color:var(--muted)">2h ago</p></div>
+        </div>
+        <div style="display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--bdr)">
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--g);flex-shrink:0;margin-top:5px"></div>
+          <div><p style="font-size:13px;color:var(--text);line-height:1.5">3 high-quality applications received</p><p style="font-size:11px;color:var(--muted)">4h ago</p></div>
+        </div>
+        <div style="display:flex;gap:10px;padding:12px 0">
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:5px"></div>
+          <div><p style="font-size:13px;color:var(--text);line-height:1.5">Unit 2A eligible for rent increase Apr 1</p><p style="font-size:11px;color:var(--muted)">1d ago</p></div>
+        </div>
+      </div>
+      <button onclick="nav('ai')" class="btn btn-green btn-sm" style="width:100%;justify-content:center;margin-top:14px">Ask Kaya AI →</button>
+    </div>
+  </div>
+
+  <!-- Rent status -->
+  <div class="section-title">Rent Status — March 2026</div>
+  <div class="metric-grid g3">
+    <div class="card metric-card" style="background:var(--gl);border-color:rgba(10,122,82,.15)"><div class="metric-label">Paid on Time</div><div class="metric-val" style="color:var(--g)">9</div></div>
+    <div class="card metric-card" style="background:var(--amberl);border-color:rgba(180,83,9,.15)"><div class="metric-label">Overdue</div><div class="metric-val" style="color:var(--amber)">1</div></div>
+    <div class="card metric-card"><div class="metric-label">Vacant</div><div class="metric-val" style="color:var(--muted)">2</div></div>
+  </div>
+</div>
+
+<!-- ── APPLICATIONS ── -->
+<div class="page" id="p-applications">
+  <div class="page-eyebrow">Smart Screening</div>
+  <h1 class="page-title"><em>Applications</em></h1>
+  <div class="page-sub">AI-powered tenant analysis · 5 applications</div>
+  <div class="metric-grid g4" style="margin-bottom:18px">
+    <div class="card metric-card"><div class="metric-label">Total</div><div class="metric-val">5</div></div>
+    <div class="card metric-card"><div class="metric-label">Pending</div><div class="metric-val">5</div></div>
+    <div class="card metric-card"><div class="metric-label" style="color:var(--g)">High AI Score</div><div class="metric-val" style="color:var(--g)">3</div></div>
+    <div class="card metric-card"><div class="metric-label" style="color:var(--amber)">Needs Attention</div><div class="metric-val" style="color:var(--amber)">2</div></div>
+  </div>
+  <div class="chips">
+    <div class="chip active" onclick="filterApps(this,'all')">All</div>
+    <div class="chip" onclick="filterApps(this,'low')">Low risk</div>
+    <div class="chip" onclick="filterApps(this,'medium')">Medium risk</div>
+    <div class="chip" onclick="filterApps(this,'high')">High risk</div>
+  </div>
+  <div id="app-list" style="display:flex;flex-direction:column;gap:10px"></div>
+</div>
+
+<!-- ── ANALYTICS ── -->
+<div class="page" id="p-analytics">
+  <div class="page-eyebrow">Insights</div>
+  <h1 class="page-title">AI Analytics <em>&amp; Forecasts</em></h1>
+  <div class="metric-grid g4" style="margin-bottom:22px">
+    <div class="card metric-card"><span class="badge badge-green" style="margin-bottom:8px;font-size:9px">AI Prediction</span><div class="metric-val">23%</div><div class="metric-label">Late Payment Prob.</div><div class="metric-sub">2 tenants likely late</div></div>
+    <div class="card metric-card"><span class="badge badge-green" style="margin-bottom:8px;font-size:9px">AI Prediction</span><div class="metric-val" style="color:var(--g)">16%</div><div class="metric-label">Turnover Risk</div><div class="metric-sub">Below industry avg</div></div>
+    <div class="card metric-card"><span class="badge badge-green" style="margin-bottom:8px;font-size:9px">AI Prediction</span><div class="metric-val">$28,200</div><div class="metric-label">Revenue Forecast</div><div class="metric-sub">Expected April 2026</div></div>
+    <div class="card metric-card"><span class="badge badge-amber" style="margin-bottom:8px;font-size:9px">AI Prediction</span><div class="metric-val">$1,240</div><div class="metric-label">Maintenance Cost</div><div class="metric-sub">Projected this month</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px">
+    <div class="card chart-box"><div class="chart-title">Revenue Forecast</div><div class="chart-sub">Actual vs Projected</div><div class="chart-wrap"><canvas id="forecastChart"></canvas></div></div>
+    <div class="card chart-box"><div class="chart-title">Occupancy Trend</div><div class="chart-sub">6 months</div><div class="chart-wrap"><canvas id="occChart"></canvas></div></div>
+  </div>
+  <!-- Churn risk -->
+  <div class="card" style="padding:24px">
+    <div class="section-title">AI Tenant Churn Risk</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--bg);border-radius:var(--rm);border:1px solid var(--bdr)">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--amberl);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--amber)">BJ</div>
+          <div><p style="font-size:13px;font-weight:600">Bob Johnson</p><p style="font-size:11px;color:var(--muted)">Unit 3A · Late payments</p></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:90px;height:5px;background:var(--bdr);border-radius:3px"><div style="height:5px;border-radius:3px;background:var(--red);width:78%"></div></div>
+          <span style="font-family:var(--serif);font-size:22px;color:var(--text)">78%</span>
+          <span class="badge badge-red">High Risk</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--bg);border-radius:var(--rm);border:1px solid var(--bdr)">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--amberl);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--amber)">JL</div>
+          <div><p style="font-size:13px;font-weight:600">Jason Lee</p><p style="font-size:11px;color:var(--muted)">Unit 1C · Lease ending soon</p></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:90px;height:5px;background:var(--bdr);border-radius:3px"><div style="height:5px;border-radius:3px;background:var(--amber);width:65%"></div></div>
+          <span style="font-family:var(--serif);font-size:22px;color:var(--text)">65%</span>
+          <span class="badge badge-amber">Med Risk</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PROPERTIES ── -->
+<div class="page" id="p-properties">
+  <div class="topbar">
+    <div><div class="page-eyebrow">Portfolio</div><h1 class="page-title">My <em>Properties</em></h1></div>
+    <button class="btn btn-primary btn-sm" onclick="document.getElementById('addPropModal').classList.add('open')">+ Add Property</button>
+  </div>
+  <div class="metric-grid g3" style="margin-bottom:22px">
+    <div class="card metric-card"><div class="metric-label">Properties</div><div class="metric-val">3</div></div>
+    <div class="card metric-card"><div class="metric-label">Occupancy Rate</div><div class="metric-val">92%</div></div>
+    <div class="card metric-card"><div class="metric-label">Monthly Revenue</div><div class="metric-val">$27,600</div></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:18px">
+    <div class="card prop-card">
+      <div class="prop-hdr">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:40px;height:40px;border-radius:11px;background:var(--gl);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" fill="none" stroke="var(--g)" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <div><div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--serif);font-size:18px">123 King Street</span><span class="badge badge-gray">Condo</span></div><span style="font-size:12px;color:var(--muted)">Toronto, ON · 2 units</span></div>
+        </div>
+        <span class="badge badge-green">2/2 occupied</span>
+      </div>
+      <div class="unit-row" style="grid-template-columns:1fr 1fr">
+        <div class="unit-cell" style="border-right:1px solid var(--bdr)"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-family:var(--serif);font-size:16px">Unit 4A</span><span class="badge badge-green">Occupied</span></div><p style="font-size:12px;color:var(--muted);margin-bottom:6px">2 bed · 1 bath</p><p style="font-family:var(--serif);font-size:20px">$2,300<span style="font-size:12px;font-family:var(--sans);color:var(--muted)">/mo</span></p><p style="font-size:11px;color:var(--muted);margin-top:3px">John Doe</p></div>
+        <div class="unit-cell"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-family:var(--serif);font-size:16px">Unit 5A</span><span class="badge badge-amber">Available</span></div><p style="font-size:12px;color:var(--muted);margin-bottom:6px">2 bed · 1 bath</p><p style="font-family:var(--serif);font-size:20px">$2,400<span style="font-size:12px;font-family:var(--sans);color:var(--muted)">/mo</span></p></div>
+      </div>
+    </div>
+    <div class="card prop-card">
+      <div class="prop-hdr">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:40px;height:40px;border-radius:11px;background:var(--gl);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" fill="none" stroke="var(--g)" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <div><div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--serif);font-size:18px">456 Queen Street West</span><span class="badge badge-gray">Apartment</span></div><span style="font-size:12px;color:var(--muted)">Toronto, ON · 3 units</span></div>
+        </div>
+        <span class="badge badge-amber">2/3 occupied</span>
+      </div>
+      <div class="unit-row" style="grid-template-columns:repeat(3,1fr)">
+        <div class="unit-cell" style="border-right:1px solid var(--bdr)"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-family:var(--serif);font-size:16px">Unit 1C</span><span class="badge badge-green">Occupied</span></div><p style="font-size:12px;color:var(--muted);margin-bottom:6px">3 bed · 2 bath</p><p style="font-family:var(--serif);font-size:20px">$2,800<span style="font-size:12px;font-family:var(--sans);color:var(--muted)">/mo</span></p><p style="font-size:11px;color:var(--muted);margin-top:3px">Alice Smith</p></div>
+        <div class="unit-cell" style="border-right:1px solid var(--bdr)"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-family:var(--serif);font-size:16px">Unit 2B</span><span class="badge badge-amber">Available</span></div><p style="font-size:12px;color:var(--muted);margin-bottom:6px">1 bed · 1 bath</p><p style="font-family:var(--serif);font-size:20px">$1,950<span style="font-size:12px;font-family:var(--sans);color:var(--muted)">/mo</span></p></div>
+        <div class="unit-cell"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-family:var(--serif);font-size:16px">Unit 3A</span><span class="badge badge-red">Overdue</span></div><p style="font-size:12px;color:var(--muted);margin-bottom:6px">2 bed · 1 bath</p><p style="font-family:var(--serif);font-size:20px">$2,200<span style="font-size:12px;font-family:var(--sans);color:var(--muted)">/mo</span></p><p style="font-size:11px;color:var(--muted);margin-top:3px">Bob Johnson</p></div>
+      </div>
+    </div>
+    <div class="card prop-card">
+      <div class="prop-hdr">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:40px;height:40px;border-radius:11px;background:var(--gl);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" fill="none" stroke="var(--g)" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <div><div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--serif);font-size:18px">789 Bloor Street</span><span class="badge badge-gray">Townhouse</span></div><span style="font-size:12px;color:var(--muted)">Toronto, ON · 2 units</span></div>
+        </div>
+        <span class="badge badge-green">2/2 occupied</span>
+      </div>
+      <div class="unit-row" style="grid-template-columns:1fr 1fr">
+        <div class="unit-cell" style="border-right:1px solid var(--bdr)"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-family:var(--serif);font-size:16px">Unit 1</span><span class="badge badge-green">Occupied</span></div><p style="font-size:12px;color:var(--muted);margin-bottom:6px">3 bed · 2.5 bath</p><p style="font-family:var(--serif);font-size:20px">$3,200<span style="font-size:12px;font-family:var(--sans);color:var(--muted)">/mo</span></p><p style="font-size:11px;color:var(--muted);margin-top:3px">Emma Wilson</p></div>
+        <div class="unit-cell"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-family:var(--serif);font-size:16px">Unit 2</span><span class="badge badge-green">Occupied</span></div><p style="font-size:12px;color:var(--muted);margin-bottom:6px">3 bed · 2.5 bath</p><p style="font-family:var(--serif);font-size:20px">$3,200<span style="font-size:12px;font-family:var(--sans);color:var(--muted)">/mo</span></p><p style="font-size:11px;color:var(--muted);margin-top:3px">David Lee</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAINTENANCE ── -->
+<div class="page" id="p-maintenance">
+  <div class="topbar">
+    <div><div class="page-eyebrow">Operations</div><h1 class="page-title">Maintenance <em>Requests</em></h1></div>
+    <button class="btn btn-primary btn-sm">+ New Request</button>
+  </div>
+  <div class="metric-grid g4" style="margin-bottom:22px">
+    <div class="card metric-card"><div class="metric-label">Open</div><div class="metric-val" style="color:var(--red)">2</div></div>
+    <div class="card metric-card"><div class="metric-label">In Progress</div><div class="metric-val" style="color:var(--blue)">2</div></div>
+    <div class="card metric-card"><div class="metric-label">Completed</div><div class="metric-val" style="color:var(--g)">1</div></div>
+    <div class="card metric-card"><div class="metric-label">Avg Cost</div><div class="metric-val">$192</div></div>
+  </div>
+  <div class="kanban">
+    <div class="kboard">
+      <div class="kboard-hdr"><div style="width:8px;height:8px;border-radius:50%;background:var(--red)"></div>Open (2)</div>
+      <div class="kcard"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="badge badge-red" style="font-size:9px">HIGH</span><span style="font-size:10px;color:var(--muted)">Mar 12</span></div><p style="font-size:13px;font-weight:600;margin-bottom:4px">Kitchen sink leak</p><p style="font-size:11px;color:var(--muted);margin-bottom:10px">456 Queen St · 3A</p><div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--bdr)"><span style="font-size:11px;color:var(--muted)">Bob Johnson</span><span style="font-size:11px;font-weight:600">$180</span></div></div>
+      <div class="kcard"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="badge badge-amber" style="font-size:9px">MED</span><span style="font-size:10px;color:var(--muted)">Mar 14</span></div><p style="font-size:13px;font-weight:600;margin-bottom:4px">Dryer not heating</p><p style="font-size:11px;color:var(--muted);margin-bottom:10px">456 Queen St · 1C</p><div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--bdr)"><span style="font-size:11px;color:var(--muted)">Alice Smith</span><span style="font-size:11px;font-weight:600">$220</span></div></div>
+    </div>
+    <div class="kboard">
+      <div class="kboard-hdr"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div>In Progress (2)</div>
+      <div class="kcard"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="badge badge-red" style="font-size:9px">HIGH</span><span style="font-size:10px;color:var(--muted)">Mar 10</span></div><p style="font-size:13px;font-weight:600;margin-bottom:4px">HVAC not cooling</p><p style="font-size:11px;color:var(--muted);margin-bottom:10px">123 King St · 4A</p><div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--bdr)"><span style="font-size:11px;color:var(--muted)">John Doe</span><span style="font-size:11px;font-weight:600">$350</span></div></div>
+      <div class="kcard"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="badge badge-amber" style="font-size:9px">MED</span><span style="font-size:10px;color:var(--muted)">Mar 9</span></div><p style="font-size:13px;font-weight:600;margin-bottom:4px">Broken window latch</p><p style="font-size:11px;color:var(--muted);margin-bottom:10px">789 Bloor St · Unit 1</p><div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--bdr)"><span style="font-size:11px;color:var(--muted)">Emma Wilson</span><span style="font-size:11px;font-weight:600">$90</span></div></div>
+    </div>
+    <div class="kboard">
+      <div class="kboard-hdr"><div style="width:8px;height:8px;border-radius:50%;background:var(--g)"></div>Completed (1)</div>
+      <div class="kcard" style="opacity:.7"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="badge badge-gray" style="font-size:9px">LOW</span><span style="font-size:10px;color:var(--muted)">Mar 8</span></div><p style="font-size:13px;font-weight:600;margin-bottom:4px">Door lock replacement</p><p style="font-size:11px;color:var(--muted);margin-bottom:10px">789 Bloor St · Unit 2</p><div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--bdr)"><span style="font-size:11px;color:var(--muted)">David Lee</span><span style="font-size:11px;font-weight:600">$120</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAYMENTS ── -->
+<div class="page" id="p-payments">
+  <div class="page-eyebrow">Rent Collection</div>
+  <h1 class="page-title">Payments <em>&amp; Revenue</em></h1>
+  <div class="metric-grid g4" style="margin-bottom:22px">
+    <div class="card metric-card"><div class="metric-label">Collected</div><div class="metric-val">$11,500</div><div class="metric-sub">4 of 5 units</div></div>
+    <div class="card metric-card"><div class="metric-label">Outstanding</div><div class="metric-val" style="color:var(--red)">$2,200</div><div class="metric-sub">1 unit overdue</div></div>
+    <div class="card metric-card"><div class="metric-label">Collection Rate</div><div class="metric-val" style="color:var(--g)">84%</div></div>
+    <div class="card metric-card"><div class="metric-label">Avg Rent</div><div class="metric-val">$2,770</div></div>
+  </div>
+  <div class="card" style="overflow:hidden">
+    <div style="padding:18px 24px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center">
+      <div class="section-title" style="margin-bottom:0">Payments — March 2026</div>
+      <button class="btn btn-ghost btn-sm">↓ Export</button>
+    </div>
+    <div id="payment-list"></div>
+  </div>
+</div>
+
+<!-- ── FINANCIAL ── -->
+<div class="page" id="p-financial">
+  <div class="topbar">
+    <div><div class="page-eyebrow">Financial Overview</div><h1 class="page-title">Financial <em>Dashboard</em></h1></div>
+    <button class="btn btn-primary btn-sm">↓ Export Report</button>
+  </div>
+  <div class="metric-grid g4" style="margin-bottom:22px">
+    <div class="card metric-card"><div class="metric-label">Total Revenue</div><div class="metric-val">$59,500</div><div class="metric-sub metric-trend trend-up">+12.3%</div></div>
+    <div class="card metric-card"><div class="metric-label">Net Profit</div><div class="metric-val" style="color:var(--g)">$48,300</div><div class="metric-sub metric-trend trend-up">+14.8%</div></div>
+    <div class="card metric-card"><div class="metric-label">Total Expenses</div><div class="metric-val">$11,200</div><div class="metric-sub">+5.2% vs last yr</div></div>
+    <div class="card metric-card"><div class="metric-label">Profit Margin</div><div class="metric-val">81.2%</div><div class="metric-sub metric-trend trend-up">+2.1%</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 300px;gap:18px;margin-bottom:22px">
+    <div class="card chart-box"><div class="chart-title">Revenue vs Expenses</div><div class="chart-sub">12-month comparison</div><div class="chart-wrap"><canvas id="finChart"></canvas></div></div>
+    <div class="card chart-box"><div class="chart-title">Expense Breakdown</div><div class="chart-sub">Total: $138,000</div><div class="chart-wrap"><canvas id="expChart"></canvas></div></div>
+  </div>
+  <div class="card" style="overflow:hidden">
+    <div style="padding:18px 24px;border-bottom:1px solid var(--bdr)"><div class="section-title" style="margin-bottom:0">Property Performance</div></div>
+    <table class="tbl">
+      <thead><tr><th>Property</th><th>Units</th><th>Revenue</th><th>Expenses</th><th>Net Profit</th><th>Occupancy</th></tr></thead>
+      <tbody>
+        <tr><td><div style="display:flex;align-items:center;gap:10px"><div style="width:30px;height:30px;border-radius:8px;background:var(--gl);display:flex;align-items:center;justify-content:center"><svg width="13" height="13" fill="none" stroke="var(--g)" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>123 King St</div></td><td>2</td><td>$4,700</td><td>$890</td><td style="color:var(--g);font-weight:700">$3,810</td><td><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div><span>100%</span></div></td></tr>
+        <tr><td><div style="display:flex;align-items:center;gap:10px"><div style="width:30px;height:30px;border-radius:8px;background:var(--gl);display:flex;align-items:center;justify-content:center"><svg width="13" height="13" fill="none" stroke="var(--g)" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>456 Queen St W</div></td><td>3</td><td>$6,950</td><td>$1,240</td><td style="color:var(--g);font-weight:700">$5,710</td><td><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div><span>80%</span></div></td></tr>
+        <tr><td><div style="display:flex;align-items:center;gap:10px"><div style="width:30px;height:30px;border-radius:8px;background:var(--gl);display:flex;align-items:center;justify-content:center"><svg width="13" height="13" fill="none" stroke="var(--g)" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>789 Bloor St</div></td><td>2</td><td>$6,400</td><td>$1,180</td><td style="color:var(--g);font-weight:700">$5,220</td><td><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div><span>100%</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── MESSAGES ── -->
+<div class="page" id="p-messages" style="padding:36px 40px 0">
+  <div class="page-eyebrow">Communication</div>
+  <h1 class="page-title" style="margin-bottom:20px"><em>Messages</em></h1>
+  <div class="chat-layout">
+    <div class="chat-sidebar" id="chat-sb"></div>
+    <div class="chat-main" id="chat-main-pane">
+      <div class="chat-hdr" id="chat-hdr"></div>
+      <div class="chat-msgs" id="chat-msgs-area"></div>
+      <div class="chat-inp">
+        <input id="chat-input" placeholder="Reply to tenant..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+        <button class="chat-send" onclick="sendMsg()"><svg width="15" height="15" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DOCUMENTS ── -->
+<div class="page" id="p-documents">
+  <div class="page-eyebrow">Document Vault</div>
+  <h1 class="page-title"><em>All</em> Documents</h1>
+  <div class="metric-grid g4" style="margin-bottom:18px">
+    <div class="card metric-card"><div class="metric-label">Total</div><div class="metric-val">7</div></div>
+    <div class="card metric-card"><div class="metric-label">Active Leases</div><div class="metric-val">2</div></div>
+    <div class="card metric-card"><div class="metric-label">Pending Notices</div><div class="metric-val" style="color:var(--amber)">1</div></div>
+    <div class="card metric-card"><div class="metric-label">Receipts</div><div class="metric-val" style="color:var(--g)">1</div></div>
+  </div>
+  <div class="chips" id="doc-chips">
+    <div class="chip active" onclick="filterDocs(this,'all')">All</div>
+    <div class="chip" onclick="filterDocs(this,'lease')">Leases</div>
+    <div class="chip" onclick="filterDocs(this,'notice')">Notices</div>
+    <div class="chip" onclick="filterDocs(this,'receipt')">Receipts</div>
+    <div class="chip" onclick="filterDocs(this,'application')">Applications</div>
+  </div>
+  <div class="card" style="overflow:hidden">
+    <table class="tbl" id="doc-table">
+      <thead><tr><th>Document</th><th>Type</th><th>Property</th><th>Tenant</th><th>Date</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+      <tbody id="doc-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── LTB FORMS ── -->
+<div class="page" id="p-ltb">
+  <div class="page-eyebrow">Legal Tools</div>
+  <h1 class="page-title">LTB <em>Forms</em></h1>
+  <div style="background:var(--amberl);border:1px solid rgba(180,83,9,.2);border-radius:var(--rm);padding:12px 18px;display:flex;align-items:flex-start;gap:10px;margin-bottom:22px">
+    <svg width="15" height="15" fill="none" stroke="var(--amber)" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <p style="font-size:12px;color:#7C2D12;line-height:1.6"><strong>Legal Notice:</strong> Kaya AI can pre-fill these forms but always have a lawyer review before serving. LTB rules are strict — incorrect notices may be dismissed.</p>
+  </div>
+  <div class="chips">
+    <div class="chip active" onclick="filterLTB(this,'all')">All Forms</div>
+    <div class="chip" onclick="filterLTB(this,'eviction')">Eviction</div>
+    <div class="chip" onclick="filterLTB(this,'rent-increase')">Rent Increases</div>
+    <div class="chip" onclick="filterLTB(this,'termination')">Termination</div>
+  </div>
+  <div class="ltb-grid" id="ltb-grid"></div>
+</div>
+
+<!-- ── NOTICES ── -->
+<div class="page" id="p-notices">
+  <div class="topbar">
+    <div><div class="page-eyebrow">Communications</div><h1 class="page-title">Notices <em>&amp; Alerts</em></h1></div>
+    <button class="btn btn-primary btn-sm">+ Create Notice</button>
+  </div>
+  <div class="metric-grid g4" style="margin-bottom:18px">
+    <div class="card metric-card"><div class="metric-label">Sent</div><div class="metric-val">3</div></div>
+    <div class="card metric-card"><div class="metric-label">Scheduled</div><div class="metric-val" style="color:var(--blue)">1</div></div>
+    <div class="card metric-card"><div class="metric-label">Drafts</div><div class="metric-val" style="color:var(--muted)">1</div></div>
+    <div class="card metric-card"><div class="metric-label">High Priority</div><div class="metric-val" style="color:var(--red)">2</div></div>
+  </div>
+  <div id="notices-list" style="display:flex;flex-direction:column;gap:10px"></div>
+</div>
+
+<!-- ── INVOICES ── -->
+<div class="page" id="p-invoices">
+  <div class="topbar">
+    <div><div class="page-eyebrow">Billing</div><h1 class="page-title">Invoice <em>Generator</em></h1></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost btn-sm">↓ Download PDF</button>
+      <button class="btn btn-green btn-sm">↑ Send to Tenant</button>
+    </div>
+  </div>
+  <div class="invoice-doc">
+    <div class="inv-hdr">
+      <div><div style="font-family:var(--serif);font-size:28px;color:var(--text);margin-bottom:8px">Kaya<span style="color:var(--g)">.</span></div><p style="font-size:12px;color:var(--muted);line-height:1.7">123 Business Street<br>Toronto, ON M5H 1A1<br>info@kaya.ca</p></div>
+      <div style="text-align:right">
+        <div style="display:inline-flex;align-items:center;gap:7px;background:var(--gl);padding:8px 16px;border-radius:9px;margin-bottom:14px"><svg width="14" height="14" fill="none" stroke="var(--g)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span style="font-family:var(--serif);font-size:18px;color:var(--g)">INVOICE</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end"><span style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Invoice #</span><input class="inv-field" value="INV-2026-001" style="width:130px;text-align:right"></div>
+          <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end"><span style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Issue Date</span><input type="date" class="inv-field" value="2026-03-16" style="width:148px"></div>
+          <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end"><span style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Due Date</span><input type="date" class="inv-field" value="2026-04-01" style="width:148px"></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
+      <div><p style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Bill To</p><input class="inv-field" style="width:100%" placeholder="Tenant name" value="John Doe"></div>
+      <div><p style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Property</p>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <input class="inv-field" style="width:100%" placeholder="Property address" value="123 King Street">
+          <input class="inv-field" style="width:100%" placeholder="Unit" value="Unit 4A">
+        </div>
+      </div>
+    </div>
+    <table class="inv-table" id="inv-table">
+      <thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th><th></th></tr></thead>
+      <tbody id="inv-tbody"></tbody>
+    </table>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:20px">
+      <div style="width:260px">
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:13px;color:var(--muted)">Subtotal</span><span id="inv-sub" style="font-size:13px;font-weight:600"></span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:13px;color:var(--muted)">HST (13%)</span><span id="inv-hst" style="font-size:13px;font-weight:600"></span></div>
+        <div style="display:flex;justify-content:space-between;padding:12px 0;align-items:baseline"><span style="font-size:14px;font-weight:600">Total</span><span id="inv-total" style="font-family:var(--serif);font-size:26px;color:var(--g)"></span></div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);padding-top:16px;border-top:1px solid var(--bdr);text-align:center">Payment is due by the 1st of each month · info@kaya.ca</div>
+  </div>
+</div>
+
+<!-- ── AI ASSISTANT ── -->
+<div class="page" id="p-ai">
+  <div class="ai-page">
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="width:48px;height:48px;border-radius:14px;background:var(--text);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+        <svg width="20" height="20" fill="none" stroke="var(--gl)" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <h1 style="font-family:var(--serif);font-size:36px;color:var(--text);letter-spacing:-.5px">Kaya <em style="font-style:italic;color:var(--g)">AI</em></h1>
+      <p style="font-size:13px;color:var(--muted);margin-top:6px">Your intelligent property management co-pilot</p>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:24px">
+      <button class="chip" onclick="aiSend('Show me all high-risk applicants')">Show risky applicants</button>
+      <button class="chip" onclick="aiSend('Generate a lease for Unit 4A')">Generate lease — Unit 4A</button>
+      <button class="chip" onclick="aiSend('Give me a property overview')">Portfolio overview</button>
+      <button class="chip" onclick="aiSend('What are upcoming lease renewals?')">Upcoming renewals</button>
+    </div>
+    <div class="ai-msgs" id="ai-msgs"></div>
+    <div class="ai-input-row">
+      <input id="ai-input" placeholder="Ask anything about your properties..." onkeydown="if(event.key==='Enter')aiSend()"/>
+      <button onclick="aiSend()" style="width:38px;height:38px;border-radius:11px;background:var(--text);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="15" height="15" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+    <p style="text-align:center;font-size:11px;color:var(--light);margin-top:10px">Kaya AI · Ontario RTA 2006 compliant</p>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ── MODALS ── -->
+<div class="modal-overlay" id="addPropModal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px">
+      <span style="font-family:var(--serif);font-size:22px">Add Property</span>
+      <button onclick="document.getElementById('addPropModal').classList.remove('open')" style="background:none;border:none;cursor:pointer;color:var(--muted)">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Address</label><input class="form-input" placeholder="e.g. 123 King Street"></div>
+    <div class="form-group"><label class="form-label">City</label><input class="form-input" placeholder="e.g. Toronto"></div>
+    <div class="form-group"><label class="form-label">Type</label><select class="form-input"><option>Condo</option><option>Apartment Building</option><option>Townhouse</option><option>House</option></select></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px" onclick="document.getElementById('addPropModal').classList.remove('open')">Add Property →</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="ltbModal">
+  <div class="modal-box" style="width:500px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
+      <div><div id="modal-num" style="font-family:var(--serif);font-size:26px;color:var(--text)"></div><div id="modal-title" style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px;line-height:1.4;max-width:380px"></div></div>
+      <button onclick="document.getElementById('ltbModal').classList.remove('open')" style="background:none;border:none;cursor:pointer;color:var(--muted);flex-shrink:0;margin-left:12px">✕</button>
+    </div>
+    <p id="modal-desc" style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px"></p>
+    <div style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:18px;display:flex;gap:24px">
+      <div><p style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Deadline</p><p id="modal-dl" style="font-size:13px;font-weight:600;color:var(--amber)"></p></div>
+      <div><p style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Time</p><p id="modal-time" style="font-size:13px;font-weight:600"></p></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="document.getElementById('ltbModal').classList.remove('open')">Generate with AI →</button>
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('ltbModal').classList.remove('open')">↗ LTB Site</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════ DATA ════
+const apps = [
+  {id:1,name:"Sarah Kim",unit:"Unit 4A — 2 Bedroom",rent:2300,score:92,risk:"low",rec:"approve",credit:745,income:8500,ratio:27,emp:4.5,date:"Mar 14"},
+  {id:2,name:"Michael Patel",unit:"Unit 2B — 1 Bedroom",rent:1950,score:87,risk:"low",rec:"approve",credit:712,income:6800,ratio:29,emp:3.2,date:"Mar 15"},
+  {id:3,name:"Jason Lee",unit:"Unit 1C — 3 Bedroom",rent:2800,score:68,risk:"medium",rec:"review",credit:658,income:7200,ratio:39,emp:1.8,date:"Mar 13"},
+  {id:4,name:"Emma Chen",unit:"Unit 3B — 1 Bedroom",rent:1850,score:55,risk:"high",rec:"reject",credit:590,income:4200,ratio:44,emp:0.8,date:"Mar 12"},
+  {id:5,name:"David Martinez",unit:"Unit 5A — 2 Bedroom",rent:2200,score:89,risk:"low",rec:"approve",credit:728,income:8200,ratio:27,emp:5.2,date:"Mar 15"},
+];
+
+const payments_data = [
+  {tenant:"John Doe",unit:"123 King St · 4A",amount:2300,due:"Mar 1",paid:"Mar 1",status:"paid"},
+  {tenant:"Alice Smith",unit:"456 Queen St · 1C",amount:2800,due:"Mar 1",paid:"Mar 1",status:"paid"},
+  {tenant:"Bob Johnson",unit:"456 Queen St · 3A",amount:2200,due:"Mar 1",paid:null,status:"overdue"},
+  {tenant:"Emma Wilson",unit:"789 Bloor St · Unit 1",amount:3200,due:"Mar 1",paid:"Mar 3",status:"late"},
+  {tenant:"David Lee",unit:"789 Bloor St · Unit 2",amount:3200,due:"Mar 1",paid:"Mar 1",status:"paid"},
+];
+
+const docs_data = [
+  {id:1,name:"Standard Lease — Unit 4A",type:"lease",property:"123 King Street",unit:"4A",tenant:"John Doe",date:"Jan 1, 2025",size:"245 KB",status:"signed"},
+  {id:2,name:"N4 Notice — Non-Payment",type:"notice",property:"456 Queen St W",unit:"3A",tenant:"Bob Johnson",date:"Mar 10, 2026",size:"128 KB",status:"pending"},
+  {id:3,name:"Payment Receipt — March 2026",type:"receipt",property:"789 Bloor Street",unit:"Unit 1",tenant:"Emma Wilson",date:"Mar 1, 2026",size:"92 KB",status:"processed"},
+  {id:4,name:"Tenant Application — Sarah Kim",type:"application",property:"123 King Street",unit:"5A",tenant:"Sarah Kim",date:"Mar 14, 2026",size:"1.2 MB",status:"approved"},
+  {id:5,name:"Standard Lease — Unit 1C",type:"lease",property:"456 Queen St W",unit:"1C",tenant:"Alice Smith",date:"Mar 1, 2024",size:"238 KB",status:"signed"},
+  {id:6,name:"Maintenance Report — Plumbing",type:"maintenance",property:"456 Queen St W",unit:"3A",tenant:"Bob Johnson",date:"Mar 12, 2026",size:"456 KB",status:"completed"},
+  {id:7,name:"Insurance Policy 2026",type:"insurance",property:"All Properties",unit:"—",tenant:"—",date:"Jan 1, 2026",size:"890 KB",status:"active"},
+];
+
+const ltb_data = [
+  {num:"N4",title:"Notice to End Tenancy — Non-payment of Rent",cat:"eviction",desc:"First step in the eviction process when a tenant has not paid rent.",deadline:"14 days notice required",time:"5 min"},
+  {num:"N12",title:"Notice to End Tenancy — Landlord Requires Unit",cat:"termination",desc:"Use when you or a purchaser need the unit for personal use. Compensation of 1 month's rent required.",deadline:"60 days notice required",time:"8 min"},
+  {num:"N5",title:"Notice to End Tenancy — Tenant Interfering",cat:"eviction",desc:"For tenants who damage property, disturb neighbours, or have too many occupants.",deadline:"7 or 20 days depending on severity",time:"10 min"},
+  {num:"N1",title:"Notice of Rent Increase",cat:"rent-increase",desc:"Notify tenant of annual rent increase. Must follow Ontario's guideline (2.5% for 2026).",deadline:"90 days notice required",time:"4 min"},
+  {num:"N2",title:"Notice of Rent Increase (Above Guideline)",cat:"rent-increase",desc:"Request increase above guideline due to capital improvements or increased utilities.",deadline:"Must apply to LTB first",time:"15 min"},
+  {num:"N8",title:"Notice to End Tenancy — Tenant Obligations",cat:"eviction",desc:"When tenant consistently pays late, has unauthorized occupants, or breaches lease terms.",deadline:"60 days notice required",time:"7 min"},
+  {num:"N13",title:"Notice to End Tenancy — Demolition/Renovation",cat:"termination",desc:"When you need to vacate for demolition, conversion, or major renovation requiring permits.",deadline:"120 days notice required",time:"12 min"},
+  {num:"N7",title:"Notice to End Tenancy — Cause",cat:"eviction",desc:"For serious issues: illegal activity, serious damage, or impaired safety of others.",deadline:"10 or 30 days depending on severity",time:"10 min"},
+];
+
+const notices_data = [
+  {type:"rent_increase",label:"Rent Increase",title:"Rent Increase Notice — 90 Days",desc:"New monthly rent: $2,450 effective June 1, 2026",property:"123 King Street · Unit 4A",recipients:"John Doe, Sarah Kim",status:"sent",priority:"high",due:"Jun 1, 2026"},
+  {type:"lease_expiry",label:"Lease Expiry",title:"Lease Renewal Notice",desc:"Your lease expires May 31, 2026. Please contact us to discuss renewal.",property:"456 Queen St W · Unit 2B",recipients:"Emma Rodriguez",status:"sent",priority:"medium",due:"May 31, 2026"},
+  {type:"maintenance",label:"Maintenance",title:"Building Maintenance — Water Shutoff",desc:"Water will be shut off March 20, 9 AM – 2 PM for plumbing repairs.",property:"123 King Street",recipients:"All Tenants",status:"scheduled",priority:"high",due:"Mar 20, 2026"},
+  {type:"policy_change",label:"Policy",title:"Updated Pet Policy",desc:"New pet policy effective April 1, 2026. Maximum 2 pets per unit.",property:"All Properties",recipients:"All Tenants",status:"sent",priority:"low",due:""},
+  {type:"general",label:"General",title:"Holiday Office Hours",desc:"Management office closed March 17–18 for the holiday weekend.",property:"All Properties",recipients:"All Tenants",status:"draft",priority:"low",due:""},
+];
+
+const convos = [
+  {name:"Bob Johnson",unit:"456 Queen St · 3A",unread:2,last:"The sink is still leaking...",initials:"BJ",msgs:[
+    {from:"in",text:"Hey, the kitchen sink is still leaking. Been 3 days now.",time:"9:12 AM"},
+    {from:"in",text:"Water is getting under the cabinet. Can someone come today?",time:"9:14 AM"},
+    {from:"out",text:"Hi Bob, I've scheduled a plumber for this afternoon 2–4 PM. They'll contact you directly.",time:"9:45 AM"},
+    {from:"in",text:"The sink is still leaking after yesterday's visit.",time:"2:10 PM"},
+  ]},
+  {name:"Sarah Kim",unit:"Application · Unit 5A",unread:1,last:"When can I move in?",initials:"SK",msgs:[
+    {from:"in",text:"Hi! My application was approved — when can I move in?",time:"Yesterday"},
+    {from:"out",text:"Congratulations Sarah! Move-in is available April 1st. I'll send the lease today.",time:"Yesterday"},
+    {from:"in",text:"When can I move in?",time:"10:30 AM"},
+  ]},
+  {name:"Emma Wilson",unit:"789 Bloor St · Unit 1",unread:0,last:"Thanks for the quick response",initials:"EW",msgs:[
+    {from:"out",text:"Hi Emma, your maintenance request has been completed. Everything fixed?",time:"Yesterday"},
+    {from:"in",text:"Thanks for the quick response! Everything looks good now.",time:"Yesterday"},
+  ]},
+];
+
+const ai_responses = {
+  "show me all high-risk applicants":"Scanning applicant pool... I found 2 high-risk applicants:\n\n• Emma Chen (score 55) — high rent-to-income ratio at 44%, credit score 590, only 0.8 years employment\n• Jason Lee (score 68) — income stretches thin at 39% rent ratio, short employment history\n\nI'd recommend requesting additional income verification from both before proceeding.",
+  "generate a lease for unit 4a":"I can generate a standard Ontario Residential Tenancy Agreement for Unit 4A. I'll pre-fill:\n\n• Tenant: John Doe\n• Unit: 4A — 2 Bedroom, 123 King Street\n• Monthly Rent: $2,300\n• Parking: $150/mo\n\nConfirm the start date and any special clauses, then I'll generate a fully RTA-compliant lease ready for e-signature.",
+  "give me a property overview":"Here's your portfolio snapshot:\n\n📊 3 properties · 12 units · 92% occupancy (11/12)\n💰 Monthly revenue: $27,600 (+12% vs last month)\n⚠️ 1 overdue payment (Unit 3A — Bob Johnson)\n📋 3 applications pending review (scores: 92, 87, 89)\n\nTop performer: 789 Bloor St — 100% occupancy, lowest maintenance cost.",
+  "what are upcoming lease renewals?":"Upcoming lease expirations in the next 90 days:\n\n• Unit 1C — Alice Smith → Expires Apr 30, 2026 (45 days)\n• Unit 4A — John Doe → Expires Dec 31, 2026 (290 days)\n\nI'd recommend sending Alice a renewal notice this week. The N1 rent increase notice requires 90 days, so today is the last opportunity to include a 2.5% increase effective May 1.",
+};
+
+let inv_items = [{desc:"Monthly Rent",qty:1,rate:2300},{desc:"Parking Fee",qty:1,rate:150}];
+let active_chat = 0;
+
+// ════ NAVIGATION ════
+function nav(id) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  const navEl = document.querySelector(`[onclick="nav('${id}')"]`);
+  if(navEl) navEl.classList.add('active');
+  const page = document.getElementById('p-'+id);
+  if(page) page.classList.add('active');
+  // init page-specific content
+  if(id==='applications') renderApps('all');
+  if(id==='messages') renderMessages();
+  if(id==='documents') renderDocs('all');
+  if(id==='ltb') renderLTB('all');
+  if(id==='notices') renderNotices();
+  if(id==='payments') renderPayments();
+  if(id==='invoices') renderInvoice();
+  if(id==='ai') renderAI();
+  if(id==='dashboard'||id==='analytics'||id==='financial') setTimeout(renderCharts, 50);
+}
+
+// ════ APPLICATIONS ════
+function renderApps(filter) {
+  const list = document.getElementById('app-list');
+  const filtered = filter==='all' ? apps : apps.filter(a=>a.risk===filter);
+  list.innerHTML = filtered.map(a => {
+    const rc = {approve:['badge-green','Approve'],review:['badge-amber','Review'],reject:['badge-red','Reject']}[a.rec];
+    const sc = a.risk==='low' ? ['var(--g)','var(--gl)'] : a.risk==='medium' ? ['var(--amber)','var(--amberl)'] : ['var(--red)','var(--redl)'];
+    return `<div style="background:#fff;border:1px solid var(--bdr);border-radius:14px;padding:18px 22px;display:flex;align-items:center;gap:18px;border-left:3px solid ${sc[0]}">
+      <div style="width:52px;height:52px;border-radius:50%;background:${sc[1]};display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+        <span style="font-size:17px;font-weight:700;color:${sc[0]};line-height:1">${a.score}</span>
+        <span style="font-size:9px;font-weight:600;color:${sc[0]};text-transform:uppercase">AI</span>
+      </div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:15px;font-weight:600;color:var(--text)">${a.name}</span>
+          <span class="badge ${rc[0]}">${rc[1]}</span>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px">${a.unit} · Applied ${a.date}</p>
+        <div style="display:flex;gap:28px">
+          <div><p style="font-size:13px;font-weight:700;color:var(--text)">$${a.income.toLocaleString()}</p><p style="font-size:10px;color:var(--muted)">Monthly income</p></div>
+          <div><p style="font-size:13px;font-weight:700;color:${a.ratio>35?'var(--amber)':'var(--text)'}">${a.ratio}%</p><p style="font-size:10px;color:var(--muted)">Rent / income</p></div>
+          <div><p style="font-size:13px;font-weight:700;color:${a.credit<650?'var(--red)':a.credit<700?'var(--amber)':'var(--g)'}">${a.credit}</p><p style="font-size:10px;color:var(--muted)">Credit score</p></div>
+          <div><p style="font-size:13px;font-weight:700">${a.emp} yrs</p><p style="font-size:10px;color:var(--muted)">Employment</p></div>
+        </div>
+      </div>
+      ${a.rec==='approve' ? `<button class="btn btn-green btn-sm">Approve</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function filterApps(el,f) {
+  document.querySelectorAll('#p-applications .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderApps(f);
+}
+
+// ════ PAYMENTS ════
+function renderPayments() {
+  const list = document.getElementById('payment-list');
+  list.innerHTML = payments_data.map(p => {
+    const sc = p.status==='paid' ? ['var(--g)','var(--gl)','✓ Paid','badge-green'] : p.status==='late' ? ['var(--amber)','var(--amberl)','Late','badge-amber'] : ['var(--red)','var(--redl)','Overdue','badge-red'];
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--bdr);border-left:3px solid ${sc[0]}">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:36px;height:36px;border-radius:50%;background:${sc[1]};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:${sc[0]}">${p.tenant.split(' ').map(n=>n[0]).join('')}</div>
+        <div><p style="font-size:13px;font-weight:600">${p.tenant}</p><p style="font-size:11px;color:var(--muted)">${p.unit}</p></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px">
+        <div style="text-align:right"><p style="font-family:var(--serif);font-size:20px">$${p.amount.toLocaleString()}</p><p style="font-size:10px;color:var(--muted)">Due ${p.due}${p.paid?' · Paid '+p.paid:''}</p></div>
+        <span class="badge ${sc[3]}">${sc[2]}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════ DOCUMENTS ════
+function renderDocs(filter) {
+  const tbody = document.getElementById('doc-tbody');
+  const filtered = filter==='all' ? docs_data : docs_data.filter(d=>d.type===filter);
+  const typeLabel = {lease:'Lease',notice:'Notice',receipt:'Receipt',application:'Application',maintenance:'Maintenance',insurance:'Insurance'};
+  const typeColor = {lease:'badge-blue',notice:'badge-amber',receipt:'badge-green',application:'badge-green',maintenance:'badge-gray',insurance:'badge-gray'};
+  const isOk = s => ['signed','active','approved','completed','processed'].includes(s);
+  tbody.innerHTML = filtered.map(d => `
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:var(--gl);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="13" height="13" fill="none" stroke="var(--g)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><p style="font-size:12px;font-weight:600">${d.name}</p><p style="font-size:10px;color:var(--muted)">${d.size}</p></div></div></td>
+      <td><span class="badge ${typeColor[d.type]||'badge-gray'}">${typeLabel[d.type]||d.type}</span></td>
+      <td><p style="font-size:12px">${d.property}</p><p style="font-size:10px;color:var(--muted)">${d.unit}</p></td>
+      <td style="font-size:12px;color:var(--muted)">${d.tenant}</td>
+      <td style="font-size:12px;color:var(--muted)">${d.date}</td>
+      <td><span class="badge ${isOk(d.status)?'badge-green':'badge-amber'}">${d.status}</span></td>
+      <td style="text-align:right"><button class="btn btn-ghost btn-sm" style="font-size:11px">↓</button></td>
+    </tr>`).join('');
+}
+
+function filterDocs(el,f) {
+  document.querySelectorAll('#doc-chips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderDocs(f);
+}
+
+// ════ LTB ════
+function renderLTB(filter) {
+  const grid = document.getElementById('ltb-grid');
+  const filtered = filter==='all' ? ltb_data : ltb_data.filter(f=>f.cat===filter);
+  const catColor = {eviction:'var(--red)',['rent-increase']:'var(--amber)',termination:'var(--blue)',maintenance:'var(--g)'};
+  grid.innerHTML = filtered.map(f => `
+    <div class="card ltb-card" onclick="openLTB('${f.num}')" style="border-left-color:${catColor[f.cat]||'var(--bdr)'}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-family:var(--serif);font-size:22px">${f.num}</span>
+          <span style="background:${catColor[f.cat]}20;color:${catColor[f.cat]};font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:capitalize">${f.cat.replace('-',' ')}</span>
+        </div>
+        <span style="font-size:11px;color:var(--muted)">⏱ ${f.time}</span>
+      </div>
+      <p style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:6px">${f.title}</p>
+      <p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px">${f.desc}</p>
+      <div style="display:flex;justify-content:space-between;padding-top:10px;border-top:1px solid var(--bdr)">
+        <span style="font-size:11px;color:var(--amber);font-weight:600">${f.deadline}</span>
+        <span style="font-size:12px;color:var(--g);font-weight:600">Generate →</span>
+      </div>
+    </div>`).join('');
+}
+
+function filterLTB(el,f) {
+  document.querySelectorAll('#p-ltb .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderLTB(f);
+}
+
+function openLTB(num) {
+  const f = ltb_data.find(x=>x.num===num);
+  if(!f) return;
+  document.getElementById('modal-num').textContent = f.num;
+  document.getElementById('modal-title').textContent = f.title;
+  document.getElementById('modal-desc').textContent = f.desc;
+  document.getElementById('modal-dl').textContent = f.deadline;
+  document.getElementById('modal-time').textContent = f.time;
+  document.getElementById('ltbModal').classList.add('open');
+}
+
+// ════ NOTICES ════
+function renderNotices() {
+  const list = document.getElementById('notices-list');
+  const typeColor = {rent_increase:'var(--amber)',lease_expiry:'var(--blue)',maintenance:'var(--g)',policy_change:'var(--muted)',violation:'var(--red)',general:'var(--muted)'};
+  const statusBadge = {sent:'badge-green',scheduled:'badge-blue',draft:'badge-gray'};
+  list.innerHTML = notices_data.map(n => `
+    <div class="card" style="padding:18px 22px;border-left:3px solid ${n.priority==='high'?'var(--red)':n.priority==='medium'?'var(--amber)':'var(--bdr)'}">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <span style="background:${typeColor[n.type]}20;color:${typeColor[n.type]};font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px">${n.label}</span>
+        <span class="badge ${statusBadge[n.status]||'badge-gray'}">${n.status}</span>
+        ${n.priority==='high'?'<span class="badge badge-red" style="font-size:9px">High Priority</span>':''}
+        ${n.due?`<span style="font-size:11px;color:var(--muted);margin-left:auto">Due ${n.due}</span>`:''}
+      </div>
+      <p style="font-size:14px;font-weight:600;margin-bottom:4px">${n.title}</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5">${n.desc}</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--bdr)">
+        <span style="font-size:11px;color:var(--muted)">${n.property} · ${n.recipients}</span>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" style="font-size:11px">👁 View</button>
+          ${n.status==='draft'?'<button class="btn btn-green btn-sm" style="font-size:11px">↑ Send</button>':''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ════ MESSAGES ════
+function renderMessages() {
+  const sb = document.getElementById('chat-sb');
+  sb.innerHTML = convos.map((c,i) => `
+    <div class="chat-item ${i===active_chat?'active':''}" onclick="selectChat(${i})">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:30px;height:30px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--g);flex-shrink:0">${c.initials}</div>
+          <div><p style="font-size:12px;font-weight:600;color:var(--text)">${c.name}</p><p style="font-size:9px;color:var(--muted)">${c.unit}</p></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+          ${c.unread>0?`<span style="width:15px;height:15px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">${c.unread}</span>`:'<span style="height:15px"></span>'}
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--muted);padding-left:38px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${c.last}</p>
+    </div>`).join('');
+  renderChatPane();
+}
+
+function selectChat(i) {
+  active_chat = i;
+  renderMessages();
+}
+
+function renderChatPane() {
+  const c = convos[active_chat];
+  document.getElementById('chat-hdr').innerHTML = `
+    <div style="width:32px;height:32px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--g)">${c.initials}</div>
+    <div><p style="font-size:13px;font-weight:600">${c.name}</p><p style="font-size:10px;color:var(--muted)">${c.unit}</p></div>`;
+  const area = document.getElementById('chat-msgs-area');
+  area.innerHTML = c.msgs.map(m => `
+    <div style="display:flex;justify-content:${m.from==='out'?'flex-end':'flex-start'}">
+      <div class="msg ${m.from==='in'?'msg-in':'msg-out'}">${m.text}<div class="msg-time" style="text-align:${m.from==='out'?'right':'left'}">${m.time}</div></div>
+    </div>`).join('');
+  area.scrollTop = area.scrollHeight;
+}
+
+function sendMsg() {
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if(!text) return;
+  convos[active_chat].msgs.push({from:'out',text,time:'Now'});
+  convos[active_chat].last = text;
+  inp.value = '';
+  renderMessages();
+}
+
+// ════ INVOICES ════
+function renderInvoice() {
+  const tbody = document.getElementById('inv-tbody');
+  tbody.innerHTML = inv_items.map((item,i) => `
+    <tr>
+      <td><input class="inv-field" style="width:100%" value="${item.desc}" oninput="inv_items[${i}].desc=this.value"></td>
+      <td><input class="inv-field" type="number" style="width:60px" value="${item.qty}" oninput="inv_items[${i}].qty=+this.value;updateInvTotal()"></td>
+      <td><input class="inv-field" type="number" style="width:100px" value="${item.rate}" oninput="inv_items[${i}].rate=+this.value;updateInvTotal()"></td>
+      <td style="font-family:var(--serif);font-size:18px">$${(item.qty*item.rate).toFixed(2)}</td>
+      <td><button onclick="inv_items.splice(${i},1);renderInvoice()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:16px">✕</button></td>
+    </tr>`).join('');
+  tbody.innerHTML += `<tr><td colspan="5" style="padding:8px 12px"><button onclick="inv_items.push({desc:'',qty:1,rate:0});renderInvoice()" style="background:var(--gl);border:none;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--g);cursor:pointer;font-family:var(--sans)">+ Add Item</button></td></tr>`;
+  updateInvTotal();
+}
+
+function updateInvTotal() {
+  const sub = inv_items.reduce((s,i)=>s+i.qty*i.rate,0);
+  const hst = sub*.13;
+  document.getElementById('inv-sub').textContent='$'+sub.toFixed(2);
+  document.getElementById('inv-hst').textContent='$'+hst.toFixed(2);
+  document.getElementById('inv-total').textContent='$'+(sub+hst).toFixed(2);
+}
+
+// ════ AI ════
+const ai_msgs_store = [{role:'bot',text:"Hi Justin! I'm Kaya AI — your property management co-pilot. I can help with tenant screening, lease generation, payment tracking, rent analysis, and more. What do you need?"}];
+
+function renderAI() {
+  const area = document.getElementById('ai-msgs');
+  if(!area) return;
+  area.innerHTML = ai_msgs_store.map(m => `
+    <div class="ai-msg-row ${m.role==='user'?'user':''}">
+      ${m.role==='bot'?`<div class="ai-avatar"><svg width="14" height="14" fill="none" stroke="var(--gl)" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>`:''}
+      <div class="ai-bubble ${m.role==='bot'?'bot':'user'}" style="white-space:pre-line">${m.text}</div>
+    </div>`).join('');
+  area.scrollTop = area.scrollHeight;
+}
+
+function aiSend(preset) {
+  const inp = document.getElementById('ai-input');
+  const text = preset || inp.value.trim();
+  if(!text) return;
+  if(inp) inp.value='';
+  ai_msgs_store.push({role:'user',text});
+  renderAI();
+  setTimeout(() => {
+    const key = text.toLowerCase();
+    let resp = "I'm analysing your portfolio data... Based on your current properties and tenant records, here's what I found:\n\nYour overall portfolio health score is 88/100. Monthly cash flow is strong at $27,600 with 92% occupancy. The main area of concern is Unit 3A (Bob Johnson) with overdue rent and an upcoming N4 notice recommendation.";
+    for(const [k,v] of Object.entries(ai_responses)) {
+      if(key.includes(k.split(' ')[0]) || key.includes(k.split(' ').slice(-1)[0])) { resp=v; break; }
+    }
+    ai_msgs_store.push({role:'bot',text:resp});
+    renderAI();
+  }, 800);
+}
+
+// ════ CHARTS ════
+let charts = {};
+function renderCharts() {
+  const green = '#0A7A52', greenLight = 'rgba(10,122,82,0.1)', muted = '#AEADA8';
+  const gridColor = 'rgba(0,0,0,0.05)';
+  const tooltipStyle = {backgroundColor:'#0E0F0C',titleColor:'#fff',bodyColor:'#fff',borderWidth:0,padding:10,cornerRadius:8};
+  const axisStyle = {color:muted,font:{family:"'DM Sans',sans-serif",size:10}};
+  const gridStyle = {color:gridColor,drawBorder:false};
+
+  // Destroy old
+  Object.values(charts).forEach(c=>{try{c.destroy()}catch(e){}});
+  charts={};
+
+  const mk = (id,cfg) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    try{charts[id]=new Chart(el,cfg);}catch(e){}
+  };
+
+  // Revenue
+  mk('revChart',{type:'line',data:{labels:['Oct','Nov','Dec','Jan','Feb','Mar'],datasets:[{data:[24500,25800,26200,27100,26900,27600],borderColor:green,borderWidth:2,fill:true,backgroundColor:greenLight,tension:.4,pointRadius:0,pointHoverRadius:5,pointHoverBackgroundColor:green}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tooltipStyle,callbacks:{label:c=>`$${c.raw.toLocaleString()}`}}},scales:{x:{grid:{display:false},ticks:axisStyle,border:{display:false}},y:{grid:gridStyle,ticks:{...axisStyle,callback:v=>`$${(v/1000).toFixed(0)}k`},border:{display:false}}}}});
+
+  // Forecast
+  mk('forecastChart',{type:'line',data:{labels:['Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May'],datasets:[{label:'Actual',data:[23800,24500,25800,26200,27100,26900,27600,null,null],borderColor:green,borderWidth:2,fill:true,backgroundColor:greenLight,tension:.4,pointRadius:0,spanGaps:false},{label:'Projected',data:[null,null,null,null,null,null,27600,28200,28500],borderColor:'#9FD8C0',borderWidth:2,borderDash:[5,4],fill:false,tension:.4,pointRadius:0,spanGaps:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tooltipStyle,callbacks:{label:c=>c.raw?`$${c.raw.toLocaleString()}`:'—'}}},scales:{x:{grid:{display:false},ticks:axisStyle,border:{display:false}},y:{grid:gridStyle,ticks:{...axisStyle,callback:v=>`$${(v/1000).toFixed(0)}k`},border:{display:false}}}}});
+
+  // Occupancy
+  mk('occChart',{type:'line',data:{labels:['Oct','Nov','Dec','Jan','Feb','Mar'],datasets:[{data:[75,80,83,85,82,83],borderColor:green,borderWidth:3,fill:true,backgroundColor:greenLight,tension:.4,pointRadius:4,pointBackgroundColor:green}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tooltipStyle,callbacks:{label:c=>`${c.raw}%`}}},scales:{x:{grid:{display:false},ticks:axisStyle,border:{display:false}},y:{grid:gridStyle,min:60,max:100,ticks:{...axisStyle,callback:v=>`${v}%`},border:{display:false}}}}});
+
+  // Financial
+  mk('finChart',{type:'bar',data:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],datasets:[{label:'Revenue',data:[42,44.5,46.2,47.8,49.2,51,52.5,54,55.5,56.8,58.2,59.5],backgroundColor:green,borderRadius:4},{label:'Expenses',data:[8.2,7.8,9.1,8.4,8.9,9.5,10.2,9.8,10.1,9.6,10.4,11.2],backgroundColor:'rgba(180,83,9,0.3)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tooltipStyle,callbacks:{label:c=>`$${c.raw}k`}}},scales:{x:{grid:{display:false},ticks:axisStyle,border:{display:false}},y:{grid:gridStyle,stacked:false,ticks:{...axisStyle,callback:v=>`$${v}k`},border:{display:false}}}}});
+
+  // Expense pie
+  mk('expChart',{type:'doughnut',data:{labels:['Maintenance','Property Tax','Utilities','Insurance','Management'],datasets:[{data:[42,35,28,18,15],backgroundColor:[green,'#9FD8C0','#D4EDE4','#B45309','#E8E7E3'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tooltipStyle,callbacks:{label:c=>`${c.label}: $${c.raw}k`}}},cutout:'65%'}});
+}
+
+// ════ INIT ════
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(renderCharts, 100);
+  renderPayments();
+  renderAI();
+  // close modals on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
+  });
+});
+</script>
+</body>
+</html>

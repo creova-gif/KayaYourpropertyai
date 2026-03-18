@@ -154,19 +154,19 @@ export function MessagingCenter() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-12rem)] bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <div className="flex h-[calc(100vh-12rem)] bg-white rounded-xl border border-[rgba(0,0,0,0.07)] overflow-hidden">
       {/* Conversations List */}
-      <div className="w-80 border-r border-slate-200 flex flex-col">
+      <div className="w-80 border-r border-[rgba(0,0,0,0.07)] flex flex-col">
         {/* Search */}
-        <div className="p-4 border-b border-slate-200">
+        <div className="p-4 border-b border-[rgba(0,0,0,0.07)]">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#767570]" />
             <input
               type="text"
               placeholder="Search conversations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-[rgba(0,0,0,0.07)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]"
             />
           </div>
         </div>
@@ -177,49 +177,49 @@ export function MessagingCenter() {
             <button
               key={conv.id}
               onClick={() => setSelectedConversation(conv.id)}
-              className={`w-full p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors text-left ${
-                selectedConversation === conv.id ? "bg-indigo-50 hover:bg-indigo-50" : ""
+              className={`w-full p-4 border-b border-[rgba(0,0,0,0.04)] hover:bg-[#F8F7F4] transition-colors text-left ${
+                selectedConversation === conv.id ? "bg-[#E5F4EE] hover:bg-[#E5F4EE]" : ""
               }`}
             >
               <div className="flex items-start gap-3">
                 <div className="relative">
-                  <div className="size-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-semibold">
+                  <div className="size-10 rounded-full bg-gradient-to-br from-[#0A7A52] to-[#085D3D] flex items-center justify-center text-white font-semibold">
                     {conv.participantName.charAt(0)}
                   </div>
                   {conv.online && (
-                    <div className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full border-2 border-white" />
+                    <div className="absolute bottom-0 right-0 size-3 bg-[#0A7A52] rounded-full border-2 border-white" />
                   )}
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-semibold text-slate-900 text-sm truncate">
+                    <h3 className="font-semibold text-[#0E0F0C] text-sm truncate">
                       {conv.participantName}
                     </h3>
-                    <span className="text-xs text-slate-500">{conv.lastMessageTime}</span>
+                    <span className="text-xs text-[#767570]">{conv.lastMessageTime}</span>
                   </div>
 
                   <div className="flex items-center gap-2 mb-1">
                     <span
                       className={`px-2 py-0.5 rounded text-xs font-medium ${
                         conv.participantRole === "tenant"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-blue-100 text-blue-700"
+                          ? "bg-[#E5F4EE] text-[#0A7A52]"
+                          : "bg-[#E3F2FD] text-[#1976D2]"
                       }`}
                     >
                       {conv.participantRole}
                     </span>
-                    <span className="text-xs text-slate-500 truncate">
+                    <span className="text-xs text-[#767570] truncate">
                       {conv.property} {conv.unit && `• ${conv.unit}`}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <p className="text-sm text-slate-600 truncate flex-1">
+                    <p className="text-sm text-[#767570] truncate flex-1">
                       {conv.lastMessage}
                     </p>
                     {conv.unreadCount > 0 && (
-                      <span className="ml-2 size-5 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center font-medium">
+                      <span className="ml-2 size-5 rounded-full bg-[#0A7A52] text-white text-xs flex items-center justify-center font-medium">
                         {conv.unreadCount}
                       </span>
                     )}
@@ -235,22 +235,22 @@ export function MessagingCenter() {
       {selectedConv ? (
         <div className="flex-1 flex flex-col">
           {/* Chat Header */}
-          <div className="p-4 border-b border-slate-200">
+          <div className="p-4 border-b border-[rgba(0,0,0,0.07)]">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="size-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-semibold">
+                  <div className="size-10 rounded-full bg-gradient-to-br from-[#0A7A52] to-[#085D3D] flex items-center justify-center text-white font-semibold">
                     {selectedConv.participantName.charAt(0)}
                   </div>
                   {selectedConv.online && (
-                    <div className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full border-2 border-white" />
+                    <div className="absolute bottom-0 right-0 size-3 bg-[#0A7A52] rounded-full border-2 border-white" />
                   )}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900">
+                  <h3 className="font-semibold text-[#0E0F0C]">
                     {selectedConv.participantName}
                   </h3>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-[#767570]">
                     {selectedConv.property} {selectedConv.unit && `• ${selectedConv.unit}`}
                   </p>
                 </div>
@@ -260,8 +260,8 @@ export function MessagingCenter() {
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-medium ${
                     selectedConv.participantRole === "tenant"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-blue-100 text-blue-700"
+                      ? "bg-[#E5F4EE] text-[#0A7A52]"
+                      : "bg-[#E3F2FD] text-[#1976D2]"
                   }`}
                 >
                   {selectedConv.participantRole}
@@ -278,13 +278,13 @@ export function MessagingCenter() {
                 className={`flex ${message.sender === "landlord" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-md ${ message.sender === "landlord" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-900" } rounded-2xl px-4 py-3 bg-[#000000]`}
+                  className={`max-w-md ${ message.sender === "landlord" ? "bg-[#0A7A52] text-white" : "bg-[#F8F7F4] text-[#0E0F0C]" } rounded-2xl px-4 py-3`}
                 >
-                  <p className="text-sm text-[#ffffff]">{message.content}</p>
+                  <p className="text-sm text-[#000000]">{message.content}</p>
                   <div className="flex items-center gap-1 mt-1 justify-end">
                     <span
                       className={`text-xs ${
-                        message.sender === "landlord" ? "text-indigo-200" : "text-slate-500"
+                        message.sender === "landlord" ? "text-white/70" : "text-[#767570]"
                       }`}
                     >
                       {message.timestamp}
@@ -292,7 +292,7 @@ export function MessagingCenter() {
                     {message.sender === "landlord" && (
                       <CheckCheck
                         className={`size-4 ${
-                          message.read ? "text-indigo-200" : "text-indigo-400"
+                          message.read ? "text-white/70" : "text-white/90"
                         }`}
                       />
                     )}
@@ -303,7 +303,7 @@ export function MessagingCenter() {
           </div>
 
           {/* Message Input */}
-          <div className="p-4 border-t border-slate-200">
+          <div className="p-4 border-t border-[rgba(0,0,0,0.07)]">
             <div className="flex items-end gap-3">
               <div className="flex-1">
                 <textarea
@@ -316,22 +316,22 @@ export function MessagingCenter() {
                     }
                   }}
                   placeholder="Type your message..."
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                  className="w-full px-4 py-3 rounded-xl border border-[rgba(0,0,0,0.07)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52] resize-none"
                   rows={3}
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <button className="p-3 rounded-lg border border-slate-300 hover:bg-slate-50 transition-colors">
-                  <Paperclip className="size-5 text-slate-600" />
+                <button className="p-3 rounded-lg border border-[rgba(0,0,0,0.07)] hover:bg-[#F8F7F4] transition-colors">
+                  <Paperclip className="size-5 text-[#767570]" />
                 </button>
                 <button
                   onClick={handleSendMessage}
                   disabled={!messageText.trim()}
                   className={`p-3 rounded-lg transition-colors ${
                     messageText.trim()
-                      ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-                      : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                      ? "bg-[#0A7A52] hover:bg-[#0A7A52]/90 text-white"
+                      : "bg-[#F8F7F4] text-[#767570] cursor-not-allowed"
                   }`}
                 >
                   <Send className="size-5" />
@@ -343,11 +343,11 @@ export function MessagingCenter() {
       ) : (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <MessageSquare className="size-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">
+            <MessageSquare className="size-16 text-[#767570]/30 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-[#0E0F0C] mb-2">
               Select a conversation
             </h3>
-            <p className="text-slate-600">
+            <p className="text-[#767570]">
               Choose a conversation from the left to start messaging
             </p>
           </div>

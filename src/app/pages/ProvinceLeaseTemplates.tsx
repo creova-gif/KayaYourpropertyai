@@ -170,12 +170,12 @@ export function ProvinceLeaseTemplates() {
           className="mb-12"
         >
           <div className="flex items-center gap-3 mb-3">
-            <MapPin className="size-8 text-[#0A0A0A]" />
-            <h1 className="text-[48px] font-semibold text-[#0A0A0A] leading-tight tracking-tight">
+            <MapPin className="size-8 text-[#0A7A52]" />
+            <h1 className="text-[48px] font-normal text-[#0E0F0C] leading-tight tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>
               Province Lease Templates
             </h1>
           </div>
-          <p className="text-[14px] text-[#9CA3AF] font-normal mb-6">
+          <p className="text-[14px] text-[#767570] font-normal mb-6">
             Legally compliant lease templates for all 10 Canadian provinces
           </p>
 
@@ -184,10 +184,10 @@ export function ProvinceLeaseTemplates() {
             <div className="flex items-start gap-3">
               <Shield className="size-5 text-[#EF4444] flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-[13px] font-medium text-[#0A0A0A] mb-1">
+                <p className="text-[13px] font-medium text-[#0E0F0C] mb-1">
                   🇨🇦 Canadian-First Lease Templates
                 </p>
-                <p className="text-[12px] text-[#6B7280]">
+                <p className="text-[12px] text-[#767570]">
                   Each province has unique landlord-tenant laws. Our templates are updated with
                   2026 rent increase guidelines and provincial regulations. Always compliant.
                 </p>
@@ -207,8 +207,8 @@ export function ProvinceLeaseTemplates() {
               onClick={() => setSelectedProvince(prov)}
               className={`p-4 rounded-xl border-2 transition-all text-left ${
                 selectedProvince.id === prov.id
-                  ? "border-[#0A0A0A] bg-[#0A0A0A] text-white shadow-lg"
-                  : "border-black/[0.08] bg-white text-[#0A0A0A] hover:border-[#0A0A0A]/30"
+                  ? "border-[#0A7A52] bg-[#0A7A52] text-white shadow-lg"
+                  : "border-[rgba(0,0,0,0.07)] bg-white text-[#0E0F0C] hover:border-[#0A7A52]/30"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
@@ -216,7 +216,7 @@ export function ProvinceLeaseTemplates() {
                 {prov.templateAvailable && (
                   <CheckCircle2
                     className={`size-4 ${
-                      selectedProvince.id === prov.id ? "text-white" : "text-[#22C55E]"
+                      selectedProvince.id === prov.id ? "text-white" : "text-[#0A7A52]"
                     }`}
                   />
                 )}
@@ -230,17 +230,17 @@ export function ProvinceLeaseTemplates() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left: Province Info */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white border border-black/[0.08] rounded-xl p-8">
+            <div className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-8">
               <div className="flex items-start justify-between mb-6">
                 <div>
-                  <h2 className="text-[32px] font-semibold text-[#0A0A0A] mb-2">
+                  <h2 className="text-[36px] font-normal text-[#0E0F0C] mb-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                     {selectedProvince.name}
                   </h2>
-                  <p className="text-[14px] text-[#6B7280]">
+                  <p className="text-[14px] text-[#767570]">
                     Residential Tenancy Lease Agreement
                   </p>
                 </div>
-                <div className="px-4 py-2 bg-[#22C55E]/10 text-[#22C55E] text-[12px] font-medium rounded-full flex items-center gap-2">
+                <div className="px-4 py-2 bg-[#E5F4EE] text-[#0A7A52] text-[11px] font-semibold uppercase tracking-wider rounded-full flex items-center gap-2 border border-[#0A7A52]/20">
                   <CheckCircle2 className="size-4" />
                   2026 Compliant
                 </div>
@@ -248,20 +248,20 @@ export function ProvinceLeaseTemplates() {
 
               {/* Key Statistics */}
               <div className="grid grid-cols-2 gap-4 mb-8">
-                <div className="p-4 bg-[#F5F5F5] rounded-lg">
-                  <p className="text-[11px] text-[#9CA3AF] uppercase tracking-wider mb-1">
+                <div className="p-4 bg-[#F8F7F4] rounded-lg border border-[rgba(0,0,0,0.04)]">
+                  <p className="text-[11px] text-[#767570] uppercase tracking-wider mb-1">
                     2026 Rent Increase Guideline
                   </p>
-                  <p className="text-[24px] font-semibold text-[#6366F1]">
+                  <p className="text-[28px] font-normal text-[#0A7A52]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                     {selectedProvince.rentIncreaseGuideline2026}
                   </p>
                 </div>
 
-                <div className="p-4 bg-[#F5F5F5] rounded-lg">
-                  <p className="text-[11px] text-[#9CA3AF] uppercase tracking-wider mb-1">
+                <div className="p-4 bg-[#F8F7F4] rounded-lg border border-[rgba(0,0,0,0.04)]">
+                  <p className="text-[11px] text-[#767570] uppercase tracking-wider mb-1">
                     Notice Required
                   </p>
-                  <p className="text-[24px] font-semibold text-[#0A0A0A]">
+                  <p className="text-[28px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                     {selectedProvince.noticeRequired}
                   </p>
                 </div>
@@ -269,17 +269,17 @@ export function ProvinceLeaseTemplates() {
 
               {/* Unique Provincial Rules */}
               <div>
-                <h3 className="text-[16px] font-semibold text-[#0A0A0A] mb-4">
+                <h3 className="text-[18px] font-normal text-[#0E0F0C] mb-4" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                   Provincial Requirements
                 </h3>
                 <div className="space-y-3">
                   {selectedProvince.uniqueRules.map((rule, idx) => (
                     <div
                       key={idx}
-                      className="flex items-start gap-3 p-3 bg-[#F5F5F5] rounded-lg"
+                      className="flex items-start gap-3 p-3 bg-[#F8F7F4] rounded-lg border border-[rgba(0,0,0,0.04)]"
                     >
-                      <Info className="size-5 text-[#6366F1] flex-shrink-0 mt-0.5" />
-                      <p className="text-[13px] text-[#0A0A0A]">{rule}</p>
+                      <Info className="size-5 text-[#0A7A52] flex-shrink-0 mt-0.5" />
+                      <p className="text-[13px] text-[#0E0F0C]">{rule}</p>
                     </div>
                   ))}
                 </div>
@@ -287,8 +287,8 @@ export function ProvinceLeaseTemplates() {
             </div>
 
             {/* Template Features */}
-            <div className="bg-gradient-to-br from-[#6366F1]/5 to-[#8B5CF6]/5 border border-[#6366F1]/20 rounded-xl p-8">
-              <h3 className="text-[18px] font-semibold text-[#0A0A0A] mb-4">
+            <div className="bg-gradient-to-br from-[#0A7A52]/5 to-[#0A7A52]/10 border border-[#0A7A52]/20 rounded-xl p-8">
+              <h3 className="text-[20px] font-normal text-[#0E0F0C] mb-4" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                 What's Included in This Template
               </h3>
 
@@ -309,9 +309,9 @@ export function ProvinceLeaseTemplates() {
                 ].map((feature, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-2 text-[13px] text-[#0A0A0A]"
+                    className="flex items-center gap-2 text-[13px] text-[#0E0F0C]"
                   >
-                    <CheckCircle2 className="size-4 text-[#22C55E]" />
+                    <CheckCircle2 className="size-4 text-[#0A7A52]" />
                     <span>{feature}</span>
                   </div>
                 ))}
@@ -321,60 +321,60 @@ export function ProvinceLeaseTemplates() {
 
           {/* Right: Actions */}
           <div className="space-y-4">
-            <div className="bg-white border border-black/[0.08] rounded-xl p-6 sticky top-8">
-              <h3 className="text-[16px] font-semibold text-[#0A0A0A] mb-4">
+            <div className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6 sticky top-8">
+              <h3 className="text-[18px] font-normal text-[#0E0F0C] mb-4" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                 Generate Lease
               </h3>
 
               <div className="space-y-3 mb-6">
                 <div>
-                  <label className="block text-[12px] font-medium text-[#6B7280] mb-2">
+                  <label className="block text-[12px] font-semibold text-[#767570] mb-2 uppercase tracking-wider">
                     Tenant Name
                   </label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-black/[0.08] rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                    className="w-full px-3 py-2 border border-[rgba(0,0,0,0.07)] rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]/20 text-[#0E0F0C] bg-white"
                     placeholder="Sarah Kim"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-medium text-[#6B7280] mb-2">
+                  <label className="block text-[12px] font-semibold text-[#767570] mb-2 uppercase tracking-wider">
                     Property Address
                   </label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-black/[0.08] rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                    className="w-full px-3 py-2 border border-[rgba(0,0,0,0.07)] rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]/20 text-[#0E0F0C] bg-white"
                     placeholder="123 King St, Toronto"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-medium text-[#6B7280] mb-2">
+                  <label className="block text-[12px] font-semibold text-[#767570] mb-2 uppercase tracking-wider">
                     Monthly Rent (CAD)
                   </label>
                   <input
                     type="number"
-                    className="w-full px-3 py-2 border border-black/[0.08] rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                    className="w-full px-3 py-2 border border-[rgba(0,0,0,0.07)] rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]/20 text-[#0E0F0C] bg-white"
                     placeholder="2300"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-medium text-[#6B7280] mb-2">
+                  <label className="block text-[12px] font-semibold text-[#767570] mb-2 uppercase tracking-wider">
                     Lease Start Date
                   </label>
                   <input
                     type="date"
-                    className="w-full px-3 py-2 border border-black/[0.08] rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                    className="w-full px-3 py-2 border border-[rgba(0,0,0,0.07)] rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]/20 text-[#0E0F0C] bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-medium text-[#6B7280] mb-2">
+                  <label className="block text-[12px] font-semibold text-[#767570] mb-2 uppercase tracking-wider">
                     Lease Term
                   </label>
-                  <select className="w-full px-3 py-2 border border-black/[0.08] rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-[#6366F1]">
+                  <select className="w-full px-3 py-2 border border-[rgba(0,0,0,0.07)] rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]/20 text-[#0E0F0C] bg-white">
                     <option value="12">12 months (1 year)</option>
                     <option value="24">24 months (2 years)</option>
                     <option value="month-to-month">Month-to-month</option>
@@ -385,57 +385,57 @@ export function ProvinceLeaseTemplates() {
               <div className="space-y-3">
                 <button
                   onClick={() => setShowPreview(true)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-black/[0.08] text-[#0A0A0A] text-[13px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-[rgba(0,0,0,0.07)] text-[#0E0F0C] text-[13px] font-medium rounded-lg hover:bg-[#F8F7F4] transition-colors"
                 >
                   <Eye className="size-4" />
                   Preview Lease
                 </button>
 
-                <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#0A0A0A] text-white text-[13px] font-medium rounded-lg hover:bg-[#1C1C1C] transition-colors">
+                <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#0E0F0C] text-white text-[13px] font-medium rounded-lg hover:bg-[#0E0F0C]/90 transition-colors">
                   <Download className="size-4" />
                   Download PDF
                 </button>
 
-                <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#6366F1] text-white text-[13px] font-medium rounded-lg hover:bg-[#5558E3] transition-colors">
+                <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#0A7A52] text-white text-[13px] font-medium rounded-lg hover:bg-[#0A7A52]/90 transition-colors">
                   <Edit className="size-4" />
                   Customize & Sign
                 </button>
               </div>
 
-              <div className="mt-6 pt-6 border-t border-black/[0.04]">
-                <p className="text-[11px] text-[#9CA3AF] text-center">
+              <div className="mt-6 pt-6 border-t border-[rgba(0,0,0,0.04)]">
+                <p className="text-[11px] text-[#767570] text-center">
                   AI-verified for {selectedProvince.name} compliance
                 </p>
               </div>
             </div>
 
             {/* Provincial Resources */}
-            <div className="bg-white border border-black/[0.08] rounded-xl p-6">
-              <h3 className="text-[14px] font-semibold text-[#0A0A0A] mb-4">
+            <div className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6">
+              <h3 className="text-[16px] font-normal text-[#0E0F0C] mb-4" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                 Official Resources
               </h3>
 
               <div className="space-y-2">
                 <a
                   href="#"
-                  className="flex items-center justify-between p-3 bg-[#F5F5F5] rounded-lg hover:bg-[#E5E5E5] transition-colors group"
+                  className="flex items-center justify-between p-3 bg-[#F8F7F4] rounded-lg hover:bg-[#F8F7F4]/70 transition-colors group border border-[rgba(0,0,0,0.04)]"
                 >
                   <div className="flex items-center gap-2">
-                    <FileText className="size-4 text-[#6B7280]" />
-                    <span className="text-[12px] text-[#0A0A0A]">Official Forms</span>
+                    <FileText className="size-4 text-[#767570]" />
+                    <span className="text-[12px] text-[#0E0F0C]">Official Forms</span>
                   </div>
-                  <ExternalLink className="size-4 text-[#9CA3AF] group-hover:text-[#0A0A0A]" />
+                  <ExternalLink className="size-4 text-[#767570] group-hover:text-[#0E0F0C]" />
                 </a>
 
                 <a
                   href="#"
-                  className="flex items-center justify-between p-3 bg-[#F5F5F5] rounded-lg hover:bg-[#E5E5E5] transition-colors group"
+                  className="flex items-center justify-between p-3 bg-[#F8F7F4] rounded-lg hover:bg-[#F8F7F4]/70 transition-colors group border border-[rgba(0,0,0,0.04)]"
                 >
                   <div className="flex items-center gap-2">
-                    <Shield className="size-4 text-[#6B7280]" />
-                    <span className="text-[12px] text-[#0A0A0A]">Tenancy Act</span>
+                    <Shield className="size-4 text-[#767570]" />
+                    <span className="text-[12px] text-[#0E0F0C]">Tenancy Act</span>
                   </div>
-                  <ExternalLink className="size-4 text-[#9CA3AF] group-hover:text-[#0A0A0A]" />
+                  <ExternalLink className="size-4 text-[#767570] group-hover:text-[#0E0F0C]" />
                 </a>
               </div>
             </div>
@@ -453,25 +453,25 @@ export function ProvinceLeaseTemplates() {
               <div className="p-8">
                 <div className="flex items-start justify-between mb-6">
                   <div>
-                    <h2 className="text-[24px] font-semibold text-[#0A0A0A] mb-2">
+                    <h2 className="text-[28px] font-normal text-[#0E0F0C] mb-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                       {selectedProvince.name} Residential Lease
                     </h2>
-                    <p className="text-[14px] text-[#6B7280]">Preview - Draft</p>
+                    <p className="text-[14px] text-[#767570]">Preview - Draft</p>
                   </div>
                   <button
                     onClick={() => setShowPreview(false)}
-                    className="text-[#6B7280] hover:text-[#0A0A0A]"
+                    className="text-[#767570] hover:text-[#0E0F0C] text-[24px] leading-none"
                   >
                     ✕
                   </button>
                 </div>
 
-                <div className="bg-[#F5F5F5] rounded-xl p-8 mb-6 max-h-96 overflow-y-auto">
-                  <h3 className="text-center text-[18px] font-bold text-[#0A0A0A] mb-6">
+                <div className="bg-[#F8F7F4] rounded-xl p-8 mb-6 max-h-96 overflow-y-auto border border-[rgba(0,0,0,0.04)]">
+                  <h3 className="text-center text-[20px] font-normal text-[#0E0F0C] mb-6" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                     RESIDENTIAL TENANCY AGREEMENT
                   </h3>
 
-                  <div className="space-y-4 text-[13px] text-[#0A0A0A]">
+                  <div className="space-y-4 text-[13px] text-[#0E0F0C]">
                     <section>
                       <h4 className="font-semibold mb-2">1. PARTIES</h4>
                       <p>
@@ -517,7 +517,7 @@ export function ProvinceLeaseTemplates() {
                       </ul>
                     </section>
 
-                    <p className="text-[11px] text-[#9CA3AF] mt-8 pt-4 border-t">
+                    <p className="text-[11px] text-[#767570] mt-8 pt-4 border-t border-[rgba(0,0,0,0.07)]">
                       This is a preview. The final lease will include all province-specific
                       clauses and legal requirements for {selectedProvince.name}.
                     </p>
@@ -527,11 +527,11 @@ export function ProvinceLeaseTemplates() {
                 <div className="flex gap-3">
                   <button
                     onClick={() => setShowPreview(false)}
-                    className="flex-1 px-6 py-3 border border-black/[0.08] text-[#6B7280] text-[14px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors"
+                    className="flex-1 px-6 py-3 border border-[rgba(0,0,0,0.07)] text-[#767570] text-[14px] font-medium rounded-lg hover:bg-[#F8F7F4] transition-colors"
                   >
                     Close
                   </button>
-                  <button className="flex-1 px-6 py-3 bg-[#0A0A0A] text-white text-[14px] font-medium rounded-lg hover:bg-[#1C1C1C] transition-colors">
+                  <button className="flex-1 px-6 py-3 bg-[#0A7A52] text-white text-[14px] font-medium rounded-lg hover:bg-[#0A7A52]/90 transition-colors">
                     Download Full Lease
                   </button>
                 </div>

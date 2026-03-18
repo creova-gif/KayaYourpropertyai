@@ -1,451 +1,204 @@
+import { motion } from "motion/react";
 import {
-  Shield,
-  Users,
-  Building2,
-  AlertTriangle,
-  CheckCircle,
-  TrendingUp,
-  Activity,
-  FileText,
-  DollarSign,
-  Clock,
-  UserX,
-  Flag,
-  Eye,
-  Download,
+  Shield, Users, Building2, AlertTriangle, Activity,
+  Eye, Clock,
 } from "lucide-react";
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer, AreaChart, Area,
+} from "recharts";
+
+// ── Tokens ────────────────────────────────────────────────────
+const G = "#0A7A52", GL = "#E5F4EE";
+const BG = "#F8F7F4", TEXT = "#0E0F0C", MUTED = "#767570";
+const BORDER = "rgba(0,0,0,0.07)";
+
+const styles = {
+  page: { minHeight: "100vh", background: BG, fontFamily: "'DM Sans', system-ui, sans-serif" } as React.CSSProperties,
+  wrap: { maxWidth: 1280, margin: "0 auto", padding: "48px 40px 80px" } as React.CSSProperties,
+  card: { background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 16 } as React.CSSProperties,
+  sectionTitle: { fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 28, fontWeight: 400, color: TEXT, letterSpacing: "-0.4px" } as React.CSSProperties,
+  label: { fontSize: 10, fontWeight: 600, color: MUTED, textTransform: "uppercase" as const, letterSpacing: "0.7px" },
+  bigNum: { fontFamily: "'Instrument Serif', serif", fontSize: 38, fontWeight: 400, color: TEXT, lineHeight: 1 } as React.CSSProperties,
+};
+
+function Badge({ label, color = "green" }: { label: string; color?: "green" | "amber" | "red" | "blue" | "gray" }) {
+  const c = { green: [GL, G], amber: ["#FEF3C7", "#B45309"], red: ["#FDECEA", "#C0392B"], blue: ["#EBF2FB", "#1E5FA8"], gray: [BG, MUTED] }[color];
+  return <span style={{ background: c[0], color: c[1], fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 20 }}>{label}</span>;
+}
+
+function MetCard({ label, value, change, icon: Icon, delay = 0 }: { label: string; value: string; change: string; icon: any; delay?: number }) {
+  const up = change.startsWith("+");
+  return (
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
+      style={{ ...styles.card, padding: "22px 24px" }} whileHover={{ boxShadow: "0 8px 24px rgba(0,0,0,0.07)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: BG, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Icon size={18} color={G} />
+        </div>
+        <span style={{ fontSize: 12, fontWeight: 600, color: up ? G : "#C0392B" }}>{change}</span>
+      </div>
+      <p style={styles.label}>{label}</p>
+      <p style={{ ...styles.bigNum, fontSize: 32, marginTop: 6 }}>{value}</p>
+    </motion.div>
+  );
+}
 
 export function AdminDashboard() {
-  // Platform statistics
-  const platformStats = {
-    totalUsers: 1247,
-    totalProperties: 342,
-    totalUnits: 1856,
-    activeLeases: 1624,
-    monthlyRevenue: 285400,
-    fraudDetections: 23,
-    complianceIssues: 8,
-    systemHealth: 99.7,
-  };
-
-  // User activity data
-  const userActivity = [
-    { day: "Mon", landlords: 145, tenants: 320, applications: 42 },
-    { day: "Tue", landlords: 158, tenants: 342, applications: 38 },
-    { day: "Wed", landlords: 172, tenants: 365, applications: 51 },
-    { day: "Thu", landlords: 165, tenants: 358, applications: 47 },
-    { day: "Fri", landlords: 189, tenants: 398, applications: 62 },
-    { day: "Sat", landlords: 134, tenants: 287, applications: 28 },
-    { day: "Sun", landlords: 121, tenants: 265, applications: 19 },
-  ];
-
-  // Fraud alerts
   const fraudAlerts = [
-    {
-      id: 1,
-      type: "Duplicate Documents",
-      severity: "high",
-      user: "John Smith",
-      property: "456 Queen St",
-      timestamp: "2 hours ago",
-      status: "under_review",
-    },
-    {
-      id: 2,
-      type: "Identity Mismatch",
-      severity: "critical",
-      user: "Sarah Chen",
-      property: "123 King St",
-      timestamp: "5 hours ago",
-      status: "flagged",
-    },
-    {
-      id: 3,
-      type: "Suspicious Payment",
-      severity: "medium",
-      user: "Mike Johnson",
-      property: "789 Bloor St",
-      timestamp: "1 day ago",
-      status: "resolved",
-    },
+    { id: 1, type: "Duplicate Documents", severity: "high", user: "John Smith", property: "456 Queen St", time: "2h ago", status: "under_review" },
+    { id: 2, type: "Identity Mismatch", severity: "critical", user: "Sarah Chen", property: "123 King St", time: "5h ago", status: "flagged" },
+    { id: 3, type: "Suspicious Payment", severity: "medium", user: "Mike Johnson", property: "789 Bloor St", time: "1d ago", status: "resolved" },
   ];
-
-  // Compliance issues
-  const complianceIssues = [
-    {
-      id: 1,
-      issue: "Missing LTB Clause",
-      property: "456 Queen St W",
-      landlord: "PropertyCo Inc",
-      severity: "high",
-      dueDate: "Mar 20, 2026",
-    },
-    {
-      id: 2,
-      issue: "Lease Expiration Notice",
-      property: "123 King St",
-      landlord: "John Mafie",
-      severity: "medium",
-      dueDate: "Mar 25, 2026",
-    },
-    {
-      id: 3,
-      issue: "Rent Increase Notice Required",
-      property: "789 Bloor St",
-      landlord: "Urban Properties",
-      severity: "low",
-      dueDate: "Apr 1, 2026",
-    },
+  const compliance = [
+    { id: 1, issue: "Missing LTB Clause", property: "456 Queen St W", landlord: "PropertyCo Inc", severity: "high", due: "Mar 20, 2026" },
+    { id: 2, issue: "Lease Expiration Notice", property: "123 King St", landlord: "John Mafie", severity: "medium", due: "Mar 25, 2026" },
+    { id: 3, issue: "Rent Increase Notice Required", property: "789 Bloor St", landlord: "Urban Properties", severity: "low", due: "Apr 1, 2026" },
   ];
-
-  // System metrics
-  const systemMetrics = [
-    {
-      label: "Total Users",
-      value: platformStats.totalUsers.toLocaleString(),
-      change: "+12.5%",
-      icon: Users,
-      color: "indigo",
-    },
-    {
-      label: "Active Properties",
-      value: platformStats.totalProperties.toLocaleString(),
-      change: "+8.3%",
-      icon: Building2,
-      color: "green",
-    },
-    {
-      label: "Fraud Detections",
-      value: platformStats.fraudDetections,
-      change: "-15.2%",
-      icon: Shield,
-      color: "red",
-    },
-    {
-      label: "System Health",
-      value: `${platformStats.systemHealth}%`,
-      change: "+0.2%",
-      icon: Activity,
-      color: "purple",
-    },
+  const activity = [
+    { day: "Mon", landlords: 145, tenants: 320 }, { day: "Tue", landlords: 158, tenants: 342 },
+    { day: "Wed", landlords: 172, tenants: 365 }, { day: "Thu", landlords: 165, tenants: 358 },
+    { day: "Fri", landlords: 189, tenants: 398 }, { day: "Sat", landlords: 134, tenants: 287 },
+    { day: "Sun", landlords: 121, tenants: 265 },
+  ];
+  const revData = [
+    { month: "Jan", v: 185000 }, { month: "Feb", v: 205000 }, { month: "Mar", v: 225000 },
+    { month: "Apr", v: 238000 }, { month: "May", v: 252000 }, { month: "Jun", v: 268000 }, { month: "Jul", v: 285400 },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900">Admin Dashboard</h1>
-            <p className="mt-2 text-slate-600">
-              Platform monitoring, compliance, and fraud detection
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
-              <Download className="size-5 text-slate-600" />
-              <span className="font-medium text-slate-700">Export Report</span>
-            </button>
-          </div>
-        </div>
+    <div style={styles.page}>
+      <div style={styles.wrap}>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: 40 }}>
+          <p style={styles.label}>Platform Operations</p>
+          <h1 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 48, fontWeight: 400, color: TEXT, marginTop: 8, letterSpacing: "-1px" }}>
+            Admin<em style={{ fontStyle: "italic", color: G }}> Dashboard</em>
+          </h1>
+        </motion.div>
 
-        {/* System Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {systemMetrics.map((metric, idx) => {
-            const Icon = metric.icon;
-            return (
-              <div key={idx} className="bg-white rounded-xl border border-slate-200 p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div
-                    className={`p-3 rounded-lg ${
-                      metric.color === "indigo"
-                        ? "bg-indigo-50"
-                        : metric.color === "green"
-                        ? "bg-green-50"
-                        : metric.color === "red"
-                        ? "bg-red-50"
-                        : "bg-purple-50"
-                    }`}
-                  >
-                    <Icon
-                      className={`size-6 ${
-                        metric.color === "indigo"
-                          ? "text-indigo-600"
-                          : metric.color === "green"
-                          ? "text-green-600"
-                          : metric.color === "red"
-                          ? "text-red-600"
-                          : "text-purple-600"
-                      }`}
-                    />
-                  </div>
-                  <span
-                    className={`text-sm font-medium ${
-                      metric.change.startsWith("+") ? "text-green-600" : "text-red-600"
-                    }`}
-                  >
-                    {metric.change}
-                  </span>
-                </div>
-                <p className="text-sm text-slate-600 mb-1">{metric.label}</p>
-                <p className="text-2xl font-bold text-slate-900">{metric.value}</p>
-              </div>
-            );
-          })}
+        {/* Metrics */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 32 }}>
+          <MetCard label="Total Users" value="1,247" change="+12.5%" icon={Users} delay={0.05} />
+          <MetCard label="Active Properties" value="342" change="+8.3%" icon={Building2} delay={0.1} />
+          <MetCard label="Fraud Detections" value="23" change="-15.2%" icon={Shield} delay={0.15} />
+          <MetCard label="System Health" value="99.7%" change="+0.2%" icon={Activity} delay={0.2} />
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* User Activity */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-slate-900">User Activity</h3>
-              <p className="text-sm text-slate-600">Weekly active users by type</p>
-            </div>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={userActivity}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="day" stroke="#64748b" />
-                <YAxis stroke="#64748b" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#ffffff",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: "8px",
-                  }}
-                />
-                <Bar dataKey="landlords" fill="#6366F1" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="tenants" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="applications" fill="#EC4899" radius={[4, 4, 0, 0]} />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 32 }}>
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} style={{ ...styles.card, padding: "28px" }}>
+            <p style={styles.sectionTitle}>User Activity</p>
+            <p style={{ ...styles.label, marginTop: 4, marginBottom: 24 }}>Weekly active by type</p>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={activity} barGap={4}>
+                <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
+                <XAxis dataKey="day" stroke="none" tick={{ fill: MUTED, fontSize: 11 }} />
+                <YAxis stroke="none" tick={{ fill: MUTED, fontSize: 11 }} />
+                <Tooltip contentStyle={{ background: TEXT, border: "none", borderRadius: 8, color: "#fff", fontSize: 12 }} />
+                <Bar dataKey="landlords" fill={G} radius={[4, 4, 0, 0]} name="Landlords" key="bar-landlords" />
+                <Bar dataKey="tenants" fill="#9FD8C0" radius={[4, 4, 0, 0]} name="Tenants" key="bar-tenants" />
               </BarChart>
             </ResponsiveContainer>
-            <div className="flex items-center gap-6 mt-4 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="size-3 rounded-full bg-indigo-600"></div>
-                <span className="text-slate-600">Landlords</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="size-3 rounded-full bg-purple-600"></div>
-                <span className="text-slate-600">Tenants</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="size-3 rounded-full bg-pink-600"></div>
-                <span className="text-slate-600">Applications</span>
-              </div>
+            <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
+              {[{ c: G, l: "Landlords" }, { c: "#9FD8C0", l: "Tenants" }].map(x => (
+                <div key={x.l} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: x.c }} />
+                  <span style={{ fontSize: 11, color: MUTED }}>{x.l}</span>
+                </div>
+              ))}
             </div>
-          </div>
+          </motion.div>
 
-          {/* Platform Revenue */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-slate-900">Platform Revenue</h3>
-              <p className="text-sm text-slate-600">Monthly recurring revenue trend</p>
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} style={{ ...styles.card, padding: "28px" }}>
+            <p style={styles.sectionTitle}>Platform Revenue</p>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 10, margin: "8px 0 24px" }}>
+              <span style={{ fontFamily: "'Instrument Serif', serif", fontSize: 36, color: TEXT }}>$285,400</span>
+              <span style={{ fontSize: 13, color: G, fontWeight: 600 }}>+18.2%</span>
             </div>
-            <div className="mb-4">
-              <p className="text-3xl font-bold text-slate-900">
-                ${platformStats.monthlyRevenue.toLocaleString()}
-              </p>
-              <p className="text-sm text-green-600 font-medium mt-1">+18.2% from last month</p>
-            </div>
-            <ResponsiveContainer width="100%" height={240}>
-              <LineChart
-                data={[
-                  { month: "Jan", revenue: 185000 },
-                  { month: "Feb", revenue: 205000 },
-                  { month: "Mar", revenue: 225000 },
-                  { month: "Apr", revenue: 238000 },
-                  { month: "May", revenue: 252000 },
-                  { month: "Jun", revenue: 268000 },
-                  { month: "Jul", revenue: 285400 },
-                ]}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="month" stroke="#64748b" />
-                <YAxis stroke="#64748b" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#ffffff",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: "8px",
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke="#10B981"
-                  strokeWidth={3}
-                  dot={{ fill: "#10B981", r: 4 }}
-                />
-              </LineChart>
+            <ResponsiveContainer width="100%" height={180}>
+              <AreaChart data={revData} margin={{ left: -20 }}>
+                <defs>
+                  <linearGradient id="adminRevGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={G} stopOpacity={0.15} />
+                    <stop offset="100%" stopColor={G} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
+                <XAxis dataKey="month" stroke="none" tick={{ fill: MUTED, fontSize: 11 }} />
+                <YAxis stroke="none" tick={{ fill: MUTED, fontSize: 11 }} />
+                <Tooltip contentStyle={{ background: TEXT, border: "none", borderRadius: 8, color: "#fff", fontSize: 12 }}
+                  formatter={(v: number) => [`$${v.toLocaleString()}`, ""]} />
+                <Area key="revenue" type="monotone" dataKey="v" stroke={G} strokeWidth={2} fill="url(#adminRevGrad)" dot={false} />
+              </AreaChart>
             </ResponsiveContainer>
-          </div>
+          </motion.div>
         </div>
 
         {/* Fraud Alerts */}
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden mb-8">
-          <div className="p-6 border-b border-slate-200 flex items-center justify-between">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} style={{ ...styles.card, marginBottom: 24, overflow: "hidden" }}>
+          <div style={{ padding: "20px 24px", borderBottom: `1px solid ${BORDER}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
-              <h3 className="text-lg font-semibold text-slate-900">Fraud Detection Alerts</h3>
-              <p className="text-sm text-slate-600">AI-powered suspicious activity monitoring</p>
+              <p style={styles.sectionTitle}>Fraud Detection Alerts</p>
+              <p style={{ ...styles.label, marginTop: 4 }}>AI-powered suspicious activity monitoring</p>
             </div>
-            <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">
-              {fraudAlerts.filter((a) => a.status !== "resolved").length} Active
-            </span>
+            <Badge label={`${fraudAlerts.filter(a => a.status !== "resolved").length} Active`} color="red" />
           </div>
-          <div className="divide-y divide-slate-200">
-            {fraudAlerts.map((alert) => (
-              <div key={alert.id} className="p-6 hover:bg-slate-50 transition-colors">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-4 flex-1">
-                    <div
-                      className={`p-2 rounded-lg ${
-                        alert.severity === "critical"
-                          ? "bg-red-100"
-                          : alert.severity === "high"
-                          ? "bg-orange-100"
-                          : "bg-yellow-100"
-                      }`}
-                    >
-                      <AlertTriangle
-                        className={`size-5 ${
-                          alert.severity === "critical"
-                            ? "text-red-600"
-                            : alert.severity === "high"
-                            ? "text-orange-600"
-                            : "text-yellow-600"
-                        }`}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h4 className="font-semibold text-slate-900">{alert.type}</h4>
-                        <span
-                          className={`px-2 py-0.5 rounded text-xs font-medium ${
-                            alert.severity === "critical"
-                              ? "bg-red-100 text-red-700"
-                              : alert.severity === "high"
-                              ? "bg-orange-100 text-orange-700"
-                              : "bg-yellow-100 text-yellow-700"
-                          }`}
-                        >
-                          {alert.severity}
-                        </span>
-                        <span
-                          className={`px-2 py-0.5 rounded text-xs font-medium ${
-                            alert.status === "flagged"
-                              ? "bg-red-100 text-red-700"
-                              : alert.status === "under_review"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-green-100 text-green-700"
-                          }`}
-                        >
-                          {alert.status.replace("_", " ")}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-slate-600">
-                        <span>User: {alert.user}</span>
-                        <span>•</span>
-                        <span>Property: {alert.property}</span>
-                        <span>•</span>
-                        <span>{alert.timestamp}</span>
-                      </div>
-                    </div>
+          {fraudAlerts.map((alert, i) => (
+            <div key={alert.id} style={{ padding: "18px 24px", borderBottom: i < fraudAlerts.length - 1 ? `1px solid ${BORDER}` : "none", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <div style={{
+                  width: 36, height: 36, borderRadius: 10,
+                  background: alert.severity === "critical" ? "#FDECEA" : alert.severity === "high" ? "#FEF0E6" : "#FEF3C7",
+                  display: "flex", alignItems: "center", justifyContent: "center"
+                }}>
+                  <AlertTriangle size={16} color={alert.severity === "critical" ? "#C0392B" : alert.severity === "high" ? "#D97706" : "#B45309"} />
+                </div>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: TEXT }}>{alert.type}</span>
+                    <Badge label={alert.severity} color={alert.severity === "critical" ? "red" : alert.severity === "high" ? "amber" : "amber"} />
+                    <Badge label={alert.status.replace("_", " ")} color={alert.status === "resolved" ? "green" : alert.status === "flagged" ? "red" : "blue"} />
                   </div>
-                  <button className="flex items-center gap-2 px-3 py-1.5 text-sm bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg font-medium transition-colors">
-                    <Eye className="size-4" />
-                    Review
-                  </button>
+                  <p style={{ fontSize: 12, color: MUTED }}>{alert.user} · {alert.property} · {alert.time}</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Compliance Issues */}
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-          <div className="p-6 border-b border-slate-200 flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900">Compliance Monitoring</h3>
-              <p className="text-sm text-slate-600">LTB and regulatory compliance tracking</p>
+              <button style={{ padding: "8px 16px", background: BG, border: `1px solid ${BORDER}`, borderRadius: 8, fontSize: 12, fontWeight: 600, color: TEXT, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6 }}>
+                <Eye size={13} />Review
+              </button>
             </div>
-            <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
-              {complianceIssues.length} Issues
-            </span>
+          ))}
+        </motion.div>
+
+        {/* Compliance */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} style={{ ...styles.card, overflow: "hidden" }}>
+          <div style={{ padding: "20px 24px", borderBottom: `1px solid ${BORDER}`, display: "flex", justifyContent: "space-between" }}>
+            <p style={styles.sectionTitle}>Compliance Monitoring</p>
+            <Badge label={`${compliance.length} Issues`} color="amber" />
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Issue
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Property
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Landlord
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Severity
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Due Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-slate-200">
-                {complianceIssues.map((issue) => (
-                  <tr key={issue.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <Flag
-                          className={`size-4 ${
-                            issue.severity === "high"
-                              ? "text-red-600"
-                              : issue.severity === "medium"
-                              ? "text-amber-600"
-                              : "text-yellow-600"
-                          }`}
-                        />
-                        <span className="font-medium text-slate-900">{issue.issue}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-700">{issue.property}</td>
-                    <td className="px-6 py-4 text-sm text-slate-700">{issue.landlord}</td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-2 py-1 rounded text-xs font-medium ${
-                          issue.severity === "high"
-                            ? "bg-red-100 text-red-700"
-                            : issue.severity === "medium"
-                            ? "bg-amber-100 text-amber-700"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
-                      >
-                        {issue.severity}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-700">
-                      <div className="flex items-center gap-2">
-                        <Clock className="size-4 text-slate-400" />
-                        {issue.dueDate}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <button className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
-                        Notify Landlord
-                      </button>
-                    </td>
-                  </tr>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ background: BG }}>
+                {["Issue", "Property", "Landlord", "Severity", "Due", "Action"].map(h => (
+                  <th key={h} style={{ padding: "12px 20px", textAlign: "left", fontSize: 10, fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: "0.5px" }}>{h}</th>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </tr>
+            </thead>
+            <tbody>
+              {compliance.map((c, i) => (
+                <tr key={c.id} style={{ borderTop: `1px solid ${BORDER}` }}>
+                  <td style={{ padding: "16px 20px", fontSize: 13, fontWeight: 600, color: TEXT }}>{c.issue}</td>
+                  <td style={{ padding: "16px 20px", fontSize: 13, color: MUTED }}>{c.property}</td>
+                  <td style={{ padding: "16px 20px", fontSize: 13, color: MUTED }}>{c.landlord}</td>
+                  <td style={{ padding: "16px 20px" }}><Badge label={c.severity} color={c.severity === "high" ? "red" : c.severity === "medium" ? "amber" : "gray"} /></td>
+                  <td style={{ padding: "16px 20px", fontSize: 12, color: MUTED, display: "flex", alignItems: "center", gap: 6 }}><Clock size={12} />{c.due}</td>
+                  <td style={{ padding: "16px 20px" }}>
+                    <button style={{ fontSize: 12, color: G, fontWeight: 600, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit" }}>Notify →</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </motion.div>
       </div>
     </div>
   );

@@ -205,33 +205,33 @@ export function TenantPassportPremium() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="border-b border-black/[0.08] bg-white">
+      <div className="border-b border-[rgba(0,0,0,0.07)] bg-white">
         <div className="max-w-7xl mx-auto px-8 py-8">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <Shield className="size-8 text-[#0A0A0A]" />
-                <h1 className="text-[36px] font-semibold text-[#0A0A0A] tracking-tight">
+                <Shield className="size-8 text-[#0A7A52]" />
+                <h1 className="text-[48px] font-normal text-[#0E0F0C] tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>
                   Tenant Passport
                 </h1>
                 {profile.verified && (
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-[#22C55E]/10 rounded-full">
-                    <CheckCircle2 className="size-4 text-[#22C55E]" />
-                    <span className="text-[12px] font-medium text-[#22C55E]">Verified</span>
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-[#E5F4EE] border border-[#0A7A52]/20 rounded-full">
+                    <CheckCircle2 className="size-4 text-[#0A7A52]" />
+                    <span className="text-[11px] font-semibold text-[#0A7A52] uppercase tracking-wider">Verified</span>
                   </div>
                 )}
               </div>
-              <p className="text-[14px] text-[#9CA3AF]">
+              <p className="text-[14px] text-[#767570]">
                 Portable rental profile • Trusted by landlords across Ontario
               </p>
             </div>
 
             <div className="flex items-center gap-3">
-              <button className="px-4 py-2.5 border border-black/[0.08] text-[#0A0A0A] text-[14px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors flex items-center gap-2">
+              <button className="px-4 py-2.5 border border-[rgba(0,0,0,0.07)] text-[#0E0F0C] text-[13px] font-medium rounded-lg hover:bg-[#F8F7F4] transition-colors flex items-center gap-2">
                 <Share2 className="size-4" />
                 Share Profile
               </button>
-              <button className="px-4 py-2.5 border border-black/[0.08] text-[#0A0A0A] text-[14px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors flex items-center gap-2">
+              <button className="px-4 py-2.5 bg-[#0A7A52] text-white text-[13px] font-medium rounded-lg hover:bg-[#0A7A52]/90 transition-colors flex items-center gap-2">
                 <Download className="size-4" />
                 Download PDF
               </button>
@@ -248,29 +248,29 @@ export function TenantPassportPremium() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-br from-[#0A0A0A] to-[#2A2A2A] rounded-2xl p-8 text-white relative overflow-hidden"
+              className="bg-gradient-to-br from-[#0A7A52] to-[#085D3D] rounded-2xl p-8 text-white relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
               <div className="relative">
                 <div className="flex items-center gap-2 mb-6">
                   <Award className="size-6" />
-                  <h2 className="text-[24px] font-semibold">Tenant Trust Score</h2>
+                  <h2 className="text-[24px] font-normal text-[#ffeded]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Tenant Trust Score</h2>
                 </div>
 
                 <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <p className="text-white/60 text-[12px] uppercase tracking-wider mb-2">
+                    <p className="text-white/70 text-[11px] uppercase tracking-wider mb-2 font-semibold">
                       Overall Score
                     </p>
                     <div className="flex items-baseline gap-2 mb-4">
-                      <h3 className="text-[64px] font-bold leading-none">
+                      <h3 className="text-[64px] font-normal leading-none text-[#ffffff]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                         {profile.trustScore}
                       </h3>
-                      <span className="text-white/60 text-[24px]">/ 100</span>
+                      <span className="text-white/70 text-[24px] font-normal" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>/ 100</span>
                     </div>
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#22C55E]/20">
-                      <CheckCircle2 className="size-5 text-[#22C55E]" />
-                      <span className="text-[14px] font-semibold text-[#22C55E]">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 border border-white/30">
+                      <CheckCircle2 className="size-5 text-white" />
+                      <span className="text-[13px] font-semibold text-white uppercase tracking-wider">
                         {getTrustScoreLabel(profile.trustScore)}
                       </span>
                     </div>
@@ -278,21 +278,21 @@ export function TenantPassportPremium() {
 
                   <div className="space-y-4">
                     <div>
-                      <p className="text-white/60 text-[12px] uppercase tracking-wider mb-2">
+                      <p className="text-white/70 text-[11px] uppercase tracking-wider mb-2 font-semibold">
                         Payment Success Rate
                       </p>
-                      <p className="text-[32px] font-bold">{paymentSuccessRate}%</p>
-                      <p className="text-white/60 text-[13px]">
+                      <p className="text-[36px] font-normal text-[#fffefe]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>{paymentSuccessRate}%</p>
+                      <p className="text-white/70 text-[13px]">
                         {profile.onTimePayments} of {profile.totalPayments} on-time
                       </p>
                     </div>
 
                     <div>
-                      <p className="text-white/60 text-[12px] uppercase tracking-wider mb-2">
+                      <p className="text-white/70 text-[11px] uppercase tracking-wider mb-2 font-semibold">
                         Years Renting
                       </p>
-                      <p className="text-[32px] font-bold">{profile.yearsRenting}</p>
-                      <p className="text-white/60 text-[13px]">
+                      <p className="text-[36px] font-normal text-[#ffffff]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>{profile.yearsRenting}</p>
+                      <p className="text-white/70 text-[13px]">
                         {profile.totalRentals} previous rentals
                       </p>
                     </div>
@@ -302,62 +302,62 @@ export function TenantPassportPremium() {
             </motion.div>
 
             {/* Verification Status */}
-            <div className="bg-white border border-black/[0.08] rounded-xl p-8">
-              <h3 className="text-[20px] font-semibold text-[#0A0A0A] mb-6">Verification Status</h3>
+            <div className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-8">
+              <h3 className="text-[22px] font-normal text-[#0E0F0C] mb-6" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Verification Status</h3>
               
               <div className="grid grid-cols-2 gap-4">
-                <div className={`p-4 rounded-xl border ${profile.identityVerified ? 'bg-[#22C55E]/5 border-[#22C55E]/20' : 'bg-[#9CA3AF]/5 border-[#9CA3AF]/20'}`}>
+                <div className={`p-4 rounded-xl border ${profile.identityVerified ? 'bg-[#E5F4EE] border-[#0A7A52]/20' : 'bg-[#F8F7F4] border-[rgba(0,0,0,0.07)]'}`}>
                   <div className="flex items-center gap-3">
                     {profile.identityVerified ? (
-                      <CheckCircle2 className="size-5 text-[#22C55E]" />
+                      <CheckCircle2 className="size-5 text-[#0A7A52]" />
                     ) : (
-                      <XCircle className="size-5 text-[#9CA3AF]" />
+                      <XCircle className="size-5 text-[#767570]" />
                     )}
                     <div>
-                      <p className="font-semibold text-[14px] text-[#0A0A0A]">Identity Verified</p>
-                      <p className="text-[12px] text-[#6B7280]">Government ID confirmed</p>
+                      <p className="font-semibold text-[14px] text-[#0E0F0C]">Identity Verified</p>
+                      <p className="text-[12px] text-[#767570]">Government ID confirmed</p>
                     </div>
                   </div>
                 </div>
 
-                <div className={`p-4 rounded-xl border ${profile.incomeVerified ? 'bg-[#22C55E]/5 border-[#22C55E]/20' : 'bg-[#9CA3AF]/5 border-[#9CA3AF]/20'}`}>
+                <div className={`p-4 rounded-xl border ${profile.incomeVerified ? 'bg-[#E5F4EE] border-[#0A7A52]/20' : 'bg-[#F8F7F4] border-[rgba(0,0,0,0.07)]'}`}>
                   <div className="flex items-center gap-3">
                     {profile.incomeVerified ? (
-                      <CheckCircle2 className="size-5 text-[#22C55E]" />
+                      <CheckCircle2 className="size-5 text-[#0A7A52]" />
                     ) : (
-                      <XCircle className="size-5 text-[#9CA3AF]" />
+                      <XCircle className="size-5 text-[#767570]" />
                     )}
                     <div>
-                      <p className="font-semibold text-[14px] text-[#0A0A0A]">Income Verified</p>
-                      <p className="text-[12px] text-[#6B7280]">Pay stubs confirmed</p>
+                      <p className="font-semibold text-[14px] text-[#0E0F0C]">Income Verified</p>
+                      <p className="text-[12px] text-[#767570]">Pay stubs confirmed</p>
                     </div>
                   </div>
                 </div>
 
-                <div className={`p-4 rounded-xl border ${profile.employmentVerified ? 'bg-[#22C55E]/5 border-[#22C55E]/20' : 'bg-[#9CA3AF]/5 border-[#9CA3AF]/20'}`}>
+                <div className={`p-4 rounded-xl border ${profile.employmentVerified ? 'bg-[#E5F4EE] border-[#0A7A52]/20' : 'bg-[#F8F7F4] border-[rgba(0,0,0,0.07)]'}`}>
                   <div className="flex items-center gap-3">
                     {profile.employmentVerified ? (
-                      <CheckCircle2 className="size-5 text-[#22C55E]" />
+                      <CheckCircle2 className="size-5 text-[#0A7A52]" />
                     ) : (
-                      <XCircle className="size-5 text-[#9CA3AF]" />
+                      <XCircle className="size-5 text-[#767570]" />
                     )}
                     <div>
-                      <p className="font-semibold text-[14px] text-[#0A0A0A]">Employment Verified</p>
-                      <p className="text-[12px] text-[#6B7280]">Employer confirmed</p>
+                      <p className="font-semibold text-[14px] text-[#0E0F0C]">Employment Verified</p>
+                      <p className="text-[12px] text-[#767570]">Employer confirmed</p>
                     </div>
                   </div>
                 </div>
 
-                <div className={`p-4 rounded-xl border ${profile.creditCheckCompleted ? 'bg-[#22C55E]/5 border-[#22C55E]/20' : 'bg-[#9CA3AF]/5 border-[#9CA3AF]/20'}`}>
+                <div className={`p-4 rounded-xl border ${profile.creditCheckCompleted ? 'bg-[#E5F4EE] border-[#0A7A52]/20' : 'bg-[#F8F7F4] border-[rgba(0,0,0,0.07)]'}`}>
                   <div className="flex items-center gap-3">
                     {profile.creditCheckCompleted ? (
-                      <CheckCircle2 className="size-5 text-[#22C55E]" />
+                      <CheckCircle2 className="size-5 text-[#0A7A52]" />
                     ) : (
-                      <XCircle className="size-5 text-[#9CA3AF]" />
+                      <XCircle className="size-5 text-[#767570]" />
                     )}
                     <div>
-                      <p className="font-semibold text-[14px] text-[#0A0A0A]">Credit Check</p>
-                      <p className="text-[12px] text-[#6B7280]">Completed</p>
+                      <p className="font-semibold text-[14px] text-[#0E0F0C]">Credit Check</p>
+                      <p className="text-[12px] text-[#767570]">Completed</p>
                     </div>
                   </div>
                 </div>
@@ -366,21 +366,21 @@ export function TenantPassportPremium() {
 
             {/* Payment History */}
             <div className="bg-white border border-black/[0.08] rounded-xl p-8">
-              <h3 className="text-[20px] font-semibold text-[#0A0A0A] mb-6">Payment History (Last 12 Months)</h3>
+              <h3 className="text-[22px] font-normal text-[#0E0F0C] mb-6" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Payment History (Last 12 Months)</h3>
               
               <div className="grid grid-cols-6 gap-3">
                 {profile.paymentHistory.map((payment, idx) => (
                   <div key={idx} className="text-center">
                     <div className={`h-24 rounded-lg mb-2 flex items-end justify-center pb-2 ${
-                      payment.status === 'paid' ? 'bg-[#22C55E]/10' :
+                      payment.status === 'paid' ? 'bg-[#E5F4EE]' :
                       payment.status === 'late' ? 'bg-[#F59E0B]/10' :
                       'bg-[#EF4444]/10'
                     }`}>
-                      {payment.status === 'paid' && <CheckCircle2 className="size-5 text-[#22C55E]" />}
+                      {payment.status === 'paid' && <CheckCircle2 className="size-5 text-[#0A7A52]" />}
                       {payment.status === 'late' && <Clock className="size-5 text-[#F59E0B]" />}
                       {payment.status === 'missed' && <XCircle className="size-5 text-[#EF4444]" />}
                     </div>
-                    <p className="text-[11px] text-[#9CA3AF]">{payment.month}</p>
+                    <p className="text-[11px] text-[#767570]">{payment.month}</p>
                     {payment.daysLate && (
                       <p className="text-[10px] text-[#F59E0B]">{payment.daysLate}d late</p>
                     )}
@@ -388,52 +388,52 @@ export function TenantPassportPremium() {
                 ))}
               </div>
 
-              <div className="flex items-center gap-6 mt-6 pt-6 border-t border-black/[0.04]">
+              <div className="flex items-center gap-6 mt-6 pt-6 border-t border-[rgba(0,0,0,0.04)]">
                 <div className="flex items-center gap-2">
-                  <div className="size-3 rounded-full bg-[#22C55E]"></div>
-                  <span className="text-[13px] text-[#6B7280]">On Time</span>
+                  <div className="size-3 rounded-full bg-[#0A7A52]"></div>
+                  <span className="text-[13px] text-[#767570]">On Time</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="size-3 rounded-full bg-[#F59E0B]"></div>
-                  <span className="text-[13px] text-[#6B7280]">Late</span>
+                  <span className="text-[13px] text-[#767570]">Late</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="size-3 rounded-full bg-[#EF4444]"></div>
-                  <span className="text-[13px] text-[#6B7280]">Missed</span>
+                  <span className="text-[13px] text-[#767570]">Missed</span>
                 </div>
               </div>
             </div>
 
             {/* Rental History */}
             <div className="bg-white border border-black/[0.08] rounded-xl p-8">
-              <h3 className="text-[20px] font-semibold text-[#0A0A0A] mb-6">Rental History</h3>
+              <h3 className="text-[22px] font-normal text-[#0E0F0C] mb-6" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Rental History</h3>
               
               <div className="space-y-6">
                 {profile.rentalHistory.map((rental, idx) => (
-                  <div key={idx} className="p-6 bg-[#F9FAFB] rounded-xl">
+                  <div key={idx} className="p-6 bg-[#F8F7F4] rounded-xl">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-start gap-4">
-                        <div className="size-12 rounded-lg bg-white border border-black/[0.08] flex items-center justify-center">
-                          <Home className="size-6 text-[#0A0A0A]" />
+                        <div className="size-12 rounded-lg bg-white border border-[rgba(0,0,0,0.07)] flex items-center justify-center">
+                          <Home className="size-6 text-[#0A7A52]" />
                         </div>
                         <div>
-                          <h4 className="font-semibold text-[16px] text-[#0A0A0A] mb-1">
+                          <h4 className="font-semibold text-[16px] text-[#0E0F0C] mb-1">
                             {rental.address}
                           </h4>
-                          <p className="text-[13px] text-[#9CA3AF]">Landlord: {rental.landlord}</p>
+                          <p className="text-[13px] text-[#767570]">Landlord: {rental.landlord}</p>
                         </div>
                       </div>
                       <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${
-                        rental.reference === 'positive' ? 'bg-[#22C55E]/10' :
-                        rental.reference === 'neutral' ? 'bg-[#9CA3AF]/10' :
+                        rental.reference === 'positive' ? 'bg-[#E5F4EE] border border-[#0A7A52]/20' :
+                        rental.reference === 'neutral' ? 'bg-white border border-[rgba(0,0,0,0.07)]' :
                         'bg-[#EF4444]/10'
                       }`}>
-                        {rental.reference === 'positive' && <CheckCircle2 className="size-4 text-[#22C55E]" />}
-                        {rental.reference === 'neutral' && <AlertTriangle className="size-4 text-[#9CA3AF]" />}
+                        {rental.reference === 'positive' && <CheckCircle2 className="size-4 text-[#0A7A52]" />}
+                        {rental.reference === 'neutral' && <AlertTriangle className="size-4 text-[#767570]" />}
                         {rental.reference === 'negative' && <XCircle className="size-4 text-[#EF4444]" />}
                         <span className={`text-[12px] font-medium capitalize ${
-                          rental.reference === 'positive' ? 'text-[#22C55E]' :
-                          rental.reference === 'neutral' ? 'text-[#9CA3AF]' :
+                          rental.reference === 'positive' ? 'text-[#0A7A52]' :
+                          rental.reference === 'neutral' ? 'text-[#767570]' :
                           'text-[#EF4444]'
                         }`}>
                           {rental.reference}
@@ -443,24 +443,24 @@ export function TenantPassportPremium() {
 
                     <div className="grid grid-cols-3 gap-4 mb-4">
                       <div>
-                        <p className="text-[11px] text-[#9CA3AF] uppercase tracking-wider mb-1">Duration</p>
-                        <p className="text-[14px] font-semibold text-[#0A0A0A]">{rental.duration}</p>
+                        <p className="text-[11px] text-[#767570] uppercase tracking-wider mb-1">Duration</p>
+                        <p className="text-[14px] font-semibold text-[#0E0F0C]">{rental.duration}</p>
                       </div>
                       <div>
-                        <p className="text-[11px] text-[#9CA3AF] uppercase tracking-wider mb-1">Monthly Rent</p>
-                        <p className="text-[14px] font-semibold text-[#0A0A0A]">${rental.rent.toLocaleString()}</p>
+                        <p className="text-[11px] text-[#767570] uppercase tracking-wider mb-1">Monthly Rent</p>
+                        <p className="text-[14px] font-semibold text-[#0E0F0C]">${rental.rent.toLocaleString()}</p>
                       </div>
                       <div>
-                        <p className="text-[11px] text-[#9CA3AF] uppercase tracking-wider mb-1">Period</p>
-                        <p className="text-[14px] font-semibold text-[#0A0A0A]">
+                        <p className="text-[11px] text-[#767570] uppercase tracking-wider mb-1">Period</p>
+                        <p className="text-[14px] font-semibold text-[#0E0F0C]">
                           {new Date(rental.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - {rental.endDate === 'Present' ? 'Present' : new Date(rental.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                         </p>
                       </div>
                     </div>
 
-                    <div className="p-4 bg-white rounded-lg border border-black/[0.04]">
-                      <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">Landlord Reference</p>
-                      <p className="text-[14px] text-[#0A0A0A] leading-relaxed italic">
+                    <div className="p-4 bg-white rounded-lg border border-[rgba(0,0,0,0.04)]">
+                      <p className="text-[12px] text-[#767570] uppercase tracking-wider mb-2">Landlord Reference</p>
+                      <p className="text-[14px] text-[#0E0F0C] leading-relaxed italic">
                         "{rental.referenceNote}"
                       </p>
                     </div>
@@ -471,27 +471,27 @@ export function TenantPassportPremium() {
 
             {/* References */}
             <div className="bg-white border border-black/[0.08] rounded-xl p-8">
-              <h3 className="text-[20px] font-semibold text-[#0A0A0A] mb-6">Professional References</h3>
+              <h3 className="text-[22px] font-normal text-[#0E0F0C] mb-6" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Professional References</h3>
               
               <div className="space-y-4">
                 {profile.references.map((ref, idx) => (
-                  <div key={idx} className="p-6 bg-[#F9FAFB] rounded-xl">
+                  <div key={idx} className="p-6 bg-[#F8F7F4] rounded-xl">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
-                        <div className="size-12 rounded-full bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center">
+                        <div className="size-12 rounded-full bg-gradient-to-br from-[#0A7A52] to-[#085D3D] flex items-center justify-center">
                           <User className="size-6 text-white" />
                         </div>
                         <div>
-                          <h4 className="font-semibold text-[16px] text-[#0A0A0A]">{ref.name}</h4>
-                          <p className="text-[13px] text-[#9CA3AF]">{ref.relationship}</p>
-                          <p className="text-[13px] text-[#6B7280] mt-1">{ref.contact}</p>
+                          <h4 className="font-semibold text-[16px] text-[#0E0F0C]">{ref.name}</h4>
+                          <p className="text-[13px] text-[#767570]">{ref.relationship}</p>
+                          <p className="text-[13px] text-[#767570] mt-1">{ref.contact}</p>
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         {ref.verified && (
-                          <div className="flex items-center gap-2 px-3 py-1.5 bg-[#22C55E]/10 rounded-full">
-                            <CheckCircle2 className="size-4 text-[#22C55E]" />
-                            <span className="text-[12px] font-medium text-[#22C55E]">Verified</span>
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-[#E5F4EE] border border-[#0A7A52]/20 rounded-full">
+                            <CheckCircle2 className="size-4 text-[#0A7A52]" />
+                            <span className="text-[12px] font-medium text-[#0A7A52]">Verified</span>
                           </div>
                         )}
                         <div className="flex items-center gap-1">
@@ -504,7 +504,7 @@ export function TenantPassportPremium() {
                         </div>
                       </div>
                     </div>
-                    <p className="text-[14px] text-[#6B7280] leading-relaxed italic">
+                    <p className="text-[14px] text-[#767570] leading-relaxed italic">
                       "{ref.comment}"
                     </p>
                   </div>
@@ -514,23 +514,23 @@ export function TenantPassportPremium() {
 
             {/* Maintenance Behavior */}
             <div className="bg-white border border-black/[0.08] rounded-xl p-8">
-              <h3 className="text-[20px] font-semibold text-[#0A0A0A] mb-6">Maintenance Behavior</h3>
+              <h3 className="text-[22px] font-normal text-[#0E0F0C] mb-6" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Maintenance Behavior</h3>
               
               <div className="grid grid-cols-3 gap-6">
                 <div>
-                  <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">Total Requests</p>
-                  <p className="text-[32px] font-semibold text-[#0A0A0A]">{profile.maintenanceRequests}</p>
-                  <p className="text-[13px] text-[#6B7280] mt-1">Over {profile.yearsRenting} years</p>
+                  <p className="text-[12px] text-[#767570] uppercase tracking-wider mb-2">Total Requests</p>
+                  <p className="text-[32px] font-semibold text-[#0E0F0C]">{profile.maintenanceRequests}</p>
+                  <p className="text-[13px] text-[#767570] mt-1">Over {profile.yearsRenting} years</p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">Response Time</p>
-                  <p className="text-[32px] font-semibold text-[#22C55E]">{profile.averageResponseTime}</p>
-                  <p className="text-[13px] text-[#6B7280] mt-1">Average response</p>
+                  <p className="text-[12px] text-[#767570] uppercase tracking-wider mb-2">Response Time</p>
+                  <p className="text-[32px] font-semibold text-[#0A7A52]">{profile.averageResponseTime}</p>
+                  <p className="text-[13px] text-[#767570] mt-1">Average response</p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">Issue Compliance</p>
-                  <p className="text-[32px] font-semibold text-[#22C55E]">{profile.issueCompliance}%</p>
-                  <p className="text-[13px] text-[#6B7280] mt-1">Follows instructions</p>
+                  <p className="text-[12px] text-[#767570] uppercase tracking-wider mb-2">Issue Compliance</p>
+                  <p className="text-[32px] font-semibold text-[#0A7A52]">{profile.issueCompliance}%</p>
+                  <p className="text-[13px] text-[#767570] mt-1">Follows instructions</p>
                 </div>
               </div>
             </div>
@@ -540,38 +540,38 @@ export function TenantPassportPremium() {
           <div className="lg:col-span-1 space-y-6">
             {/* Contact Info */}
             <div className="bg-white border border-black/[0.08] rounded-xl p-6 sticky top-24">
-              <h3 className="text-[16px] font-semibold text-[#0A0A0A] mb-6">Contact Information</h3>
+              <h3 className="text-[18px] font-normal text-[#0E0F0C] mb-6" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Contact Information</h3>
               
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <User className="size-5 text-[#9CA3AF] flex-shrink-0 mt-0.5" />
+                  <User className="size-5 text-[#767570] flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-[12px] text-[#9CA3AF] mb-1">Full Name</p>
-                    <p className="text-[14px] font-medium text-[#0A0A0A]">{profile.name}</p>
+                    <p className="text-[12px] text-[#767570] mb-1">Full Name</p>
+                    <p className="text-[14px] font-medium text-[#0E0F0C]">{profile.name}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Mail className="size-5 text-[#9CA3AF] flex-shrink-0 mt-0.5" />
+                  <Mail className="size-5 text-[#767570] flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-[12px] text-[#9CA3AF] mb-1">Email</p>
-                    <p className="text-[14px] font-medium text-[#0A0A0A]">{profile.email}</p>
+                    <p className="text-[12px] text-[#767570] mb-1">Email</p>
+                    <p className="text-[14px] font-medium text-[#0E0F0C]">{profile.email}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Phone className="size-5 text-[#9CA3AF] flex-shrink-0 mt-0.5" />
+                  <Phone className="size-5 text-[#767570] flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-[12px] text-[#9CA3AF] mb-1">Phone</p>
-                    <p className="text-[14px] font-medium text-[#0A0A0A]">{profile.phone}</p>
+                    <p className="text-[12px] text-[#767570] mb-1">Phone</p>
+                    <p className="text-[14px] font-medium text-[#0E0F0C]">{profile.phone}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Calendar className="size-5 text-[#9CA3AF] flex-shrink-0 mt-0.5" />
+                  <Calendar className="size-5 text-[#767570] flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-[12px] text-[#9CA3AF] mb-1">Member Since</p>
-                    <p className="text-[14px] font-medium text-[#0A0A0A]">
+                    <p className="text-[12px] text-[#767570] mb-1">Member Since</p>
+                    <p className="text-[14px] font-medium text-[#0E0F0C]">
                       {new Date(profile.memberSince).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -582,17 +582,17 @@ export function TenantPassportPremium() {
                 </div>
               </div>
 
-              <div className="mt-6 pt-6 border-t border-black/[0.04]">
-                <p className="text-[11px] text-[#9CA3AF] uppercase tracking-wider mb-2">Passport ID</p>
-                <p className="text-[14px] font-mono font-semibold text-[#0A0A0A]">{profile.id}</p>
+              <div className="mt-6 pt-6 border-t border-[rgba(0,0,0,0.04)]">
+                <p className="text-[11px] text-[#767570] uppercase tracking-wider mb-2">Passport ID</p>
+                <p className="text-[14px] font-mono font-semibold text-[#0E0F0C]">{profile.id}</p>
               </div>
             </div>
 
             {/* Trust Badge */}
-            <div className="bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-xl p-6 text-white">
+            <div className="bg-gradient-to-br from-[#0A7A52] to-[#085D3D] rounded-xl p-6 text-white">
               <div className="flex items-center gap-2 mb-4">
                 <Shield className="size-6" />
-                <h3 className="text-[16px] font-semibold">Verified Tenant</h3>
+                <h3 className="text-[18px] font-normal text-[#fffafa]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Verified Tenant</h3>
               </div>
               <p className="text-white/90 text-[13px] leading-relaxed">
                 This tenant passport has been verified by YourPropertyAI and is trusted by landlords across Ontario.
@@ -605,24 +605,24 @@ export function TenantPassportPremium() {
             </div>
 
             {/* Network Effects */}
-            <div className="bg-[#F9FAFB] border border-black/[0.08] rounded-xl p-6">
-              <h3 className="text-[16px] font-semibold text-[#0A0A0A] mb-4">Platform Benefits</h3>
+            <div className="bg-[#F8F7F4] border border-[rgba(0,0,0,0.07)] rounded-xl p-6">
+              <h3 className="text-[18px] font-normal text-[#0E0F0C] mb-4" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Platform Benefits</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="size-5 text-[#22C55E] flex-shrink-0 mt-0.5" />
-                  <span className="text-[13px] text-[#6B7280]">Portable credit across properties</span>
+                  <CheckCircle2 className="size-5 text-[#0A7A52] flex-shrink-0 mt-0.5" />
+                  <span className="text-[13px] text-[#767570]">Portable credit across properties</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="size-5 text-[#22C55E] flex-shrink-0 mt-0.5" />
-                  <span className="text-[13px] text-[#6B7280]">Faster application approvals</span>
+                  <CheckCircle2 className="size-5 text-[#0A7A52] flex-shrink-0 mt-0.5" />
+                  <span className="text-[13px] text-[#767570]">Faster application approvals</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="size-5 text-[#22C55E] flex-shrink-0 mt-0.5" />
-                  <span className="text-[13px] text-[#6B7280]">Trusted reputation system</span>
+                  <CheckCircle2 className="size-5 text-[#0A7A52] flex-shrink-0 mt-0.5" />
+                  <span className="text-[13px] text-[#767570]">Trusted reputation system</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="size-5 text-[#22C55E] flex-shrink-0 mt-0.5" />
-                  <span className="text-[13px] text-[#6B7280]">Priority access to listings</span>
+                  <CheckCircle2 className="size-5 text-[#0A7A52] flex-shrink-0 mt-0.5" />
+                  <span className="text-[13px] text-[#767570]">Priority access to listings</span>
                 </li>
               </ul>
             </div>

@@ -91,20 +91,18 @@ export function Tenants() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-8 py-12">
+      <div className="max-w-7xl mx-auto px-8 py-12" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-12"
         >
-          <div className="flex items-center gap-3 mb-3">
-            <Users className="size-8 text-[#0A0A0A]" />
-            <h1 className="text-[48px] font-semibold text-[#0A0A0A] leading-tight tracking-tight">
-              Tenants
-            </h1>
-          </div>
-          <p className="text-[14px] text-[#9CA3AF] font-normal">
+          <p className="text-[10px] font-semibold text-[#767570] uppercase tracking-wider mb-2">Tenant Management</p>
+          <h1 className="text-[48px] font-normal text-[#0E0F0C] tracking-tight mb-3" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>
+            Tenants
+          </h1>
+          <p className="text-[14px] text-[#767570]">
             Manage your current tenants and view their profiles
           </p>
         </motion.div>
@@ -115,12 +113,12 @@ export function Tenants() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white border border-black/[0.08] rounded-xl p-6"
+            className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6"
           >
-            <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">
+            <p className="text-[12px] text-[#767570] uppercase tracking-wider mb-2">
               Total Tenants
             </p>
-            <h2 className="text-[36px] font-semibold text-[#0A0A0A] leading-none">
+            <h2 className="text-[36px] font-normal text-[#0E0F0C] leading-none" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
               {tenants.length}
             </h2>
           </motion.div>
@@ -129,15 +127,15 @@ export function Tenants() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white border border-black/[0.08] rounded-xl p-6"
+            className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6"
           >
-            <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">
+            <p className="text-[12px] text-[#767570] uppercase tracking-wider mb-2">
               On-Time Payments
             </p>
-            <h2 className="text-[36px] font-semibold text-[#22C55E] leading-none mb-2">
+            <h2 className="text-[36px] font-normal text-[#0A7A52] leading-none mb-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
               {tenants.filter(t => t.paymentStatus === "current").length}
             </h2>
-            <p className="text-[13px] text-[#6B7280]">
+            <p className="text-[13px] text-[#767570]">
               {((tenants.filter(t => t.paymentStatus === "current").length / tenants.length) * 100).toFixed(0)}% success rate
             </p>
           </motion.div>
@@ -146,12 +144,12 @@ export function Tenants() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white border border-black/[0.08] rounded-xl p-6"
+            className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6"
           >
-            <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">
+            <p className="text-[12px] text-[#767570] uppercase tracking-wider mb-2">
               Late Payments
             </p>
-            <h2 className="text-[36px] font-semibold text-[#F59E0B] leading-none">
+            <h2 className="text-[36px] font-normal text-[#F59E0B] leading-none" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
               {tenants.filter(t => t.paymentStatus === "late").length}
             </h2>
           </motion.div>
@@ -160,12 +158,12 @@ export function Tenants() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white border border-black/[0.08] rounded-xl p-6"
+            className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6"
           >
-            <p className="text-[12px] text-[#9CA3AF] uppercase tracking-wider mb-2">
+            <p className="text-[12px] text-[#767570] uppercase tracking-wider mb-2">
               Avg Trust Score
             </p>
-            <h2 className="text-[36px] font-semibold text-[#0A0A0A] leading-none">
+            <h2 className="text-[36px] font-normal text-[#0E0F0C] leading-none" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
               {Math.round(tenants.reduce((sum, t) => sum + t.creditScore, 0) / tenants.length / 10)}
             </h2>
           </motion.div>
@@ -174,22 +172,22 @@ export function Tenants() {
         {/* Search & Filter */}
         <div className="flex items-center justify-between gap-4 mb-8">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-[#9CA3AF]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-[#767570]" />
             <input
               type="text"
               placeholder="Search tenants..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-black/[0.08] rounded-lg text-[14px] text-[#0A0A0A] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0A0A0A]/10"
+              className="w-full pl-10 pr-4 py-3 border border-[rgba(0,0,0,0.07)] rounded-lg text-[14px] text-[#0E0F0C] placeholder:text-[#767570] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]/20"
             />
           </div>
 
-          <div className="flex items-center gap-2 px-3 py-3 border border-black/[0.08] rounded-lg">
-            <Filter className="size-5 text-[#9CA3AF]" />
+          <div className="flex items-center gap-2 px-3 py-3 border border-[rgba(0,0,0,0.07)] rounded-lg bg-white">
+            <Filter className="size-5 text-[#767570]" />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="text-[14px] text-[#0A0A0A] bg-transparent focus:outline-none"
+              className="text-[14px] text-[#0E0F0C] bg-transparent focus:outline-none"
             >
               <option value="all">All Tenants</option>
               <option value="current">Current Only</option>
@@ -197,7 +195,7 @@ export function Tenants() {
             </select>
           </div>
 
-          <p className="text-[14px] text-[#9CA3AF]">
+          <p className="text-[14px] text-[#767570]">
             Showing {filteredTenants.length} of {tenants.length} tenants
           </p>
         </div>
@@ -211,19 +209,19 @@ export function Tenants() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
               onClick={() => navigate("/tenant-passport")}
-              className="bg-white border border-black/[0.08] rounded-xl p-6 hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+              className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
             >
               {/* Header */}
               <div className="flex items-start justify-between mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="size-16 rounded-full bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center">
+                  <div className="size-16 rounded-full bg-gradient-to-br from-[#0A7A52] to-[#0D9B68] flex items-center justify-center">
                     <Users className="size-8 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-[20px] font-semibold text-[#0A0A0A] mb-1">
+                    <h3 className="text-[20px] font-normal text-[#0E0F0C] mb-1" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                       {tenant.name}
                     </h3>
-                    <div className="flex items-center gap-2 text-[13px] text-[#9CA3AF]">
+                    <div className="flex items-center gap-2 text-[13px] text-[#767570]">
                       <MapPin className="size-4" />
                       <span>{tenant.unit} • {tenant.address}</span>
                     </div>
@@ -232,16 +230,16 @@ export function Tenants() {
 
                 <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${
                   tenant.paymentStatus === "current"
-                    ? "bg-[#22C55E]/10"
-                    : "bg-[#F59E0B]/10"
+                    ? "bg-[#E5F4EE] border border-[#0A7A52]/20"
+                    : "bg-[#FEF3E2] border border-[#F59E0B]/20"
                 }`}>
                   {tenant.paymentStatus === "current" ? (
-                    <CheckCircle2 className="size-4 text-[#22C55E]" />
+                    <CheckCircle2 className="size-4 text-[#0A7A52]" />
                   ) : (
                     <Clock className="size-4 text-[#F59E0B]" />
                   )}
-                  <span className={`text-[12px] font-medium ${
-                    tenant.paymentStatus === "current" ? "text-[#22C55E]" : "text-[#F59E0B]"
+                  <span className={`text-[12px] font-semibold ${
+                    tenant.paymentStatus === "current" ? "text-[#0A7A52]" : "text-[#F59E0B]"
                   }`}>
                     {tenant.paymentStatus === "current" ? "Current" : "Late"}
                   </span>
@@ -249,16 +247,16 @@ export function Tenants() {
               </div>
 
               {/* Contact Info */}
-              <div className="space-y-3 mb-6 pb-6 border-b border-black/[0.04]">
+              <div className="space-y-3 mb-6 pb-6 border-b border-[rgba(0,0,0,0.04)]">
                 <div className="flex items-center gap-3">
-                  <Mail className="size-4 text-[#9CA3AF]" />
-                  <a href={`mailto:${tenant.email}`} className="text-[14px] text-[#6B7280] hover:text-[#0A0A0A] transition-colors">
+                  <Mail className="size-4 text-[#767570]" />
+                  <a href={`mailto:${tenant.email}`} className="text-[14px] text-[#767570] hover:text-[#0E0F0C] transition-colors">
                     {tenant.email}
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Phone className="size-4 text-[#9CA3AF]" />
-                  <a href={`tel:${tenant.phone}`} className="text-[14px] text-[#6B7280] hover:text-[#0A0A0A] transition-colors">
+                  <Phone className="size-4 text-[#767570]" />
+                  <a href={`tel:${tenant.phone}`} className="text-[14px] text-[#767570] hover:text-[#0E0F0C] transition-colors">
                     {tenant.phone}
                   </a>
                 </div>
@@ -267,26 +265,26 @@ export function Tenants() {
               {/* Quick Stats */}
               <div className="grid grid-cols-2 gap-6 mb-6">
                 <div>
-                  <p className="text-[11px] text-[#9CA3AF] uppercase tracking-wider mb-1">Monthly Rent</p>
+                  <p className="text-[11px] text-[#767570] uppercase tracking-wider mb-1">Monthly Rent</p>
                   <div className="flex items-baseline gap-1">
-                    <DollarSign className="size-4 text-[#0A0A0A] mt-1" />
-                    <span className="text-[20px] font-semibold text-[#0A0A0A]">
+                    <DollarSign className="size-4 text-[#0E0F0C] mt-1" />
+                    <span className="text-[20px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                       {tenant.rent.toLocaleString()}
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-[11px] text-[#9CA3AF] uppercase tracking-wider mb-1">Credit Score</p>
+                  <p className="text-[11px] text-[#767570] uppercase tracking-wider mb-1">Credit Score</p>
                   <div className="flex items-center gap-2">
-                    <span className={`text-[20px] font-semibold ${
-                      tenant.creditScore >= 740 ? "text-[#22C55E]" : 
+                    <span className={`text-[20px] font-normal ${
+                      tenant.creditScore >= 740 ? "text-[#0A7A52]" : 
                       tenant.creditScore >= 670 ? "text-[#F59E0B]" : 
                       "text-[#EF4444]"
-                    }`}>
+                    }`} style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                       {tenant.creditScore}
                     </span>
-                    <span className="text-[12px] text-[#9CA3AF]">
+                    <span className="text-[12px] text-[#767570]">
                       {tenant.creditScore >= 740 ? "Excellent" : tenant.creditScore >= 670 ? "Good" : "Fair"}
                     </span>
                   </div>
@@ -294,20 +292,20 @@ export function Tenants() {
               </div>
 
               {/* Lease Dates */}
-              <div className="grid grid-cols-2 gap-6 mb-6 pb-6 border-b border-black/[0.04]">
+              <div className="grid grid-cols-2 gap-6 mb-6 pb-6 border-b border-[rgba(0,0,0,0.04)]">
                 <div>
-                  <p className="text-[11px] text-[#9CA3AF] uppercase tracking-wider mb-1">Lease Start</p>
+                  <p className="text-[11px] text-[#767570] uppercase tracking-wider mb-1">Lease Start</p>
                   <div className="flex items-center gap-2">
-                    <Calendar className="size-4 text-[#9CA3AF]" />
-                    <span className="text-[14px] text-[#0A0A0A] font-medium">{tenant.leaseStart}</span>
+                    <Calendar className="size-4 text-[#767570]" />
+                    <span className="text-[14px] text-[#0E0F0C] font-medium">{tenant.leaseStart}</span>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-[11px] text-[#9CA3AF] uppercase tracking-wider mb-1">Lease End</p>
+                  <p className="text-[11px] text-[#767570] uppercase tracking-wider mb-1">Lease End</p>
                   <div className="flex items-center gap-2">
-                    <Calendar className="size-4 text-[#9CA3AF]" />
-                    <span className="text-[14px] text-[#0A0A0A] font-medium">{tenant.leaseEnd}</span>
+                    <Calendar className="size-4 text-[#767570]" />
+                    <span className="text-[14px] text-[#0E0F0C] font-medium">{tenant.leaseEnd}</span>
                   </div>
                 </div>
               </div>
@@ -315,33 +313,33 @@ export function Tenants() {
               {/* Risk Level & Trust Badge */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Shield className="size-4 text-[#9CA3AF]" />
-                  <span className="text-[13px] text-[#9CA3AF]">Risk Level:</span>
+                  <Shield className="size-4 text-[#767570]" />
+                  <span className="text-[13px] text-[#767570]">Risk Level:</span>
                   <span className={`px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider ${
-                    tenant.risk === "low" ? "bg-[#22C55E]/10 text-[#22C55E]" :
-                    tenant.risk === "medium" ? "bg-[#F59E0B]/10 text-[#F59E0B]" :
-                    "bg-[#EF4444]/10 text-[#EF4444]"
+                    tenant.risk === "low" ? "bg-[#E5F4EE] text-[#0A7A52] border border-[#0A7A52]/20" :
+                    tenant.risk === "medium" ? "bg-[#FEF3E2] text-[#F59E0B] border border-[#F59E0B]/20" :
+                    "bg-[#FEE2E2] text-[#EF4444] border border-[#EF4444]/20"
                   }`}>
                     {tenant.risk}
                   </span>
                 </div>
 
                 {tenant.creditScore >= 720 && (
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-[#6366F1]/10 to-[#8B5CF6]/10 rounded-full">
-                    <Award className="size-4 text-[#6366F1]" />
-                    <span className="text-[11px] font-medium text-[#6366F1]">Verified</span>
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-[#E5F4EE] border border-[#0A7A52]/20 rounded-full">
+                    <Award className="size-4 text-[#0A7A52]" />
+                    <span className="text-[11px] font-semibold text-[#0A7A52]">Verified</span>
                   </div>
                 )}
               </div>
 
               {/* Quick Actions (visible on hover) */}
-              <div className="mt-6 pt-6 border-t border-black/[0.04] opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="mt-6 pt-6 border-t border-[rgba(0,0,0,0.04)] opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="flex gap-2">
-                  <button className="flex-1 px-4 py-2 bg-[#0A0A0A] text-white text-[13px] font-medium rounded-lg hover:bg-[#1C1C1C] transition-colors flex items-center justify-center gap-2">
+                  <button className="flex-1 px-4 py-2 bg-[#0A7A52] text-white text-[13px] font-semibold rounded-lg hover:bg-[#096A46] transition-colors flex items-center justify-center gap-2">
                     <Award className="size-4" />
                     View Passport
                   </button>
-                  <button className="px-4 py-2 border border-black/[0.08] text-[#0A0A0A] text-[13px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors flex items-center justify-center gap-2">
+                  <button className="px-4 py-2 border border-[rgba(0,0,0,0.07)] text-[#0E0F0C] text-[13px] font-semibold rounded-lg hover:bg-[#F8F7F4] transition-colors flex items-center justify-center gap-2">
                     <Send className="size-4" />
                     Message
                   </button>
@@ -354,13 +352,13 @@ export function Tenants() {
         {/* Empty State */}
         {filteredTenants.length === 0 && (
           <div className="text-center py-16">
-            <div className="size-16 rounded-full bg-[#F5F5F5] flex items-center justify-center mx-auto mb-4">
-              <Search className="size-8 text-[#9CA3AF]" />
+            <div className="size-16 rounded-full bg-white border border-[rgba(0,0,0,0.07)] flex items-center justify-center mx-auto mb-4">
+              <Search className="size-8 text-[#767570]" />
             </div>
-            <h3 className="text-[20px] font-semibold text-[#0A0A0A] mb-2">
+            <h3 className="text-[20px] font-normal text-[#0E0F0C] mb-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
               No tenants found
             </h3>
-            <p className="text-[14px] text-[#9CA3AF]">
+            <p className="text-[14px] text-[#767570]">
               Try adjusting your filters or search query
             </p>
           </div>

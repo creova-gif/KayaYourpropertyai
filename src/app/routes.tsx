@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import { DashboardPremium } from "./pages/DashboardPremium";
+import { DashboardIntegrated } from "./pages/DashboardIntegrated";
 import { AIAssistantPremium } from "./pages/AIAssistantPremium";
 import { Applications } from "./pages/Applications";
 import { ApplicationsPremium } from "./pages/ApplicationsPremium";
@@ -23,29 +24,85 @@ import { NoticesManagement } from "./pages/NoticesManagement";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { LayoutPremium } from "./components/LayoutPremium";
 import { TenantPortalPremium } from "./pages/TenantPortalPremium";
-import { PropertyListings } from "./pages/PropertyListings";
+import { PropertyListingsRedesign } from "./pages/PropertyListingsRedesign";
+import { LandingPage } from "./pages/LandingPage";
 import { LTBForms } from "./pages/LTBForms";
 import { TaxTracker } from "./pages/TaxTracker";
 import { ProvinceLeaseTemplates } from "./pages/ProvinceLeaseTemplates";
 import { TenantScreening } from "./pages/TenantScreening";
+import { PaymentDemo } from "./pages/PaymentDemo";
+import { FeaturesPage } from "./pages/FeaturesPage";
+import { PricingPage } from "./pages/PricingPage";
+import { AboutPage } from "./pages/AboutPage";
+import { ContactPage } from "./pages/ContactPage";
+import { ContractorMarketplace } from "./pages/ContractorMarketplace";
+import { NotificationCenter } from "./pages/NotificationCenter";
+import { MessagingCenter } from "./pages/MessagingCenter";
+import { Reports } from "./pages/Reports";
+import { LoginPage } from "./pages/LoginPage";
+import { SignupPage } from "./pages/SignupPage";
+import { PasswordResetPage } from "./pages/PasswordResetPage";
+import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
+import { FAQPage } from "./pages/FAQPage";
+import { AIFeaturesDemo } from "./pages/AIFeaturesDemo";
 
 export const router = createBrowserRouter([
-  // Redirect old /premium routes to root
+  // Landing Page - Default home page for visitors
   {
-    path: "/premium/*",
-    element: <Navigate to="/" replace />,
+    path: "/",
+    Component: LandingPage,
+  },
+  // Auth Pages (Public - redirect to dashboard if already logged in)
+  {
+    path: "/login",
+    element: <PublicRoute><LoginPage /></PublicRoute>,
+  },
+  {
+    path: "/signup",
+    element: <PublicRoute><SignupPage /></PublicRoute>,
+  },
+  {
+    path: "/reset-password",
+    element: <PublicRoute><PasswordResetPage /></PublicRoute>,
+  },
+  // Marketing Pages (Public)
+  {
+    path: "/features",
+    Component: FeaturesPage,
+  },
+  {
+    path: "/pricing",
+    Component: PricingPage,
+  },
+  {
+    path: "/about",
+    Component: AboutPage,
+  },
+  {
+    path: "/contact",
+    Component: ContactPage,
+  },
+  {
+    path: "/faq",
+    Component: FAQPage,
   },
   // Property Listings (Public)
   {
     path: "/listings",
-    Component: PropertyListings,
+    Component: PropertyListingsRedesign,
   },
-  // Premium Black & White Design (Default)
+  // Payment Demo (Public)
   {
-    path: "/",
-    Component: LayoutPremium,
+    path: "/payment-demo",
+    Component: PaymentDemo,
+  },
+  // Main App (Premium Design) - Protected Routes
+  {
+    path: "/app",
+    element: <ProtectedRoute><LayoutPremium /></ProtectedRoute>,
     children: [
       { index: true, Component: DashboardPremium },
+      { path: "dashboard-integrated", Component: DashboardIntegrated },
       { path: "applications", Component: ApplicationsPremium },
       { path: "applications/:id", Component: ApplicationDetailPremium },
       { path: "tenant-passport", Component: TenantPassportPremium },
@@ -59,6 +116,7 @@ export const router = createBrowserRouter([
       { path: "financial", Component: FinancialDashboard },
       { path: "invoices", Component: InvoiceGenerator },
       { path: "maintenance", Component: Maintenance },
+      { path: "contractor-marketplace", Component: ContractorMarketplace },
       { path: "documents", Component: Documents },
       { path: "analytics", Component: Analytics },
       { path: "ltb-forms", Component: LTBForms },
@@ -70,13 +128,24 @@ export const router = createBrowserRouter([
       { path: "tax-tracker", Component: TaxTracker },
       { path: "province-lease-templates", Component: ProvinceLeaseTemplates },
       { path: "tenant-screening", Component: TenantScreening },
+      { path: "notification-center", Component: NotificationCenter },
+      { path: "messaging-center", Component: MessagingCenter },
+      { path: "reports", Component: Reports },
     ],
   },
-  // Premium Tenant Portal
+  // Premium Tenant Portal (Protected)
   {
     path: "/tenant",
-    children: [
-      { index: true, Component: TenantPortalPremium },
-    ],
+    element: <ProtectedRoute><TenantPortalPremium /></ProtectedRoute>,
+  },
+  // AI Features Demo
+  {
+    path: "/ai-demo",
+    Component: AIFeaturesDemo,
+  },
+  // Legacy routes
+  {
+    path: "/property-listings-redesign",
+    Component: PropertyListingsRedesign,
   },
 ]);

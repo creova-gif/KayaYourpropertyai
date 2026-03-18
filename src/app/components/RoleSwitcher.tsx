@@ -8,7 +8,7 @@ export function RoleSwitcher() {
         <p className="text-xs text-slate-500 mb-3 text-center">Switch View</p>
         <div className="flex gap-3">
           <Link
-            to="/"
+            to="/app"
             className="flex flex-col items-center gap-2 px-4 py-3 bg-indigo-50 hover:bg-indigo-100 border-2 border-indigo-200 rounded-xl transition-colors"
           >
             <Building2 className="size-6 text-indigo-600" />

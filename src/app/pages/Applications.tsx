@@ -225,30 +225,31 @@ export function Applications() {
         />
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Tenant Applications</h1>
-          <p className="mt-2 text-slate-600">Review and approve applicants with AI-powered screening</p>
+          <p className="text-[10px] font-semibold text-[#767570] uppercase tracking-wider mb-2">Tenant Management</p>
+          <h1 className="text-[48px] font-normal text-[#0E0F0C] tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>Tenant Applications</h1>
+          <p className="mt-2 text-[14px] text-[#767570]">Review and approve applicants with AI-powered screening</p>
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
+        <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-4 mb-6 shadow-sm">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div className="md:col-span-2 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-[#767570]" />
               <input
                 type="text"
                 placeholder="Search applicants..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-[rgba(0,0,0,0.1)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
               />
             </div>
 
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-4 py-2 rounded-lg border border-[rgba(0,0,0,0.1)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
@@ -260,7 +261,7 @@ export function Applications() {
             <select
               value={filterProperty}
               onChange={(e) => setFilterProperty(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-4 py-2 rounded-lg border border-[rgba(0,0,0,0.1)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
             >
               <option value="all">All Properties</option>
               <option value="4A">Unit 4A</option>
@@ -272,7 +273,7 @@ export function Applications() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-4 py-2 rounded-lg border border-[rgba(0,0,0,0.1)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52] text-[#0E0F0C]"
             >
               <option value="date">Sort: Recent</option>
               <option value="score">Sort: AI Score</option>

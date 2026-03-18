@@ -97,11 +97,12 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Good evening, Justin 👋</h1>
-          <p className="mt-2 text-slate-600">Here's what's happening with your properties today.</p>
+          <p className="text-[10px] font-semibold text-[#767570] uppercase tracking-wider mb-2">Dashboard</p>
+          <h1 className="text-[48px] font-normal text-[#0E0F0C] tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>Good evening, Justin 👋</h1>
+          <p className="mt-2 text-[14px] text-[#767570]">Here's what's happening with your properties today.</p>
         </div>
 
         {/* Gamification Badges */}
@@ -121,15 +122,15 @@ export function Dashboard() {
           {stats.map((stat) => {
             const Icon = stat.icon;
             return (
-              <div key={stat.name} className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-lg transition-shadow">
+              <div key={stat.name} className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-center justify-between">
                   <div className={`p-3 rounded-lg bg-${stat.color}-50`}>
                     <Icon className={`size-6 text-${stat.color}-600`} />
                   </div>
-                  <span className="text-sm font-medium text-green-600">{stat.change}</span>
+                  <span className="text-sm font-semibold text-[#0A7A52]">{stat.change}</span>
                 </div>
-                <h3 className="mt-4 text-2xl font-bold text-slate-900">{stat.value}</h3>
-                <p className="text-sm text-slate-600">{stat.name}</p>
+                <h3 className="mt-4 text-[28px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>{stat.value}</h3>
+                <p className="text-[13px] text-[#767570]">{stat.name}</p>
               </div>
             );
           })}
@@ -138,8 +139,8 @@ export function Dashboard() {
         {/* AI Coach Suggestions */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-xl font-semibold text-slate-900">AI Coach Suggestions</h2>
-            <span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">
+            <h2 className="text-[24px] font-normal text-[#0E0F0C]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>AI Coach Suggestions</h2>
+            <span className="px-3 py-1 bg-[#E5F4EE] text-[#0A7A52] rounded-full text-[11px] font-semibold uppercase tracking-wide">
               {coachSuggestions.length} actions
             </span>
           </div>
@@ -186,8 +187,8 @@ export function Dashboard() {
                 <Tooltip 
                   contentStyle={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px' }}
                 />
-                <Bar dataKey="occupied" fill="#22c55e" radius={[8, 8, 0, 0]} name="Occupied Units" />
-                <Bar dataKey="vacant" fill="#e2e8f0" radius={[8, 8, 0, 0]} name="Vacant Units" />
+                <Bar dataKey="occupied" fill="#22c55e" radius={[8, 8, 0, 0]} name="Occupied Units" key="occupied-bar" />
+                <Bar dataKey="vacant" fill="#e2e8f0" radius={[8, 8, 0, 0]} name="Vacant Units" key="vacant-bar" />
               </BarChart>
             </ResponsiveContainer>
           </div>
