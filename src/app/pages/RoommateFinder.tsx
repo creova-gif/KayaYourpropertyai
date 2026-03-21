@@ -1,5 +1,6 @@
 import { PublicNav } from "../components/PublicNav";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -13,6 +14,7 @@ const roommates=[
   {id:1,name:"Priya Nair",age:26,occ:"UX Designer at Shopify",budget:"$1,200–$1,600",area:"Downtown / West End",move:"Apr 1",life:{sleep:"11pm–7am",social:"Occasionally social",clean:"Very clean",pets:"No pets",smoke:"Non-smoker",wfh:"Sometimes"},desc:"Quiet, tidy professional looking for a chill roomie. Big on cooking at home and weekend hikes. No drama please!",match:94},
   {id:2,name:"Marcus Osei",age:29,occ:"Software Engineer at Shopify",budget:"$1,100–$1,500",area:"Anywhere accessible",move:"Apr 15",life:{sleep:"10pm–6am",social:"More of a homebody",clean:"Clean",pets:"Have a cat",smoke:"Non-smoker",wfh:"Full-time WFH"},desc:"Remote dev, love my quiet time. Looking for someone who respects work hours. Happy to share chores equally.",match:87},
   {id:3,name:"Zoe Tremblay",age:24,occ:"Nursing student, Ryerson",budget:"$900–$1,200",area:"Near Ryerson/Eaton Centre",move:"Immediately",life:{sleep:"Varies (shifts)",social:"Love having friends over",clean:"Reasonable",pets:"Love animals",smoke:"Non-smoker",wfh:"Never"},desc:"On shift work so I keep odd hours. Super friendly, love to host small get-togethers on off days.",match:79},
+  {id:4,name:"Tariq Hassan",age:31,occ:"Financial Analyst, TD Bank",budget:"$1,300–$1,800",area:"Financial District / CityPlace",move:"May 1",life:{sleep:"10pm–6am",social:"Occasionally social",clean:"Very clean",pets:"No pets",smoke:"Non-smoker",wfh:"Hybrid"},desc:"Quiet, organized professional. Early riser, gym 3x a week. Looking for a clean, chill environment. Happy to split groceries.",match:82},
 ];
 
 export function RoommateFinder(){
@@ -101,6 +103,7 @@ export function RoommateFinder(){
                       {sent.includes(r.id)?"✓ Request Sent":"Send Connection Request"}
                     </button>
                     <button style={{padding:"9px 16px",background:"transparent",border:`1px solid ${BD}`,borderRadius:8,fontSize:12,cursor:"pointer",fontFamily:SANS,color:MU}}>Message</button>
+                    <button onClick={()=>toast.error(`Report submitted for ${r.name}`)} style={{padding:"9px 14px",background:"transparent",border:`1px solid ${BD}`,borderRadius:8,fontSize:12,cursor:"pointer",fontFamily:SANS,color:MU}} title="Report this profile">⚑</button>
                   </div>
                 </div>
               ))}

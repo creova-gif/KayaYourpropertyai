@@ -69,6 +69,18 @@ export function MoveInCoordinator(){
           ))}
         </div>
 
+        {/* Landlord check-in notice */}
+        <div style={{...cd,padding:"20px",marginBottom:16,borderLeft:`3px solid #1E5FA8`}}>
+          <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
+            <span style={{fontSize:22,flexShrink:0}}>📋</span>
+            <div>
+              <p style={{fontSize:13,fontWeight:600,color:TX,marginBottom:4}}>Landlord Check-In Scheduled</p>
+              <p style={{fontSize:12,color:MU,lineHeight:1.6}}>Your landlord <strong>John M.</strong> has requested a move-in inspection walkthrough on <strong>April 5 at 11:00 AM</strong>. Make sure your initial inspection report (task 2 above) is complete before then.</p>
+              <button style={{marginTop:10,padding:"6px 14px",background:"#EBF2FB",color:"#1E5FA8",border:"none",borderRadius:8,fontFamily:SANS,fontSize:11,fontWeight:600,cursor:"pointer"}}>Confirm Attendance →</button>
+            </div>
+          </div>
+        </div>
+
         <div style={{...cd,padding:"20px"}}>
           <p style={{fontFamily:SERIF,fontSize:18,color:TX,marginBottom:14}}>Useful for new residents</p>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10}}>

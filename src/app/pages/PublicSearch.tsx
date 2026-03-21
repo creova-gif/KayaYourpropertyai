@@ -387,6 +387,16 @@ export function PublicSearch(){
         {/* ── RESIDENTIAL MODE ────────────────────────────────────── */}
         {mode==="residential"&&(
           <>
+            {/* Neighbourhood quick-filter pills */}
+            <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>
+              {["Downtown Core","Annex","Liberty Village","Scarborough","Midtown","North York","Etobicoke"].map(n=>(
+                <button key={n} onClick={()=>setSearch(search===n?"":n)}
+                  style={{padding:"5px 13px",borderRadius:20,border:`1px solid ${search===n?G:BD}`,background:search===n?G:"#fff",color:search===n?"#fff":MU,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:SANS,transition:"all .15s"}}>
+                  {n}
+                </button>
+              ))}
+            </div>
+
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16,flexWrap:"wrap",gap:12}}>
               <p style={{fontFamily:SERIF,fontSize:22,color:TX,margin:0}}>
                 <em style={{color:G}}>{filtered.length}</em> listings found
@@ -430,6 +440,7 @@ export function PublicSearch(){
                       <div style={{position:"absolute",top:10,left:10,display:"flex",gap:5,flexWrap:"wrap"}}>
                         {l.verified&&<Badge t="✓ Verified" c="green"/>}
                         {l.tours>0&&<Badge t={`${l.tours} tours booked`} c="blue"/>}
+                        <Badge t={`✦ ${l.verified?(l.tours>=10?94:l.tours>=5?89:84):76} AI`} c="purple"/>
                       </div>
                       <button onClick={e=>{e.stopPropagation();setSaved(s=>s.includes(l.id)?s.filter(x=>x!==l.id):[...s,l.id]);toast.info(saved.includes(l.id)?"Removed from saved":"Saved!",{description:l.title});}}
                         style={{position:"absolute",top:10,right:10,width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,.15)",border:"none",cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff"}}>

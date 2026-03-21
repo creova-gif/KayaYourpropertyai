@@ -62,18 +62,28 @@ export function AISearch(){
           </div>
           <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
             {aiSuggestions.map(s=>(
-              <button key={s} onClick={()=>doSearch(s)} style={{padding:"5px 11px",background:BG,border:`1px solid ${BD}`,borderRadius:20,fontSize:11,cursor:"pointer",fontFamily:SANS,color:MU}}>
-                "{s.length>35?s.slice(0,35)+"…":s}"
+              <button key={s} onClick={()=>doSearch(s)}
+                style={{padding:"6px 13px",background:BG,border:`1px solid ${BD}`,borderRadius:20,fontSize:11,cursor:"pointer",fontFamily:SANS,color:MU,transition:"all .2s"}}
+                onMouseOver={e=>{const b=e.currentTarget;b.style.background=GL;b.style.borderColor=G;b.style.color=G;b.style.transform="translateY(-1px)";}}
+                onMouseOut={e=>{const b=e.currentTarget;b.style.background=BG;b.style.borderColor=BD;b.style.color=MU;b.style.transform="";}}>
+                ✦ "{s.length>40?s.slice(0,40)+"…":s}"
               </button>
             ))}
           </div>
         </div>
 
         {searching&&(
-          <div style={{...cd,padding:"28px",textAlign:"center",marginBottom:20}}>
-            <div style={{width:40,height:40,borderRadius:"50%",border:`3px solid ${BD}`,borderTop:`3px solid ${G}`,animation:"spin 1s linear infinite",margin:"0 auto 14px"}}/>
-            <p style={{fontFamily:SERIF,fontSize:18,color:TX,marginBottom:6}}>Kaya AI is searching…</p>
-            <p style={{fontSize:12,color:MU}}>Analysing 2,400+ listings for "{query}"</p>
+          <div style={{...cd,padding:"32px",textAlign:"center",marginBottom:20}}>
+            <div style={{position:"relative",width:56,height:56,margin:"0 auto 18px"}}>
+              <div style={{width:56,height:56,borderRadius:"50%",border:`3px solid ${BD}`,borderTop:`3px solid ${G}`,animation:"spin 0.9s linear infinite",position:"absolute",inset:0}}/>
+              <div style={{width:56,height:56,borderRadius:"50%",border:`3px solid transparent`,borderRight:`3px solid ${G}44`,animation:"spin 1.4s linear infinite reverse",position:"absolute",inset:0}}/>
+              <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>✦</div>
+            </div>
+            <p style={{fontFamily:SERIF,fontSize:20,color:TX,marginBottom:6}}>Kaya AI is searching…</p>
+            <p style={{fontSize:12,color:MU,marginBottom:12}}>Analysing 2,400+ listings for</p>
+            <div style={{display:"inline-flex",background:BG,border:`1px solid ${BD}`,borderRadius:20,padding:"5px 14px",maxWidth:400}}>
+              <span style={{fontSize:12,color:G,fontStyle:"italic",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>"{query}"</span>
+            </div>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
           </div>
         )}

@@ -82,12 +82,43 @@ function StarRating({rating,small=false}:{rating:number;small?:boolean}){
   );
 }
 
+const RENTERS_PLANS=[
+  {id:"basic",name:"Basic",color:"#1E5FA8",bg:"#EBF2FB",price:12,icon:"🛡",coverage:["Personal belongings up to $20K","Personal liability ($100K)","Additional living expenses","Fire & theft"],best:"Ideal for tenants with fewer valuables"},
+  {id:"standard",name:"Standard",color:"#0A7A52",bg:"#E5F4EE",price:22,icon:"🛡️",coverage:["Personal belongings up to $50K","Personal liability ($500K)","All-risk coverage","Water damage","Bike theft"],best:"Most popular — covers 95% of scenarios"},
+  {id:"premium",name:"Premium",color:"#7C3AED",bg:"#F3F0FF",price:38,icon:"⭐",coverage:["Personal belongings up to $100K","Personal liability ($2M)","Identity theft protection","Scheduled valuables","Home office equipment","Travel coverage"],best:"For tenants with high-value items or WFH"},
+];
+
+const ADD_ONS=[
+  {id:"id",label:"Identity Theft Protection",price:4,on:false},
+  {id:"water",label:"Sewer Backup / Overland Water",price:6,on:true},
+  {id:"jewel",label:"Scheduled Jewellery & Valuables",price:8,on:false},
+  {id:"bike",label:"Enhanced Bike Coverage",price:3,on:false},
+  {id:"pets",label:"Pet Damage Liability",price:5,on:false},
+];
+
+const TENANT_COVERAGE=[
+  {id:1,name:"Sarah K.",unit:"4A",plan:"Standard",monthly:22,expires:"Dec 2026",status:"covered"},
+  {id:2,name:"Marcus O.",unit:"2B",plan:null,monthly:0,expires:null,status:"uninsured"},
+  {id:3,name:"David L.",unit:"1C",plan:"Basic",monthly:12,expires:"Sep 2026",status:"covered"},
+  {id:4,name:"Emma W.",unit:"3A",plan:null,monthly:0,expires:null,status:"uninsured"},
+  {id:5,name:"Zoe T.",unit:"5B",plan:"Premium",monthly:38,expires:"Mar 2027",status:"covered"},
+];
+
 export default function InsuranceMarketplace(){
   const [activeFilter,setActiveFilter]=useState("All");
   const [selected,setSelected]=useState<string|null>(null);
+  const [mainTab,setMainTab]=useState<"landlord"|"renters">("landlord");
+  const [selectedPlan,setSelectedPlan]=useState("standard");
+  const [addOns,setAddOns]=useState(ADD_ONS);
 
   const filters=["All","landlord","condo","multi-unit","commercial"];
   const filtered=activeFilter==="All"?PROVIDERS:PROVIDERS.filter(p=>p.categories.includes(activeFilter));
+
+  function toggleAddOn(id:string){
+    setAddOns(a=>a.map(x=>x.id===id?{...x,on:!x.on}:x));
+  }
+  const plan=RENTERS_PLANS.find(p=>p.id===selectedPlan)||RENTERS_PLANS[1];
+  const addOnTotal=addOns.filter(a=>a.on).reduce((s,a)=>s+a.price,0);
 
   return(
     <div style={{minHeight:"100vh",background:BG,fontFamily:SANS}}>
@@ -95,20 +126,164 @@ export default function InsuranceMarketplace(){
 
         {/* Header */}
         <motion.div initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} style={{marginBottom:28}}>
-          <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:8}}>
+          <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
             <div style={{width:44,height:44,borderRadius:12,background:GL,display:"flex",alignItems:"center",justifyContent:"center"}}>
               <Shield size={22} color={G}/>
             </div>
             <div>
-              <h1 style={{fontSize:26,fontWeight:700,color:TX,fontFamily:SERIF,margin:0}}>Landlord Insurance Marketplace</h1>
-              <p style={{fontSize:14,color:MU,margin:0}}>Compare Canada's top landlord insurance providers — get quotes in minutes</p>
+              <h1 style={{fontSize:26,fontWeight:700,color:TX,fontFamily:SERIF,margin:0}}>Insurance Marketplace</h1>
+              <p style={{fontSize:14,color:MU,margin:0}}>Landlord and renters insurance — compare, manage, and share with tenants</p>
             </div>
+          </div>
+          {/* Main tabs */}
+          <div style={{display:"inline-flex",background:"#F0F0EE",borderRadius:10,padding:3,gap:3,marginBottom:8}}>
+            {[{id:"landlord",label:"🏠 Landlord Insurance"},{id:"renters",label:"🧑‍🤝‍🧑 Renters Insurance"}].map(t=>(
+              <button key={t.id} onClick={()=>setMainTab(t.id as typeof mainTab)}
+                style={{padding:"8px 18px",background:mainTab===t.id?"#fff":"transparent",color:mainTab===t.id?TX:MU,border:"none",borderRadius:8,fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:SANS,transition:"all .2s",boxShadow:mainTab===t.id?"0 1px 4px rgba(0,0,0,.1)":"none"}}>
+                {t.label}
+              </button>
+            ))}
           </div>
           <div style={{background:GL,border:`1px solid ${G}33`,borderRadius:12,padding:"13px 18px",display:"flex",gap:10,alignItems:"flex-start",marginTop:12}}>
             <Info size={15} color={G} style={{flexShrink:0,marginTop:1}}/>
             <span style={{fontSize:13,color:G}}>Kaya has partnerships with all providers below. When you request a quote, we send your property details automatically — no need to re-enter information.</span>
           </div>
         </motion.div>
+
+        {/* ── RENTERS INSURANCE TAB ─────────────────────────────────── */}
+        {mainTab==="renters"&&(
+          <>
+            {/* Plan comparison */}
+            <p style={{fontFamily:SERIF,fontSize:22,color:TX,marginBottom:14}}>Choose a Plan for Your Tenants</p>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14,marginBottom:28}}>
+              {RENTERS_PLANS.map(p=>(
+                <div key={p.id} onClick={()=>setSelectedPlan(p.id)}
+                  style={{background:"#fff",border:`2px solid ${selectedPlan===p.id?p.color:"rgba(0,0,0,0.07)"}`,borderRadius:16,padding:"20px",cursor:"pointer",transition:"border-color .2s"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
+                    <div style={{width:42,height:42,borderRadius:10,background:p.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>{p.icon}</div>
+                    <div>
+                      <p style={{fontSize:14,fontWeight:700,color:p.color,margin:0}}>{p.name}</p>
+                      <p style={{fontSize:22,fontWeight:800,color:TX,margin:0,fontFamily:SERIF}}>${p.price}<span style={{fontSize:11,fontWeight:400,color:MU}}>/mo</span></p>
+                    </div>
+                    {selectedPlan===p.id&&<span style={{marginLeft:"auto",background:p.bg,color:p.color,fontSize:10,fontWeight:700,padding:"3px 9px",borderRadius:10}}>Selected</span>}
+                  </div>
+                  <p style={{fontSize:11,color:MU,marginBottom:10}}>{p.best}</p>
+                  {p.coverage.map(c=>(
+                    <div key={c} style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:6}}>
+                      <span style={{color:p.color,fontSize:13,flexShrink:0,marginTop:1}}>✓</span>
+                      <span style={{fontSize:12,color:TX}}>{c}</span>
+                    </div>
+                  ))}
+                  <button onClick={e=>{e.stopPropagation();toast.success(`${p.name} plan details sent to all tenants`);}}
+                    style={{width:"100%",marginTop:12,padding:"9px",background:p.color,color:"#fff",border:"none",borderRadius:9,fontFamily:SANS,fontSize:12,fontWeight:600,cursor:"pointer"}}>
+                    Share with Tenants →
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Add-on toggles */}
+            <div style={{background:"#fff",border:"1px solid rgba(0,0,0,0.07)",borderRadius:16,padding:"22px",marginBottom:24}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+                <p style={{fontFamily:SERIF,fontSize:18,color:TX,margin:0}}>Optional Add-Ons</p>
+                <p style={{fontSize:13,fontWeight:700,color:G}}>+${addOnTotal}/mo selected</p>
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:12}}>
+                {addOns.map(a=>(
+                  <div key={a.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:"1px solid rgba(0,0,0,0.05)"}}>
+                    <div>
+                      <p style={{fontSize:13,fontWeight:600,color:TX,margin:0}}>{a.label}</p>
+                      <p style={{fontSize:11,color:MU,margin:0}}>+${a.price}/mo</p>
+                    </div>
+                    <button onClick={()=>toggleAddOn(a.id)}
+                      style={{width:44,height:24,borderRadius:12,background:a.on?G:"rgba(0,0,0,0.07)",border:"none",cursor:"pointer",position:"relative",transition:"background .25s",flexShrink:0}}>
+                      <div style={{width:18,height:18,borderRadius:"50%",background:"#fff",position:"absolute",top:3,left:a.on?23:3,transition:"left .25s",boxShadow:"0 1px 3px rgba(0,0,0,.2)"}}/>
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div style={{marginTop:14,padding:"14px",background:GL,borderRadius:10,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <div>
+                  <p style={{fontSize:12,color:G,fontWeight:600,margin:0}}>{plan.name} plan + selected add-ons</p>
+                  <p style={{fontSize:11,color:"#085040",margin:0}}>Estimated monthly per tenant</p>
+                </div>
+                <p style={{fontFamily:SERIF,fontSize:26,color:G,margin:0}}>${plan.price+addOnTotal}/mo</p>
+              </div>
+            </div>
+
+            {/* Per-tenant coverage status */}
+            <p style={{fontFamily:SERIF,fontSize:22,color:TX,marginBottom:14}}>Tenant Coverage Status</p>
+            <div style={{background:"#fff",border:"1px solid rgba(0,0,0,0.07)",borderRadius:16,overflow:"hidden",marginBottom:28}}>
+              <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <thead>
+                  <tr style={{background:BG}}>
+                    {["Tenant","Unit","Plan","Monthly","Policy Expires","Status","Action"].map(h=>(
+                      <th key={h} style={{padding:"10px 16px",textAlign:"left",fontSize:10,fontWeight:700,color:MU,textTransform:"uppercase",letterSpacing:".5px"}}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {TENANT_COVERAGE.map(t=>(
+                    <tr key={t.id} style={{borderTop:"1px solid rgba(0,0,0,0.05)"}}>
+                      <td style={{padding:"12px 16px",fontSize:13,fontWeight:600,color:TX}}>{t.name}</td>
+                      <td style={{padding:"12px 16px",fontSize:12,color:MU}}>Unit {t.unit}</td>
+                      <td style={{padding:"12px 16px",fontSize:12,color:TX}}>{t.plan||"—"}</td>
+                      <td style={{padding:"12px 16px",fontSize:13,fontWeight:600,color:TX}}>{t.monthly?`$${t.monthly}`:"—"}</td>
+                      <td style={{padding:"12px 16px",fontSize:12,color:MU}}>{t.expires||"—"}</td>
+                      <td style={{padding:"12px 16px"}}>
+                        <span style={{background:t.status==="covered"?GL:"#FDECEA",color:t.status==="covered"?G:"#C0392B",fontSize:11,fontWeight:700,padding:"3px 10px",borderRadius:20}}>
+                          {t.status==="covered"?"✓ Covered":"Uninsured"}
+                        </span>
+                      </td>
+                      <td style={{padding:"12px 16px"}}>
+                        {t.status==="uninsured"?(
+                          <button onClick={()=>toast.success(`Insurance reminder sent to ${t.name}`)}
+                            style={{padding:"6px 12px",background:"#FDECEA",color:"#C0392B",border:"none",borderRadius:7,fontSize:11,fontWeight:600,cursor:"pointer"}}>
+                            Send Reminder
+                          </button>
+                        ):(
+                          <button onClick={()=>toast.info(`Viewing policy details for ${t.name}`)}
+                            style={{padding:"6px 12px",background:GL,color:G,border:"none",borderRadius:7,fontSize:11,fontWeight:600,cursor:"pointer"}}>
+                            View Policy →
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Landlord benefits panel */}
+            <div style={{background:TX,borderRadius:18,padding:"24px 28px"}}>
+              <p style={{fontFamily:SERIF,fontSize:20,color:"#fff",marginBottom:4}}>Why Require Renters Insurance?</p>
+              <p style={{fontSize:13,color:"rgba(255,255,255,.5)",marginBottom:20}}>5 reasons landlords are making it a lease condition</p>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                {[
+                  {icon:"⚖️",title:"Reduces your liability",desc:"If a tenant's negligence causes damage, their insurance pays first — protecting you from costly claims."},
+                  {icon:"💧",title:"Covers tenant-caused damage",desc:"Water leaks, kitchen fires, and accidents cost you nothing when tenants are covered."},
+                  {icon:"🏠",title:"Protects their belongings",desc:"Tenant satisfaction improves when they know their possessions are protected — leads to longer tenancies."},
+                  {icon:"📋",title:"Lease compliance tool",desc:"Including renters insurance as a lease requirement is 100% legal in Ontario and adds a layer of protection."},
+                  {icon:"💰",title:"They're affordable",desc:"At $12–$38/month, tenants have no excuse. Kaya makes it one-click easy to get covered through this page."},
+                ].map(r=>(
+                  <div key={r.title} style={{background:"rgba(255,255,255,.06)",borderRadius:10,padding:"14px"}}>
+                    <div style={{display:"flex",gap:10,alignItems:"flex-start"}}>
+                      <span style={{fontSize:22,flexShrink:0}}>{r.icon}</span>
+                      <div>
+                        <p style={{fontSize:12,fontWeight:700,color:"#fff",marginBottom:4}}>{r.title}</p>
+                        <p style={{fontSize:11,color:"rgba(255,255,255,.5)",lineHeight:1.5}}>{r.desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* ── LANDLORD INSURANCE TAB ──────────────────────────────── */}
+        {mainTab==="landlord"&&(
+        <>
 
         {/* Stats */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:28}}>
@@ -229,6 +404,7 @@ export default function InsuranceMarketplace(){
             </div>
           ))}
         </motion.div>
+        </>)}
       </div>
     </div>
   );

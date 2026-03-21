@@ -6,7 +6,7 @@ import {
   Receipt, Bell, Shield, TrendingUp, Send, FolderOpen, BarChart3,
   Award, Brain, CreditCard, Scale, UserCheck, Hammer, FileBarChart,
   Share2, ShieldCheck, Store, Star, BadgeCheck, FileCheck2, Lock,
-  HeartHandshake, PlusCircle, Briefcase,
+  HeartHandshake, PlusCircle, Briefcase, Zap, Leaf, TrendingDown, Wallet,
 } from "lucide-react";
 
 const G = "#0A7A52";
@@ -48,6 +48,8 @@ export function NavigationMenu({ basePath = "/", onNavigate, dark = false }: Pro
       name: "Operations", href: mkp("/maintenance"), icon: Wrench, section: "MANAGE",
       children: [
         { name: "Maintenance", href: mkp("/maintenance"), icon: Wrench },
+        { name: "Maintenance Escrow", href: mkp("/escrow"), icon: Wallet },
+        { name: "Smart Home Hub", href: mkp("/smart-home"), icon: Zap },
         { name: "Contractors", href: mkp("/contractor-marketplace"), icon: Hammer },
         { name: "Vendors", href: mkp("/vendors"), icon: Store },
         { name: "Documents", href: mkp("/documents"), icon: FolderOpen },
@@ -92,6 +94,8 @@ export function NavigationMenu({ basePath = "/", onNavigate, dark = false }: Pro
         { name: "Tenant Passport", href: mkp("/tenant-passport"), icon: Award },
         { name: "Analytics", href: mkp("/analytics"), icon: BarChart3 },
         { name: "Reports", href: mkp("/reports"), icon: FileBarChart },
+        { name: "Sustainability", href: mkp("/sustainability"), icon: Leaf },
+        { name: "Investor Hub", href: mkp("/investor"), icon: TrendingDown },
       ],
     },
     {

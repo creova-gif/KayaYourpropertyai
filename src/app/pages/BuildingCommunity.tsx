@@ -16,6 +16,7 @@ const initPosts:Post[]=[
   {id:3,author:"John M. (2B)",type:"recommend",title:"Best pizza on King St",body:"Honestly Terroni is overrated. Found this tiny spot on Bathurst — Pizzeria Libretto — absolutely incredible wood-fired neapolitan. 10/10 recommend.",time:"5h ago",likes:8,replies:3},
   {id:4,author:"Emma W. (3A)",type:"offer",title:"Free moving boxes — must go today",body:"Just finished unpacking. Have about 20 large boxes and packing paper. First come first served, lobby storage room.",time:"7h ago",likes:6,replies:2},
   {id:5,author:"David L. (1C)",type:"ask",title:"Any recommendations for a good locksmith?",body:"Lost my spare key. Looking for someone reliable and not too pricey. Bonus if they can come same day.",time:"1d ago",likes:2,replies:4},
+  {id:6,author:"Nadia B. (2C)",type:"recommend",title:"Parking tip: Meter 3B near the alley is free after 6pm",body:"Just found this out — the meter right by the alley entrance (3B) stops charging at 6pm. Saved me $4 last night. Pass it on!",time:"2d ago",likes:21,replies:8},
 ];
 
 export function BuildingCommunity(){

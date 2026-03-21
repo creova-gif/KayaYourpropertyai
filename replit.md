@@ -95,10 +95,18 @@ src/
 - **CRA T776 Report** (`/app/t776`) — Auto-generated Statement of Real Estate Rentals from Kaya rent data; tabs for income, expenses, CCA; PDF export
 - **Compliance Centre** (`/app/compliance`) — PIPEDA, Human Rights Code, CASL, LTB compliance dashboard with scoring, action items, and legal references
 - **Income Verification** (`/app/income-verify`) — AI fraud detection, bank verification status, pay stub AI analysis, fraud signal flagging per applicant
-- **Insurance Marketplace** (`/app/insurance`) — 5 Canadian insurer profiles (Square One, Aviva, Intact, BrokerLink, Wawanesa), quote CTAs, coverage education
+- **Insurance Marketplace** (`/app/insurance`) — Tabbed view: Landlord Insurance (5 Canadian insurer profiles: Square One, Aviva, Intact, BrokerLink, Wawanesa; quote CTAs, coverage education) + Renters Insurance (3 plan tiers: Basic/Plus/Premium; per-tenant coverage table; add-on toggles; landlord benefits panel)
 - **Paralegal Marketplace** (`/app/paralegal`) — 5 Ontario-licensed paralegals with LSO badge, ratings, success rates, booking modal, how-it-works flow
 - **List Property** (`/app/list-property`) — 6-step landlord listing wizard: type selector, address/location, beds/baths/parking, amenities multi-select, pricing/availability with Ontario rent rules, review & publish. Builds Kaya's native listing network.
 - **Commercial Portfolio** (`/app/commercial`) — Enterprise commercial property management with Portfolio/Lease Tracker/Team tabs for large companies managing multiple commercial properties.
+- **Smart Home Hub** (`/app/smart-home`) — IoT device control centre: thermostat sliders, lock/light/camera/EV charger device grid, temp-pass modal for guests, energy savings panel
+- **Maintenance Escrow** (`/app/escrow`) — Escrow deposit management: hold/release/dispute flow, per-tenant breakdown table, audit log, fund status cards
+- **Sustainability Dashboard** (`/app/sustainability`) — Energy grade cards per property, monthly CO₂ tracking, ESG report generator, Kaya Green certification badge
+- **Investor Hub** (`/app/investor`) — Live ROI calculator (inputs: price/rent/down/vacancy), AI market signal cards, portfolio performance table with IRR, cap rate, cash-on-cash
+
+## Public Routes (additional)
+- `/accessibility` — Accessibility Hub: 8-filter sidebar (wheelchair, elevator, grab bars, etc.), accessible listing cards with verified badges, Book Tour / Save actions
+- `/multilingual` — Multilingual Platform: 8 language selector, translation accuracy stats (98.4%), per-language newcomer support resources, Apply Language CTA
 
 ## Sidebar (LayoutPremium)
 - **Dark design:** Near-black (#0C0D0A) sidebar with white Kaya. wordmark and green dot

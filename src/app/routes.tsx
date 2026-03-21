@@ -48,6 +48,12 @@ import { AIFeaturesDemo } from "./pages/AIFeaturesDemo";
 import { PublicSearch } from "./pages/PublicSearch";
 import { AISearch } from "./pages/AISearch";
 import { RoommateFinder } from "./pages/RoommateFinder";
+import { SmartHomeHub } from "./pages/SmartHomeHub";
+import { MaintenanceEscrow } from "./pages/MaintenanceEscrow";
+import { SustainabilityDashboard } from "./pages/SustainabilityDashboard";
+import { InvestorHub } from "./pages/InvestorHub";
+import { AccessibilityHub } from "./pages/AccessibilityHub";
+import { MultilingualPlatform } from "./pages/MultilingualPlatform";
 import { MoveInCoordinator } from "./pages/MoveInCoordinator";
 import { NeighbourhoodInsights } from "./pages/NeighbourhoodInsights";
 import { BuildingCommunity } from "./pages/BuildingCommunity";
@@ -134,6 +140,15 @@ export const router = createBrowserRouter([
     path: "/community",
     Component: BuildingCommunity,
   },
+  // Accessibility & Multilingual (Public)
+  {
+    path: "/accessibility",
+    Component: AccessibilityHub,
+  },
+  {
+    path: "/multilingual",
+    Component: MultilingualPlatform,
+  },
   // Payment Demo (Public)
   {
     path: "/payment-demo",
@@ -183,6 +198,10 @@ export const router = createBrowserRouter([
       { path: "compliance", Component: ComplianceCenter },
       { path: "income-verify", Component: IncomeVerification },
       { path: "insurance", Component: InsuranceMarketplace },
+      { path: "smart-home", Component: SmartHomeHub },
+      { path: "escrow", Component: MaintenanceEscrow },
+      { path: "sustainability", Component: SustainabilityDashboard },
+      { path: "investor", Component: InvestorHub },
       { path: "paralegal", Component: ParalegalMarketplace },
       { path: "list-property", Component: ListProperty },
       { path: "commercial", Component: CommercialPortfolio },

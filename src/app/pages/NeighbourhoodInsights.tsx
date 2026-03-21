@@ -20,6 +20,20 @@ const neighbourhoods:{[k:string]:any}={
   "Westboro":{walk:85,transit:78,bike:92,safe:91,noise:"Low",vibe:"Active, trendy village",avgRent:1850,schools:14,parks:10,cafes:55,commute:"15–25 min",city:"Ottawa",pros:["Great biking city","Excellent food scene","Safe neighbourhood","NCC trails"],cons:["Colder winters","Less nightlife than Toronto","Limited transit vs TO"]},
   "Centretown":{walk:90,transit:84,bike:85,safe:80,noise:"Medium",vibe:"Young, urban, walkable",avgRent:1780,schools:8,parks:6,cafes:70,commute:"8–15 min",city:"Ottawa",pros:["Walk to parliament","Great restaurants","Affordable vs Toronto","LRT access"],cons:["Urban noise","Limited parking","Smaller units"]},
   "Dundas St W":{walk:80,transit:76,bike:78,safe:82,noise:"Medium",vibe:"Emerging, artistic",avgRent:1700,schools:10,parks:8,cafes:40,commute:"25–35 min",city:"Hamilton",pros:["Rapidly improving","Great art scene","Most affordable","Big units for the price"],cons:["Still developing","Further from downtown TO","Some rough patches"]},
+  "Etobicoke":{walk:74,transit:79,bike:62,safe:87,noise:"Low-Medium",vibe:"Suburban, value-driven",avgRent:2100,schools:19,parks:14,cafes:48,commute:"25–40 min",city:"Toronto",pros:["Excellent value vs downtown","Large family-sized units","Top-rated schools","Growing Eglinton LRT access"],cons:["Car often needed","Less nightlife","Further from downtown core","Older transit infrastructure"]},
+};
+
+const aiVerdicts:Record<string,string>={
+  "Downtown Core":"Best for young professionals who want to be at the centre of it all. The transit score is unmatched in Ontario — you don't need a car. Just be ready for noise and a premium price tag.",
+  "Annex":"Ideal for academics, creatives, and families who value walkable streets and community feel. Strong schools and large units make it worth the premium over downtown.",
+  "Liberty Village":"Perfect for young professionals who work downtown and want a modern, social neighbourhood. Watch out for TTC gaps on weekends — Uber fills the void.",
+  "Scarborough":"Hands-down the best value in Toronto. Great for families who don't mind the commute and want space, safety, and green space at a fraction of downtown prices.",
+  "Midtown":"The gold standard for established professionals. Great transit, top schools, safe streets. Rents reflect the quality — expect to pay for it.",
+  "North York":"Best of both worlds for renters who want suburban space with urban access. Yonge subway corridor makes downtown reachable without downtown prices.",
+  "Westboro":"Ottawa's most desirable neighbourhood for active, food-loving renters. The cycling infrastructure is exceptional. A quieter lifestyle without sacrificing quality.",
+  "Centretown":"Ottawa's urban core for those who want walkability on a budget. LRT access is growing and the restaurant scene punches above its weight.",
+  "Dundas St W":"Hamilton's most exciting emerging neighbourhood. Early movers are getting incredible value — expect strong appreciation in the next 3–5 years as the arts district develops.",
+  "Etobicoke":"Etobicoke is having a moment. With the Eglinton Crosstown LRT coming, it's the best mid-term investment neighbourhood in the GTA. Great schools and large units at prices downtown can't touch.",
 };
 
 export function NeighbourhoodInsights(){
@@ -179,6 +193,7 @@ export function NeighbourhoodInsights(){
             :hood==="Westboro"?"Ottawa's trendiest neighbourhood — best in class for cycling (92/100). Ottawa-Gatineau market is less competitive than Toronto with a 2.1% vacancy rate giving renters more negotiating room."
             :hood==="Centretown"?"Ottawa's most walkable urban core offers an excellent downtown lifestyle at a fraction of Toronto prices. The LRT Confederation Line provides fast connections across the city."
             :hood==="Dundas St W"?"Hamilton's most exciting emerging neighbourhood — arts scene, historic buildings, and rents nearly 40% lower than comparable Toronto areas. Best for buyers who are ahead of the curve."
+            :hood==="Etobicoke"?"Etobicoke is having a moment. With the Eglinton Crosstown LRT coming online, it's the best mid-term value neighbourhood in the GTA. Top-rated schools, large units, and rents roughly 25% lower than comparable downtown options — all within 30 minutes of the core."
             :`${d.vibe} neighbourhood with a Walk Score of ${d.walk} and average rents of $${d.avgRent.toLocaleString()}/mo. ${cityData?`CMHC reports ${cityData.vacancyRate}% vacancy in ${cityData.city} — ${cityData.vacancyRate<2?"a tight market — act fast":"a balanced market with room to negotiate"}.`:""}`}
           </p>
         </div>
