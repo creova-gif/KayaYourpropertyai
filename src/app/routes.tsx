@@ -45,6 +45,16 @@ import { PasswordResetPage } from "./pages/PasswordResetPage";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
 import { FAQPage } from "./pages/FAQPage";
 import { AIFeaturesDemo } from "./pages/AIFeaturesDemo";
+import { PublicSearch } from "./pages/PublicSearch";
+import { AISearch } from "./pages/AISearch";
+import { RoommateFinder } from "./pages/RoommateFinder";
+import { MoveInCoordinator } from "./pages/MoveInCoordinator";
+import { NeighbourhoodInsights } from "./pages/NeighbourhoodInsights";
+import { BuildingCommunity } from "./pages/BuildingCommunity";
+import { ListingSyndication } from "./pages/ListingSyndication";
+import { DepositFree } from "./pages/DepositFree";
+import { VendorMarketplace } from "./pages/VendorMarketplace";
+import { RentCreditBuilding } from "./pages/RentCreditBuilding";
 
 export const router = createBrowserRouter([
   // Landing Page - Default home page for visitors
@@ -91,6 +101,31 @@ export const router = createBrowserRouter([
     path: "/listings",
     Component: PropertyListingsRedesign,
   },
+  // Public Search & Community (Public)
+  {
+    path: "/search",
+    Component: PublicSearch,
+  },
+  {
+    path: "/search/ai",
+    Component: AISearch,
+  },
+  {
+    path: "/roommates",
+    Component: RoommateFinder,
+  },
+  {
+    path: "/move-in",
+    Component: MoveInCoordinator,
+  },
+  {
+    path: "/neighbourhood-insights",
+    Component: NeighbourhoodInsights,
+  },
+  {
+    path: "/community",
+    Component: BuildingCommunity,
+  },
   // Payment Demo (Public)
   {
     path: "/payment-demo",
@@ -131,6 +166,10 @@ export const router = createBrowserRouter([
       { path: "notification-center", Component: NotificationCenter },
       { path: "messaging-center", Component: MessagingCenter },
       { path: "reports", Component: Reports },
+      { path: "listing-syndication", Component: ListingSyndication },
+      { path: "deposit-free", Component: DepositFree },
+      { path: "vendors", Component: VendorMarketplace },
+      { path: "rent-credit", Component: RentCreditBuilding },
     ],
   },
   // Premium Tenant Portal (Protected)

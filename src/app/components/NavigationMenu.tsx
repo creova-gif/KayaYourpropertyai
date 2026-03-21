@@ -25,6 +25,10 @@ import {
   UserCheck,
   Hammer,
   FileBarChart,
+  Share2,
+  ShieldCheck,
+  Store,
+  Star,
 } from "lucide-react";
 
 interface NavItem {
@@ -94,10 +98,21 @@ export function NavigationMenu({ basePath = "/", onNavigate }: { basePath?: stri
       children: [
         { name: "Maintenance", href: makePath("/maintenance"), icon: Wrench },
         { name: "Contractors", href: makePath("/contractor-marketplace"), icon: Hammer },
+        { name: "Vendors", href: makePath("/vendors"), icon: Store },
         { name: "Documents", href: makePath("/documents"), icon: FolderOpen },
         { name: "LTB Forms", href: makePath("/ltb-forms"), icon: Scale },
         { name: "Lease Templates", href: makePath("/province-lease-templates"), icon: FileText },
         { name: "Notices", href: makePath("/notices"), icon: Bell },
+      ],
+    },
+    {
+      name: "Growth",
+      href: makePath("/listing-syndication"),
+      icon: Share2,
+      children: [
+        { name: "Listing Syndication", href: makePath("/listing-syndication"), icon: Share2 },
+        { name: "Deposit-Free (Shield)", href: makePath("/deposit-free"), icon: ShieldCheck },
+        { name: "Rent Credit Building", href: makePath("/rent-credit"), icon: Star },
       ],
     },
     {
