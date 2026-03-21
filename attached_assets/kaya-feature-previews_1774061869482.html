@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Kaya — Feature Previews</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#0A7A52;--gl:#E5F4EE;--gd:#085040;--gm:#12A06E;
+  --bg:#F8F7F4;--s:#fff;--tx:#0E0F0C;--mu:#767570;--li:#AEADA8;
+  --br:rgba(0,0,0,0.07);--brs:rgba(0,0,0,0.13);
+  --am:#B45309;--aml:#FEF3C7;--rd:#C0392B;--rdl:#FDECEA;
+  --bl:#1E5FA8;--bll:#EBF2FB;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--tx);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button,input,select{font-family:var(--sans)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--br);border-radius:2px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;background:rgba(248,247,244,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+.logo{font-family:var(--serif);font-size:20px;color:var(--tx);cursor:pointer}
+.logo span{color:var(--g)}
+.nav-pills{display:flex;gap:4px}
+.nav-pill{padding:6px 13px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;color:var(--mu);border:none;background:transparent;transition:all .15s;white-space:nowrap}
+.nav-pill:hover{background:rgba(0,0,0,.04);color:var(--tx)}
+.nav-pill.active{background:var(--tx);color:#fff}
+.btn-enter{padding:8px 18px;background:var(--g);color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-enter:hover{background:var(--gd);transform:translateY(-1px)}
+
+/* PAGES */
+.fp{display:none;padding-top:58px;min-height:100vh;animation:fadeUp .35s ease}
+.fp.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* HERO VARIANTS */
+.fhero{padding:64px 48px 56px;text-align:center;position:relative;overflow:hidden}
+.fhero.dark{background:var(--tx)}
+.fhero.green{background:var(--gd)}
+.fhero.light{background:var(--bg)}
+.fhero-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:52px 52px}
+.fhero-glow{position:absolute;width:500px;height:500px;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-60%);pointer-events:none}
+.feat-badge{display:inline-flex;align-items:center;gap:6px;border-radius:40px;padding:5px 14px;font-size:11px;font-weight:600;margin-bottom:20px}
+.fh1{font-family:var(--serif);font-size:clamp(40px,6vw,72px);line-height:.95;letter-spacing:-2px;margin-bottom:16px}
+.fh1 em{font-style:italic;color:var(--g)}
+.fh1.light-em em{color:rgba(255,255,255,.55)}
+.fsub{font-size:15px;line-height:1.75;max-width:520px;margin:0 auto 32px}
+.fcta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-primary{padding:13px 28px;background:var(--g);color:#fff;border:none;border-radius:10px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary:hover{background:var(--gd);transform:translateY(-2px)}
+.btn-ghost{padding:13px 24px;background:transparent;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2);border-radius:10px;font-family:var(--sans);font-size:13px;cursor:pointer;transition:all .2s}
+.btn-ghost:hover{background:rgba(255,255,255,.08)}
+.btn-ghost.dark{color:var(--mu);border-color:var(--br)}
+.btn-ghost.dark:hover{background:rgba(0,0,0,.04);color:var(--tx)}
+
+/* SECTIONS */
+.fsec{max-width:1080px;margin:0 auto;padding:64px 40px}
+.fsec-sm{max-width:780px;margin:0 auto;padding:48px 40px}
+.sec-label{font-size:10px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
+.sec-title{font-family:var(--serif);font-size:clamp(28px,4vw,44px);color:var(--tx);line-height:1.05;letter-spacing:-.8px;margin-bottom:12px}
+.sec-title em{font-style:italic;color:var(--g)}
+.sec-sub{font-size:14px;color:var(--mu);line-height:1.75;max-width:560px}
+.divider{height:1px;background:var(--br);margin:0 40px}
+
+/* FEATURE GRIDS */
+.fg3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.fc{background:#fff;border:1px solid var(--br);border-radius:14px;padding:22px}
+.fc-ico{font-size:26px;margin-bottom:12px}
+.fc-title{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:5px}
+.fc-desc{font-size:12px;color:var(--mu);line-height:1.65}
+
+/* STAT STRIP */
+.stat-strip{background:var(--tx);padding:40px;display:flex;gap:0;border-radius:16px;overflow:hidden}
+.stat-item{flex:1;text-align:center;padding:0 24px;border-right:1px solid rgba(255,255,255,.08)}
+.stat-item:last-child{border-right:none}
+.stat-n{font-family:var(--serif);font-size:36px;color:#fff;line-height:1;margin-bottom:4px}
+.stat-n em{font-style:italic;color:var(--g)}
+.stat-l{font-size:11px;color:rgba(255,255,255,.4)}
+
+/* MOCKUP CARDS */
+.mock-card{background:#fff;border:1px solid var(--br);border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.07)}
+.mock-bar{height:40px;background:var(--tx);display:flex;align-items:center;padding:0 14px;gap:7px}
+.mock-dot{width:10px;height:10px;border-radius:50%}
+.mock-body{padding:18px}
+.mock-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--br)}
+.mock-row:last-child{border-bottom:none}
+.mock-lbl{font-size:12px;font-weight:600;color:var(--tx)}
+.mock-val{font-size:12px;color:var(--mu)}
+.mock-badge{font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px}
+.mbg{background:var(--gl);color:var(--g)}
+.mbam{background:var(--aml);color:var(--am)}
+.mbrd{background:var(--rdl);color:var(--rd)}
+.mbbl{background:var(--bll);color:var(--bl)}
+.mbgr{background:var(--bg);color:var(--mu)}
+.pbar{height:6px;background:var(--br);border-radius:3px}
+.pbar-fill{height:6px;border-radius:3px;transition:width .6s}
+
+/* COMPARISON TABLE */
+.comp-table{border:1px solid var(--br);border-radius:14px;overflow:hidden;background:#fff}
+.ct-head{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--bg)}
+.ct-head-cell{padding:14px 18px;font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;border-right:1px solid var(--br)}
+.ct-head-cell:last-child{border-right:none;background:var(--gl);color:var(--g)}
+.ct-row{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--br)}
+.ct-cell{padding:12px 18px;font-size:12px;color:var(--tx);border-right:1px solid var(--br);display:flex;align-items:center}
+.ct-cell:last-child{border-right:none;background:rgba(10,122,82,.03);font-weight:600;color:var(--g)}
+.ct-x{color:var(--rd)}
+.ct-check{color:var(--g);font-weight:700}
+
+/* HOW IT WORKS STEPS */
+.hiw-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.hiw-step{text-align:center;padding:0 16px;position:relative}
+.hiw-step:not(:last-child)::after{content:'→';position:absolute;right:-12px;top:22px;color:var(--li);font-size:18px}
+.hiw-num{width:44px;height:44px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;color:var(--g);margin:0 auto 12px}
+.hiw-title{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:4px}
+.hiw-desc{font-size:11px;color:var(--mu);line-height:1.6}
+
+/* QUOTE / TESTIMONIAL */
+.quote-block{background:var(--gl);border-radius:14px;padding:24px;border-left:3px solid var(--g)}
+.quote-text{font-family:var(--serif);font-size:18px;color:var(--tx);line-height:1.5;margin-bottom:12px}
+.quote-author{font-size:12px;color:var(--mu)}
+
+/* CTA FOOTER */
+.fp-footer{background:var(--g);padding:72px 40px;text-align:center;position:relative;overflow:hidden}
+.fp-footer::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 30% 50%,rgba(255,255,255,.04),transparent),radial-gradient(ellipse 60% 70% at 75% 50%,rgba(0,0,0,.06),transparent);pointer-events:none}
+.fp-footer h2{font-family:var(--serif);font-size:clamp(32px,5vw,56px);color:#fff;letter-spacing:-1.5px;line-height:1;margin-bottom:10px;position:relative}
+.fp-footer p{font-size:14px;color:rgba(255,255,255,.6);max-width:380px;margin:0 auto 28px;line-height:1.7;position:relative}
+.btn-wl{padding:13px 30px;background:#fff;color:var(--gd);border:none;border-radius:10px;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;position:relative}
+.btn-wl:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showFP('home')">Kaya<span>.</span> <span style="font-family:var(--sans);font-size:11px;font-weight:500;color:var(--mu);margin-left:4px">Feature Previews</span></div>
+  <div class="nav-pills" id="navPills" style="flex-wrap:nowrap;overflow-x:auto;gap:2px;max-width:700px">
+    <button class="nav-pill active" onclick="showFP('home')" id="np-home">Overview</button>
+    <button class="nav-pill" onclick="showFP('smarthome')" id="np-smarthome">Smart Home</button>
+    <button class="nav-pill" onclick="showFP('insurance')" id="np-insurance">Insurance</button>
+    <button class="nav-pill" onclick="showFP('escrow')" id="np-escrow">Escrow</button>
+    <button class="nav-pill" onclick="showFP('sustainability')" id="np-sustainability">Green</button>
+    <button class="nav-pill" onclick="showFP('search')" id="np-search">Search</button>
+    <button class="nav-pill" onclick="showFP('aisearch')" id="np-aisearch">AI Search</button>
+    <button class="nav-pill" onclick="showFP('roommate')" id="np-roommate">Roommates</button>
+    <button class="nav-pill" onclick="showFP('neighbourhood')" id="np-neighbourhood">Neighbourhoods</button>
+    <button class="nav-pill" onclick="showFP('movein')" id="np-movein">Move-In</button>
+    <button class="nav-pill" onclick="showFP('community')" id="np-community">Community</button>
+    <button class="nav-pill" onclick="showFP('investor')" id="np-investor">Investor</button>
+    <button class="nav-pill" onclick="showFP('accessibility')" id="np-accessibility">Accessibility</button>
+    <button class="nav-pill" onclick="showFP('multilingual')" id="np-multilingual">Languages</button>
+  </div>
+  <button class="btn-enter" onclick="alert('Open kaya-complete.html to access the live app!')">Open Live App →</button>
+</nav>
+
+<!-- ═══════════════════════════════ HOME OVERVIEW ═══════════════════════════════ -->
+<div class="fp active" id="fp-home">
+  <div class="fhero dark" style="padding:80px 48px 72px">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(10,122,82,.18) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--gl)">✦ 13 New Features</div>
+    <h1 class="fh1" style="color:#fff">Everything Kaya<br><em>just shipped.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">From smart home controls to AI-powered search, deposit-free renting to community boards — explore every new feature below.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="showFP('smarthome')">Explore features →</button>
+      <button class="btn-ghost" onclick="alert('Open kaya-complete.html!')">Open live app</button>
+    </div>
+  </div>
+
+  <div style="max-width:1080px;margin:0 auto;padding:56px 40px">
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="sec-label">What's new</div>
+      <h2 class="sec-title">13 features, 3 user groups,<br><em>one platform.</em></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      ${[
+        ['🔐','Smart Home Hub','Lock control, thermostats, cameras, leak sensors and digital passes across all properties','smarthome','For Landlords'],
+        ['🛡','Renters Insurance','3-tier one-click coverage for tenants, add-ons, and per-tenant enrollment tracking','insurance','For Both'],
+        ['💰','Maintenance Escrow','Funds held until job is confirmed complete — contractors can\'t get paid without your sign-off','escrow','For Landlords'],
+        ['🌱','Sustainability','Energy grades per property, ESG reports, upgrade ROI calculator, and green certification','sustainability','For Landlords'],
+        ['🗺','Listing Search','Interactive rental search with verified badges, AI score, saved listings, and smart filters','search','For Renters'],
+        ['✦','AI Natural Search','Type what you want in plain English — Kaya AI finds and ranks the best matches','aisearch','For Renters'],
+        ['🤝','Roommate Finder','Lifestyle-matched roommate profiles with connection requests and profile creation','roommate','For Renters'],
+        ['📍','Neighbourhood Insights','Deep-dive on walkability, transit, safety, pros/cons and AI verdict per area','neighbourhood','For Renters'],
+        ['📦','Move-In Coordinator','Interactive checklist for every move-in task with live progress tracking','movein','For Renters'],
+        ['🏘','Community Board','Building-wide posts: announcements, lost & found, recommendations, offers, Q&A','community','For All'],
+        ['📊','Investor Hub','Live ROI calculator, market comparables, and portfolio investment performance','investor','For Investors'],
+        ['♿','Accessibility Hub','WCAG 2.1 AA, screen reader support, accessible listing filters, and display controls','accessibility','For All'],
+        ['🌍','Multilingual Platform','Full UI in 8 languages, AI lease translation, and newcomer support program','multilingual','For Renters'],
+      ].map(f=>`<div onclick="showFP('${f[3]}')" style="background:#fff;border:1px solid var(--br);border-radius:14px;padding:20px;cursor:pointer;transition:all .2s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 32px rgba(0,0,0,.08)';this.style.borderColor='var(--g)'" onmouseout="this.style.transform='';this.style.boxShadow='';this.style.borderColor='var(--br)'">
+        <div style="font-size:24px;margin-bottom:10px">${f[0]}</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <p style="font-size:14px;font-weight:600;color:var(--tx)">${f[1]}</p>
+          <span style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:20px;background:var(--gl);color:var(--g);white-space:nowrap;margin-left:8px">${f[4]}</span>
+        </div>
+        <p style="font-size:11px;color:var(--mu);line-height:1.6;margin-bottom:12px">${f[2]}</p>
+        <p style="font-size:11px;font-weight:600;color:var(--g)">Preview →</p>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SMART HOME HUB ═══════════════════════════════ -->
+<div class="fp" id="fp-smarthome">
+  <div class="fhero dark">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(10,122,82,.15) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(10,122,82,.2);border:1px solid rgba(10,122,82,.3);color:var(--gl)">🔐 Smart Home Hub</div>
+    <h1 class="fh1" style="color:#fff">Control every lock,<br><em>from anywhere.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">Smart locks, thermostats, cameras, and leak sensors across all your properties — managed from one dashboard.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → Smart Home')">Open Smart Home Hub</button>
+      <button class="btn-ghost">Watch demo</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="sec-label">What it does</div>
+      <h2 class="sec-title">Your building's nervous<br><em>system, digitised.</em></h2>
+      <p class="sec-sub" style="margin:8px auto 0">Connect smart devices once — then manage access, climate, and safety for every unit from a single dashboard. No separate apps, no confusion.</p>
+    </div>
+    <div class="fg3" style="margin-bottom:40px">
+      ${[
+        ['🔒','Smart lock control','Lock and unlock units remotely. Issue time-limited digital passes to cleaners, plumbers, and guests — they expire automatically.'],
+        ['🌡','Thermostat management','Set and adjust temperature in any unit from the dashboard. Auto-scheduling reduces energy use when units are vacant.'],
+        ['📷','Doorbell cameras','Live feeds and motion-alert logs for all properties. Know who enters and when — without being on-site.'],
+        ['🚿','Leak detection','Water sensors alert you instantly to leaks before they become $10,000 damage claims. Average response time: 3 minutes.'],
+        ['🔋','Battery monitoring','Get warned before any smart lock battery dies. Visual battery bar per device — never get locked out.'],
+        ['🚗','EV charging','Manage EV charger access per unit. Track usage and generate reports for tenant billing.'],
+      ].map(f=>`<div class="fc"><div class="fc-ico">${f[0]}</div><div class="fc-title">${f[1]}</div><div class="fc-desc">${f[2]}</div></div>`).join('')}
+    </div>
+
+    <div style="margin-bottom:48px">
+      <div class="stat-strip">
+        ${[['3 min','Average alert response'],['14','Devices per portfolio avg'],['$0','Extra cost for tenants'],['99.8%','Lock uptime reliability']].map(s=>`<div class="stat-item"><div class="stat-n">${s[0]}</div><div class="stat-l">${s[1]}</div></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="fg2" style="margin-bottom:48px;align-items:start">
+      <div>
+        <div class="sec-label">Live mockup</div>
+        <h3 style="font-family:var(--serif);font-size:28px;color:var(--tx);margin-bottom:8px">Smart lock <em>dashboard</em></h3>
+        <p style="font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:20px">See every lock's status, battery level, and last activity at a glance. Issue digital passes without leaving your desk.</p>
+        <div class="hiw-steps" style="grid-template-columns:1fr 1fr;gap:16px">
+          ${[['1','Add device','Connect your smart lock via the Kaya app in under 5 minutes'],['2','Assign to unit','Link the lock to the right property and tenant in your portfolio'],['3','Monitor remotely','See status, activity logs, and battery from any device'],['4','Issue passes','Create time-limited access codes for vendors and guests']].map(s=>`<div style="background:var(--bg);border-radius:11px;padding:14px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:14px;color:var(--g);margin-bottom:8px">${s[0]}</div>
+            <p style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:4px">${s[1]}</p>
+            <p style="font-size:11px;color:var(--mu);line-height:1.55">${s[2]}</p>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="mock-card">
+        <div class="mock-bar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div><span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:8px">Smart Home Hub</span></div>
+        <div class="mock-body">
+          <p style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Smart Locks — 123 King St</p>
+          ${[
+            {u:'Unit 4A',t:'John Doe',s:'locked',bat:87},
+            {u:'Unit 5A',t:'Vacant',s:'locked',bat:62},
+            {u:'Unit 3A',t:'Bob J.',s:'unlocked',bat:91},
+          ].map(d=>`<div class="mock-row">
+            <div style="display:flex;align-items:center;gap:9px">
+              <span style="font-size:16px">${d.s==='unlocked'?'🔓':'🔒'}</span>
+              <div><div class="mock-lbl">${d.u} — ${d.t}</div><div class="mock-val">${d.s==='unlocked'?'Currently unlocked':'Locked'}</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div><div style="font-size:9px;color:var(--mu);margin-bottom:3px">Battery</div><div class="pbar" style="width:48px"><div class="pbar-fill" style="background:${d.bat>70?'var(--g)':d.bat>40?'var(--am)':'var(--rd)'};width:${d.bat}%"></div></div></div>
+              <span class="mock-badge ${d.s==='unlocked'?'mbam':'mbg'}">${d.s==='unlocked'?'OPEN':'LOCKED'}</span>
+            </div>
+          </div>`).join('')}
+          <div style="margin-top:12px;padding:11px;background:var(--gl);border-radius:9px;font-size:11px;color:var(--g);font-weight:600">✓ All sensors reporting normally · Last sync: 2 min ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fp-footer">
+    <h2>Ready to go keyless?</h2>
+    <p>Connect your first smart lock in under 5 minutes. Works with August, Schlage, Yale, and more.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → Smart Home')">Open Smart Home Hub →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ RENTERS INSURANCE ═══════════════════════════════ -->
+<div class="fp" id="fp-insurance">
+  <div class="fhero" style="background:#1a1a2e">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(30,95,168,.2) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(30,95,168,.3);border:1px solid rgba(30,95,168,.4);color:#93c5fd">🛡 Kaya Protect</div>
+    <h1 class="fh1" style="color:#fff">One-click coverage.<br><em style="color:#60a5fa">Everyone protected.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">Renters insurance for every tenant in your portfolio — from $12/month. Reduce your liability and attract quality tenants.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → Renters Insurance')">See coverage plans</button>
+      <button class="btn-ghost">Learn more</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="sec-label">Three tiers</div>
+      <h2 class="sec-title">Coverage that fits<br><em>every budget.</em></h2>
+    </div>
+    <div class="fg3" style="margin-bottom:48px">
+      ${[
+        {plan:'Basic',price:12,col:'var(--g)',colL:'var(--gl)',cov:'$15,000',liab:'$100,000',feats:['Personal belongings','Liability coverage','Water damage','Theft protection']},
+        {plan:'Standard',price:19,col:'var(--bl)',colL:'var(--bll)',cov:'$30,000',liab:'$500,000',feats:['Everything in Basic','Electronics & valuables','Temporary housing','Identity theft']},
+        {plan:'Premium',price:32,col:'var(--am)',colL:'var(--aml)',cov:'$75,000',liab:'$1M',feats:['Everything in Standard','Jewelry & fine art','Pet liability','Worldwide coverage']},
+      ].map((p,i)=>`<div style="background:#fff;border:${i===1?'2px solid var(--g)':'1px solid var(--br)'};border-radius:16px;padding:24px;position:relative">
+        ${i===1?`<div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--g);color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:20px">Most popular</div>`:''}
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+          <div><p style="font-size:16px;font-weight:600;color:var(--tx);margin-bottom:4px">${p.plan}</p><p style="font-size:11px;color:var(--mu)">Up to ${p.cov} coverage</p></div>
+          <div style="text-align:right"><p style="font-family:var(--serif);font-size:32px;color:var(--tx)">$${p.price}</p><p style="font-size:10px;color:var(--mu)">/month</p></div>
+        </div>
+        ${p.feats.map(f=>`<div style="display:flex;gap:8px;margin-bottom:7px"><div style="width:15px;height:15px;border-radius:50%;background:${p.colL};display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:8px;color:${p.col};font-weight:700">✓</span></div><span style="font-size:12px;color:var(--tx)">${f}</span></div>`).join('')}
+      </div>`).join('')}
+    </div>
+
+    <div class="stat-strip" style="margin-bottom:48px">
+      ${[['42%','Renters without insurance'],['$12/mo','Starting coverage'],['48hrs','Claims processed in'],['$0','Cost to landlord']].map(s=>`<div class="stat-item"><div class="stat-n">${s[0]}</div><div class="stat-l">${s[1]}</div></div>`).join('')}
+    </div>
+
+    <div class="fg2" style="align-items:start">
+      <div>
+        <div class="sec-label">Why landlords use it</div>
+        <h3 style="font-family:var(--serif);font-size:28px;color:var(--tx);margin-bottom:12px">Protect yourself <em>too.</em></h3>
+        <p style="font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:20px">Uninsured tenants can leave you holding repair costs after disputes. Kaya Protect means every tenant has coverage — and you have a paper trail.</p>
+        ${['Reduces your personal liability if tenant is uninsured','Required by many Ontario mortgage lenders','Faster damage resolution — no he-said-she-said','Pet Damage Waiver option replaces deposit for pet owners','Identity Theft Shield option increases tenant trust'].map(r=>`<div style="display:flex;gap:10px;margin-bottom:10px"><div style="width:18px;height:18px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:9px;color:var(--g);font-weight:700">✓</span></div><span style="font-size:13px;color:var(--tx)">${r}</span></div>`).join('')}
+      </div>
+      <div class="mock-card">
+        <div class="mock-bar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div><span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:8px">Tenant Coverage Status</span></div>
+        <div class="mock-body">
+          ${[['John Doe','4A','Standard','Active'],['Alice Smith','1C','Premium','Active'],['Bob Johnson','3A','None','Uninsured'],['Emma Wilson','Unit 1','Basic','Active'],['David Lee','Unit 2','Standard','Active']].map(t=>`<div class="mock-row">
+            <div><div class="mock-lbl">${t[0]}</div><div class="mock-val">${t[1]} · ${t[2]}</div></div>
+            <span class="mock-badge ${t[3]==='Active'?'mbg':'mbrd'}">${t[3]==='Active'?'✓ Active':'No coverage'}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fp-footer">
+    <h2>Every tenant covered.</h2>
+    <p>Start with Basic at $12/month. Tenants pay — you benefit from the protection.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → Renters Insurance')">See all plans →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ MAINTENANCE ESCROW ═══════════════════════════════ -->
+<div class="fp" id="fp-escrow">
+  <div class="fhero dark">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(180,83,9,.15) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(180,83,9,.2);border:1px solid rgba(180,83,9,.3);color:#fcd34d">💰 Maintenance Escrow</div>
+    <h1 class="fh1" style="color:#fff">Pay only when the<br><em style="color:#fcd34d">job is done.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">Kaya holds your payment in escrow. Contractors get paid only after you confirm the work is complete — or your money back.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → Maintenance Escrow')">See how escrow works</button>
+      <button class="btn-ghost">Book a vendor</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="sec-label">How it works</div>
+      <h2 class="sec-title">4 steps. Zero risk.<br><em>Full protection.</em></h2>
+    </div>
+    <div class="hiw-steps" style="margin-bottom:56px">
+      ${[['1','Book vendor','Choose from Kaya\'s vetted marketplace. Funds are placed in escrow automatically.'],['2','Work begins','Contractor starts the job. You\'re notified at each stage with photo updates.'],['3','You confirm','Once you\'re satisfied, tap "Confirm complete" from the dashboard or app.'],['4','Funds release','Payment transfers to the contractor only after your confirmation.']].map(s=>`<div class="hiw-step"><div class="hiw-num">${s[0]}</div><div class="hiw-title">${s[1]}</div><div class="hiw-desc">${s[2]}</div></div>`).join('')}
+    </div>
+
+    <div class="fg2" style="margin-bottom:48px;align-items:start">
+      <div class="mock-card">
+        <div class="mock-bar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div><span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:8px">Escrow Tracker</span></div>
+        <div class="mock-body">
+          ${[
+            {vendor:'Quick Fix Plumbing',job:'Kitchen sink leak',amt:180,step:2,status:'In Progress'},
+            {vendor:'AceElectric Pro',job:'Outlet replacement',amt:220,step:3,status:'Awaiting Review'},
+            {vendor:'Cool Breeze HVAC',job:'Annual HVAC service',amt:840,step:1,status:'Funds Held'},
+          ].map(e=>`<div style="padding:12px 0;border-bottom:1px solid var(--br)">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+              <div><div class="mock-lbl">${e.vendor}</div><div class="mock-val">${e.job}</div></div>
+              <div style="text-align:right"><div style="font-family:var(--serif);font-size:18px;color:var(--tx)">$${e.amt}</div><span class="mock-badge ${e.step===3?'mbam':e.step===2?'mbbl':'mbg'}">${e.status}</span></div>
+            </div>
+            <div style="display:flex;gap:3px;align-items:center">
+              ${['Booked','In progress','Confirm','Released'].map((s,i)=>`<div style="display:flex;align-items:center;flex:1">
+                <div style="width:18px;height:18px;border-radius:50%;background:${i<e.step?'var(--g)':i===e.step?'var(--am)':'var(--br)'};flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:700">${i<e.step?'✓':i+1}</div>
+                ${i<3?`<div style="flex:1;height:2px;background:${i<e.step-1?'var(--g)':'var(--br)'}"></div>`:''}
+              </div>`).join('')}
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="sec-label">Why it matters</div>
+        <h3 style="font-family:var(--serif);font-size:28px;color:var(--tx);margin-bottom:12px">No more <em>paying upfront.</em></h3>
+        <p style="font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:20px">The average landlord pays $4,000/unit/year on maintenance. A third of that goes to disputes, do-overs, and contractors who disappear. Escrow eliminates all of that.</p>
+        ${[
+          ['Contractor accountability','Vendors know they only get paid if you\'re satisfied'],
+          ['Dispute mediation','Kaya mediates if there\'s a disagreement — both sides protected'],
+          ['Full audit trail','Every job, photo, timestamp, and payment documented'],
+          ['Instant release','Confirm on mobile — payment clears within 24 hours'],
+          ['Zero upfront risk','No more writing cheques before seeing the work'],
+        ].map(r=>`<div style="margin-bottom:10px;padding:12px 14px;background:var(--bg);border-radius:9px;display:flex;gap:10px">
+          <div style="width:18px;height:18px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:9px;color:var(--g);font-weight:700">✓</span></div>
+          <div><p style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px">${r[0]}</p><p style="font-size:11px;color:var(--mu)">${r[1]}</p></div>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="stat-strip">
+      ${[['$4K','Avg maintenance per unit/yr'],['2.4d','Avg resolution time'],['100%','Disputes resolved'],['$0','Upfront payment risk']].map(s=>`<div class="stat-item"><div class="stat-n">${s[0]}</div><div class="stat-l">${s[1]}</div></div>`).join('')}
+    </div>
+  </div>
+  <div class="fp-footer">
+    <h2>Stop paying before the work is done.</h2>
+    <p>Every maintenance job through Kaya is automatically escrow-protected.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → Maintenance Escrow')">Open Escrow Dashboard →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SUSTAINABILITY ═══════════════════════════════ -->
+<div class="fp" id="fp-sustainability">
+  <div class="fhero" style="background:#0d2818">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(10,122,82,.25) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(10,122,82,.25);border:1px solid rgba(10,122,82,.4);color:#6ee7b7">🌱 Sustainability</div>
+    <h1 class="fh1" style="color:#fff">Green buildings<br><em>earn more.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">Track energy, reduce your carbon footprint, and attract eco-conscious tenants willing to pay 7–12% more for certified green properties.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → Sustainability')">See your energy score</button>
+      <button class="btn-ghost">View ESG report</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div class="fg2" style="margin-bottom:48px;align-items:start">
+      <div>
+        <div class="sec-label">Energy grading</div>
+        <h3 style="font-family:var(--serif);font-size:32px;color:var(--tx);margin-bottom:12px">Know exactly where<br><em>every property stands.</em></h3>
+        <p style="font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:20px">Kaya grades each property from A to D based on energy use intensity, water consumption, and waste diversion. Each grade comes with specific upgrade recommendations with calculated payback periods.</p>
+        ${[['Grade A','Excellent — top 10% of Toronto buildings. Premium rent justified.'],['Grade B','Good — room to improve. 2–3 upgrades to reach A.'],['Grade C','Below average — specific issues flagged with fix recommendations.'],['Grade D','Action needed — risk of higher operating costs. Upgrade plan generated.']].map(g=>`<div style="display:flex;gap:10px;margin-bottom:9px;align-items:flex-start">
+          <div style="width:32px;height:24px;border-radius:5px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--g);flex-shrink:0">${g[0].split(' ')[1]}</div>
+          <p style="font-size:12px;color:var(--tx)">${g[1]}</p>
+        </div>`).join('')}
+      </div>
+      <div class="mock-card">
+        <div class="mock-bar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div><span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:8px">Energy Score Dashboard</span></div>
+        <div class="mock-body">
+          <p style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Portfolio Energy Grades — 2026</p>
+          ${[['123 King Street','A','78',96],['456 Queen St West','B','62',78],['789 Bloor Street','A','85',100]].map(p=>`<div style="margin-bottom:13px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+              <span class="mock-lbl">${p[0]}</span>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="width:24px;height:24px;border-radius:6px;background:${p[1]==='A'?'var(--gl)':'var(--aml)'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:${p[1]==='A'?'var(--g)':'var(--am)'};">${p[1]}</div>
+                <span class="mock-lbl">${p[2]}/100</span>
+              </div>
+            </div>
+            <div class="pbar"><div class="pbar-fill" style="background:${p[1]==='A'?'var(--g)':'var(--am)'};width:${p[3]}%"></div></div>
+          </div>`).join('')}
+          <div style="padding:10px 12px;background:var(--gl);border-radius:9px;margin-top:4px">
+            <p style="font-size:11px;font-weight:600;color:var(--g)">🌱 Top 30% of Toronto landlords · Q1 2026</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:28px"><h3 style="font-family:var(--serif);font-size:28px;color:var(--tx)">What <em>you get</em></h3></div>
+    <div class="fg3" style="margin-bottom:48px">
+      ${[
+        ['📊','ESG reports','Auto-generated quarterly reports for investors and mortgage lenders. Download as PDF.'],
+        ['💡','Upgrade calculator','Enter your property — get a ranked list of upgrades with exact ROI and payback time.'],
+        ['🌱','Green certification','Display Kaya\'s green badge on your listings. Eco-certified properties command rent premiums.'],
+        ['⚡','Energy monitoring','Monthly usage reports per unit. Spot anomalies — like a tenant running space heaters — early.'],
+        ['🚗','EV charger tracking','Manage EV charger revenue and report usage for tax purposes.'],
+        ['♻','Waste diversion','Track recycling and composting program participation across your portfolio.'],
+      ].map(f=>`<div class="fc"><div class="fc-ico">${f[0]}</div><div class="fc-title">${f[1]}</div><div class="fc-desc">${f[2]}</div></div>`).join('')}
+    </div>
+
+    <div class="stat-strip">
+      ${[['7–12%','Rent premium for green certified'],['18%','Avg energy savings year 1'],['2 mo','Avg payback for LED upgrade'],['B+','Your current portfolio grade']].map(s=>`<div class="stat-item"><div class="stat-n">${s[0]}</div><div class="stat-l">${s[1]}</div></div>`).join('')}
+    </div>
+  </div>
+  <div class="fp-footer" style="background:var(--gd)">
+    <h2>Go green. Earn more.</h2>
+    <p>See your current energy grade and get a personalised upgrade plan in minutes.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → Sustainability')">See my energy score →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PUBLIC SEARCH ═══════════════════════════════ -->
+<div class="fp" id="fp-search">
+  <div class="fhero dark">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(10,122,82,.15) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(10,122,82,.2);border:1px solid rgba(10,122,82,.3);color:var(--gl)">🗺 Listing Search</div>
+    <h1 class="fh1" style="color:#fff">2,400 verified listings.<br><em>Zero scams.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">Every listing on Kaya is verified by a real landlord. AI scores each property. You see only the real thing.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → Find a Home')">Search listings now</button>
+      <button class="btn-ghost" onclick="showFP('aisearch')">Try AI Search →</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div class="fg2" style="margin-bottom:48px;align-items:start">
+      <div>
+        <div class="sec-label">Why Kaya search is different</div>
+        <h3 style="font-family:var(--serif);font-size:32px;color:var(--tx);margin-bottom:12px">Every listing, <em>verified.</em></h3>
+        <p style="font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:20px">Landlords on Kaya go through identity verification. Listings are checked for accuracy before going live. AI flags suspicious patterns in real time.</p>
+        ${[['✓ Verified','Only real landlords can post — ID checked'],['🤖 AI scored','Each listing gets an AI quality score 0–100'],['♡ Save listings','Favourite listings and compare side by side'],['🚫 No scams','AI detects rental scams before you see them'],['📍 Neighbourhood data','Walk score, transit, safety on every listing'],['⚡ Instant apply','Apply directly — no third-party forms']].map(f=>`<div style="display:flex;gap:10px;margin-bottom:8px;align-items:flex-start">
+          <div style="width:18px;height:18px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px"><span style="font-size:9px;color:var(--g);font-weight:700">✓</span></div>
+          <p style="font-size:13px;color:var(--tx)"><strong style="font-weight:600">${f[0].split(' ')[0]} ${f[0].split(' ').slice(1).join(' ')}</strong> — ${f[1]}</p>
+        </div>`).join('')}
+      </div>
+      <div class="mock-card">
+        <div class="mock-bar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div><span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:8px">Listing Search</span></div>
+        <div class="mock-body">
+          <div style="display:flex;gap:7px;margin-bottom:12px"><input style="flex:1;padding:8px 11px;border:1px solid var(--br);border-radius:8px;font-family:var(--sans);font-size:12px;color:var(--mu)" placeholder="Neighbourhood or address…" readonly/><select style="padding:8px;border:1px solid var(--br);border-radius:8px;font-size:11px;color:var(--mu)" disabled><option>Any beds</option></select></div>
+          ${[
+            {title:'Modern 2BR Downtown',addr:'123 King St W',rent:2400,score:96,tag:'✓ Verified'},
+            {title:'Bright 1BR Queen West',addr:'456 Queen St W',rent:1950,score:91,tag:'✓ Verified'},
+            {title:'Cozy 1BR Liberty Village',addr:'88 East Liberty',rent:1800,score:79,tag:'Unverified'},
+          ].map(l=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border:1px solid var(--br);border-radius:9px;margin-bottom:7px">
+            <div>
+              <div class="mock-lbl">${l.title}</div>
+              <div class="mock-val">${l.addr}</div>
+              <div style="display:flex;gap:5px;margin-top:4px">
+                <span class="mock-badge ${l.tag.includes('✓')?'mbg':'mbrd'}" style="font-size:9px">${l.tag}</span>
+                <span class="mock-badge mbbl" style="font-size:9px">AI ${l.score}</span>
+              </div>
+            </div>
+            <div style="font-family:var(--serif);font-size:17px;color:var(--tx)">$${l.rent.toLocaleString()}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-strip">
+      ${[['2,400+','Verified listings'],['94%','Response rate'],['0','Scam listings (AI filtered)'],['4.2d','Avg days to lease']].map(s=>`<div class="stat-item"><div class="stat-n">${s[0]}</div><div class="stat-l">${s[1]}</div></div>`).join('')}
+    </div>
+  </div>
+  <div class="fp-footer">
+    <h2>Find your next home today.</h2>
+    <p>2,400+ verified listings. Zero landlord fees. Apply in minutes.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → Find a Home')">Search listings →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ AI SEARCH ═══════════════════════════════ -->
+<div class="fp" id="fp-aisearch">
+  <div class="fhero dark">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(10,122,82,.18) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--gl)">✦ AI-Powered</div>
+    <h1 class="fh1" style="color:#fff">Search like you're talking<br><em>to a friend.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">Type what you want in plain English. No filters. No forms. Kaya AI reads your words and finds the listings that actually match.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → AI Search')">Try AI Search</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="sec-label">Natural language search</div>
+      <h2 class="sec-title">Just describe what<br><em>you're looking for.</em></h2>
+    </div>
+    <div style="background:#fff;border:1px solid var(--br);border-radius:16px;padding:28px;margin-bottom:48px">
+      <p style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px">Real queries that work</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        ${[
+          '"cozy 1BR near subway, pet friendly, under $2,200"',
+          '"2 bed with parking and in-suite laundry downtown"',
+          '"furnished studio near UofT available immediately"',
+          '"quiet neighbourhood for family, 3BR, Annex area"',
+          '"modern condo with gym and rooftop, Liberty Village"',
+          '"no smoking building, balcony, south-facing, under $2k"',
+        ].map(q=>`<div style="padding:11px 14px;background:var(--bg);border-radius:9px;font-size:12px;color:var(--tx);font-style:italic">${q}</div>`).join('')}
+      </div>
+    </div>
+
+    <div class="fg2" style="margin-bottom:48px;align-items:start">
+      <div class="mock-card">
+        <div class="mock-bar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div><span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:8px">Kaya AI Search</span></div>
+        <div class="mock-body">
+          <div style="display:flex;gap:7px;margin-bottom:14px">
+            <div style="flex:1;padding:10px 13px;background:var(--bg);border-radius:9px;font-size:12px;color:var(--mu);font-style:italic">"cozy 1BR near subway, pet friendly"</div>
+            <div style="padding:10px 14px;background:var(--tx);border-radius:9px;font-size:11px;font-weight:600;color:#fff">✦ Go</div>
+          </div>
+          <div style="font-size:10px;font-weight:700;color:var(--mu);margin-bottom:10px">AI found 3 matches ranked by fit</div>
+          ${[
+            {title:'Bright 1BR near Ossington',addr:'22 Ossington Ave',rent:1980,score:98,reason:'3min walk to subway · Under budget · Pet ok'},
+            {title:'Cozy 1BR Liberty Village',addr:'88 East Liberty St',rent:1850,score:95,reason:'Walkable · Pet-friendly building · Quiet'},
+            {title:'Modern 1BR Queen West',addr:'456 Queen St W',rent:2100,score:88,reason:'Near Dundas West · Pet-friendly · Bike storage'},
+          ].map((r,i)=>`<div style="padding:11px;border-radius:9px;margin-bottom:7px;border-left:3px solid ${i===0?'var(--g)':i===1?'var(--bl)':'var(--br)'};border:1px solid var(--br);border-left-width:3px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <div class="mock-lbl">${r.title}</div>
+              <span class="mock-badge ${i===0?'mbg':'mbbl'}" style="font-size:9px">${r.score}%</span>
+            </div>
+            <div class="mock-val" style="margin-bottom:5px">${r.addr} · $${r.rent.toLocaleString()}/mo</div>
+            <div style="padding:5px 8px;background:var(--gl);border-radius:6px;font-size:10px;color:var(--g)">✦ ${r.reason}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="sec-label">Under the hood</div>
+        <h3 style="font-family:var(--serif);font-size:28px;color:var(--tx);margin-bottom:12px">How Kaya AI <em>understands</em> you</h3>
+        <p style="font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:20px">Kaya AI reads your query, extracts every preference — price, location, amenities, lifestyle — and matches them against 2,400+ listings in real time. Results are ranked by overall fit, not just keyword overlap.</p>
+        ${[['Parses natural language','Understands "near subway" "pet friendly" "cozy" etc.'],['Context-aware ranking','A "$2,200 budget" query won\'t show $2,199 results that miss the point'],['Lifestyle matching','"Quiet" flags noise level, not just neighbourhood tags'],['Instant results','1,400ms average search time across 2,400+ listings'],['Plain-English reasoning','Every result shows exactly why it matched your query']].map(f=>`<div style="display:flex;gap:10px;margin-bottom:9px"><div style="width:18px;height:18px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px"><span style="font-size:9px;color:var(--g);font-weight:700">✦</span></div><div><p style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:1px">${f[0]}</p><p style="font-size:11px;color:var(--mu)">${f[1]}</p></div></div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="fp-footer">
+    <h2>Stop filtering. Start describing.</h2>
+    <p>Kaya AI understands what you want — even when you can't find the right filter for it.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → AI Search')">Try AI Search now →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ ROOMMATE FINDER ═══════════════════════════════ -->
+<div class="fp" id="fp-roommate">
+  <div class="fhero" style="background:#1e1b4b">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(99,102,241,.2) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(99,102,241,.25);border:1px solid rgba(99,102,241,.4);color:#a5b4fc">🤝 Roommate Finder</div>
+    <h1 class="fh1" style="color:#fff">Find someone you'll<br><em style="color:#a5b4fc">actually like.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">AI-matched by sleep schedule, social habits, cleanliness, and budget — not just location. No more awkward surprises.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → Roommate Finder')">Find my match</button>
+      <button class="btn-ghost">List my room</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div class="fg2" style="margin-bottom:48px;align-items:start">
+      <div>
+        <div class="sec-label">How matching works</div>
+        <h3 style="font-family:var(--serif);font-size:32px;color:var(--tx);margin-bottom:12px">6 dimensions of <em>compatibility.</em></h3>
+        <p style="font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:20px">Kaya's AI scores compatibility across 6 lifestyle dimensions. Each match gets a percentage — so you know before you even message them.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+          ${['Sleep schedule','Social level','Cleanliness','Pet preferences','Smoking','Work-from-home'].map(d=>`<div style="padding:11px 13px;background:var(--bg);border-radius:9px;display:flex;align-items:center;gap:9px">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--g);flex-shrink:0"></div>
+            <span style="font-size:12px;font-weight:600;color:var(--tx)">${d}</span>
+          </div>`).join('')}
+        </div>
+        <div class="quote-block">
+          <div class="quote-text">"Found my current roommate in 3 days. We've been living together 8 months — zero conflicts. The lifestyle match actually works."</div>
+          <div class="quote-author">— Priya N., Downtown Toronto</div>
+        </div>
+      </div>
+      <div class="mock-card">
+        <div class="mock-bar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div><span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:8px">Top Roommate Matches</span></div>
+        <div class="mock-body">
+          ${[
+            {name:'Priya Nair',age:26,occ:'UX Designer',budget:'$1,200–$1,600',score:94,habits:['11pm–7am','Very clean','Non-smoker']},
+            {name:'Marcus Osei',age:29,occ:'Software Eng.',budget:'$1,100–$1,500',score:87,habits:['10pm–6am','Clean','Has a cat']},
+            {name:'Zoe Tremblay',age:24,occ:'Nursing student',budget:'$900–$1,200',score:79,habits:['Shift work','Reasonable','Social']},
+          ].map((r,i)=>`<div style="padding:11px 0;border-bottom:1px solid var(--br)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+              <div style="display:flex;gap:9px;align-items:center">
+                <div style="width:34px;height:34px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--g)">${r.name.charAt(0)}</div>
+                <div><div class="mock-lbl">${r.name}</div><div class="mock-val">${r.age} · ${r.occ} · ${r.budget}</div></div>
+              </div>
+              <span class="mock-badge ${i===0?'mbg':i===1?'mbbl':'mbam'}">${r.score}%</span>
+            </div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap">${r.habits.map(h=>`<span class="mock-badge mbgr" style="font-size:9px">${h}</span>`).join('')}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="stat-strip">
+      ${[['94%','Top match compatibility'],['3 days','Avg time to find a match'],['100%','Identity verified profiles'],['$0','Free to use']].map(s=>`<div class="stat-item"><div class="stat-n">${s[0]}</div><div class="stat-l">${s[1]}</div></div>`).join('')}
+    </div>
+  </div>
+  <div class="fp-footer">
+    <h2>Find your person.</h2>
+    <p>Create a profile in 3 minutes. Get matched by lifestyle, not just location.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → Roommate Finder')">Find my roommate →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ NEIGHBOURHOOD INSIGHTS ═══════════════════════════════ -->
+<div class="fp" id="fp-neighbourhood">
+  <div class="fhero dark">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(30,95,168,.18) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(30,95,168,.25);border:1px solid rgba(30,95,168,.4);color:#93c5fd">📍 Neighbourhood Insights</div>
+    <h1 class="fh1" style="color:#fff">Know before you<br><em style="color:#60a5fa">sign anything.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">Walk score, transit, safety, commute time, cafes, schools, pros and cons — everything you need to know about any Toronto neighbourhood, before you commit.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → Neighbourhood Insights')">Explore neighbourhoods</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div class="fg2" style="margin-bottom:48px;align-items:start">
+      <div>
+        <div class="sec-label">What you get per area</div>
+        <h3 style="font-family:var(--serif);font-size:32px;color:var(--tx);margin-bottom:12px">5 data points that<br><em>actually matter.</em></h3>
+        ${[['🚶 Walkability','How much can you do on foot? Score 0–100'],['🚇 Transit score','Bus, subway, and GO access from your front door'],['🚲 Bikeability','Bike lanes, safety, and cycle infrastructure'],['🔒 Safety','Reported incidents, trend direction, and block-by-block variation'],['📍 AI Verdict','Kaya\'s plain-English recommendation for who this area suits best']].map(f=>`<div style="display:flex;gap:12px;margin-bottom:12px;padding:13px;background:var(--bg);border-radius:10px;align-items:flex-start">
+          <span style="font-size:18px;flex-shrink:0">${f[0].split(' ')[0]}</span>
+          <div><p style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px">${f[0].split(' ').slice(1).join(' ')}</p><p style="font-size:11px;color:var(--mu)">${f[1]}</p></div>
+        </div>`).join('')}
+      </div>
+      <div class="mock-card">
+        <div class="mock-bar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div><span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:8px">Downtown Core</span></div>
+        <div class="mock-body">
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px">
+            ${['Downtown Core','Annex','Liberty Village','Scarborough'].map((n,i)=>`<span style="padding:5px 10px;background:${i===0?'var(--tx)':'var(--bg)'};color:${i===0?'#fff':'var(--mu)'};border-radius:20px;font-size:10px;font-weight:600;cursor:pointer">${n}</span>`).join('')}
+          </div>
+          ${[['Walkability','98'],['Transit','99'],['Bikeability','85'],['Safety','72']].map(s=>`<div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span class="mock-lbl">${s[0]}</span><span class="mock-lbl">${s[1]}/100</span></div>
+            <div class="pbar"><div class="pbar-fill" style="background:var(--g);width:${s[1]}%"></div></div>
+          </div>`).join('')}
+          <div style="padding:10px 12px;background:var(--gl);border-radius:9px;margin-top:8px">
+            <p style="font-size:11px;font-weight:600;color:var(--g);margin-bottom:3px">✦ AI Verdict</p>
+            <p style="font-size:11px;color:#085040">Best for young professionals who want maximum walkability. Expensive, noisy — but unbeatable for transit and career access.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="stat-strip">
+      ${[['5','Neighbourhoods covered'],['7','Data points per area'],['Real-time','Updated monthly'],['Free','For all renters']].map(s=>`<div class="stat-item"><div class="stat-n">${s[0]}</div><div class="stat-l">${s[1]}</div></div>`).join('')}
+    </div>
+  </div>
+  <div class="fp-footer">
+    <h2>Know before you move.</h2>
+    <p>Don't sign a lease in a neighbourhood you've never researched. Kaya has you covered.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → Neighbourhood Insights')">Explore areas →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ MOVE-IN COORDINATOR ═══════════════════════════════ -->
+<div class="fp" id="fp-movein">
+  <div class="fhero dark">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(10,122,82,.15) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(10,122,82,.2);border:1px solid rgba(10,122,82,.3);color:var(--gl)">📦 Move-In Coordinator</div>
+    <h1 class="fh1" style="color:#fff">Moving is stressful.<br><em>We handle the checklist.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">8-step interactive checklist for every new renter — from collecting keys to setting up utilities, insurance, and address changes. Track everything in one place.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → Move-In Coordinator')">Open my checklist</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="sec-label">8 tasks. One place.</div>
+      <h2 class="sec-title">Never forget a single<br><em>move-in step.</em></h2>
+    </div>
+    <div class="fg2" style="margin-bottom:48px;align-items:start">
+      <div>
+        ${[
+          {done:true,title:'Collect your keys',desc:'Confirm time & location with landlord. Get all spare keys.'},
+          {done:true,title:'Move-in inspection',desc:'Walk through unit, document existing damage with photos.'},
+          {done:false,title:'Set up Hydro One',desc:'Transfer electricity to your name before move-in date.'},
+          {done:false,title:'Book internet install',desc:'Rogers, Bell, or Beanfield — compare and book.'},
+          {done:false,title:'Update your address',desc:'Canada Post, CRA, employer, bank, subscriptions.'},
+          {done:false,title:'Get renters insurance',desc:'Protect your belongings from day one. From $12/month.'},
+          {done:false,title:'Register parking',desc:'Get your decal or building access for parking.'},
+          {done:false,title:'Review building guide',desc:'Gym, laundry, parcel lockers, visitor parking hours.'},
+        ].map((t,i)=>`<div style="display:flex;gap:12px;align-items:center;padding:11px 13px;background:#fff;border:1px solid var(--br);border-radius:10px;margin-bottom:7px;border-left:3px solid ${t.done?'var(--g)':'var(--br)'}">
+          <div style="width:22px;height:22px;border-radius:50%;background:${t.done?'var(--g)':'var(--bg)'};border:2px solid ${t.done?'var(--g)':'var(--br)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            ${t.done?'<span style="font-size:9px;color:#fff;font-weight:700">✓</span>':''}
+          </div>
+          <div style="flex:1">
+            <p style="font-size:13px;font-weight:600;color:${t.done?'var(--mu)':'var(--tx)'};text-decoration:${t.done?'line-through':'none'};margin-bottom:2px">${t.title}</p>
+            <p style="font-size:11px;color:var(--mu)">${t.desc}</p>
+          </div>
+          ${!t.done?`<span style="font-size:10px;font-weight:600;color:var(--g);white-space:nowrap">Do it →</span>`:''}
+        </div>`).join('')}
+      </div>
+      <div>
+        <div style="background:var(--tx);border-radius:16px;padding:22px;margin-bottom:14px">
+          <p style="color:rgba(255,255,255,.4);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">Move-in progress</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <p style="font-family:var(--serif);font-size:22px;color:#fff">123 King St W, Unit 4A</p>
+            <p style="font-family:var(--serif);font-size:42px;color:var(--g);line-height:1">25%</p>
+          </div>
+          <div style="height:6px;background:rgba(255,255,255,.1);border-radius:3px;margin-bottom:7px">
+            <div style="height:6px;background:var(--g);border-radius:3px;width:25%"></div>
+          </div>
+          <p style="font-size:11px;color:rgba(255,255,255,.4)">2 of 8 tasks complete</p>
+        </div>
+        <div class="fc" style="margin-bottom:0">
+          <div class="fc-ico">✦</div>
+          <div class="fc-title">Landlord check-in reminder</div>
+          <div class="fc-desc">Kaya notifies your landlord to check in with you 7 days after move-in. Research shows this single touchpoint reduces tenant issues by 40%.</div>
+        </div>
+      </div>
+    </div>
+    <div class="stat-strip">
+      ${[['8','Checklist steps covered'],['40%','Fewer issues after check-in'],['$0','Free for all Kaya tenants'],['5 min','To complete setup']].map(s=>`<div class="stat-item"><div class="stat-n">${s[0]}</div><div class="stat-l">${s[1]}</div></div>`).join('')}
+    </div>
+  </div>
+  <div class="fp-footer">
+    <h2>Move in without the chaos.</h2>
+    <p>Every step tracked. Every link ready. One dashboard for your whole move.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → Move-In Coordinator')">Open my checklist →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ COMMUNITY BOARD ═══════════════════════════════ -->
+<div class="fp" id="fp-community">
+  <div class="fhero dark">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(10,122,82,.15) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(10,122,82,.2);border:1px solid rgba(10,122,82,.3);color:var(--gl)">🏘 Community Board</div>
+    <h1 class="fh1" style="color:#fff">Your building has<br><em>its own community now.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">Announcements, lost & found, recommendations, offers, and questions — all in one place. For every building on Kaya.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → Community Board')">Open community board</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="sec-label">5 post types</div>
+      <h2 class="sec-title">A place for everything<br><em>your building shares.</em></h2>
+    </div>
+    <div class="fg3" style="margin-bottom:48px">
+      ${[
+        ['📣','Announcements','Management posts water shutoffs, maintenance windows, and building updates. Pinned at the top.'],
+        ['🐾','Lost & Found','Post lost items or pets. Reunite with neighbours. No need for group chats.'],
+        ['⭐','Recommendations','Share the best pizza spot, a great locksmith, or a hidden parking trick. Real community knowledge.'],
+        ['🎁','Offers','Give away moving boxes, spare furniture, or extra groceries. Building-only marketplace.'],
+        ['❓','Ask neighbours','Need a locksmith recommendation? Looking for a dog walker? Post and get answers fast.'],
+        ['📌','Pinned by management','Important notices stay visible. Tenants always know what\'s happening in their building.'],
+      ].map(f=>`<div class="fc"><div class="fc-ico">${f[0]}</div><div class="fc-title">${f[1]}</div><div class="fc-desc">${f[2]}</div></div>`).join('')}
+    </div>
+
+    <div class="fg2" style="margin-bottom:48px;align-items:start">
+      <div class="mock-card">
+        <div class="mock-bar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div><span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:8px">123 King St — Community</span></div>
+        <div class="mock-body">
+          ${[
+            {author:'Management',type:'announcement',title:'Water shutoff — March 20, 9am–2pm',time:'2h ago',likes:4,replies:7,pinned:true,tc:['var(--aml)','var(--am)']},
+            {author:'Sarah K. (4A)',type:'lost-found',title:'Found: grey tabby cat in lobby!',time:'3h ago',likes:12,replies:5,tc:['var(--rdl)','var(--rd)']},
+            {author:'John M. (2B)',type:'recommend',title:'Best pizza nearby — Pizzeria Libretto',time:'5h ago',likes:8,replies:3,tc:['var(--gl)','var(--g)']},
+            {author:'Emma W. (3A)',type:'offer',title:'Free moving boxes — lobby today',time:'7h ago',likes:6,replies:2,tc:['var(--bll)','var(--bl)']},
+          ].map(p=>`<div style="padding:10px 0;border-bottom:1px solid var(--br)">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--g)">${p.author.charAt(0)}</div>
+              <span class="mock-val">${p.author}</span>
+              <span style="background:${p.tc[0]};color:${p.tc[1]};font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;text-transform:capitalize">${p.type.replace('-',' ')}</span>
+              ${p.pinned?'<span style="background:var(--gl);color:var(--g);font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px">📌</span>':''}
+              <span class="mock-val" style="margin-left:auto">${p.time}</span>
+            </div>
+            <div class="mock-lbl" style="margin-bottom:5px;font-size:12px">${p.title}</div>
+            <div style="display:flex;gap:10px"><span style="font-size:11px;color:var(--mu)">♡ ${p.likes}</span><span style="font-size:11px;color:var(--mu)">💬 ${p.replies}</span></div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="sec-label">Why tenants love it</div>
+        <h3 style="font-family:var(--serif);font-size:28px;color:var(--tx);margin-bottom:12px">Community builds <em>retention.</em></h3>
+        <p style="font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:20px">Tenants who feel connected to their building renew leases at 2x the rate of those who don't. The community board turns a building full of strangers into a neighbourhood.</p>
+        <div class="quote-block">
+          <div class="quote-text">"I got moving boxes from my upstairs neighbour, found a locksmith recommendation, and learned about the parking trick — all in one week on the board."</div>
+          <div class="quote-author">— David L., Unit 1C, 123 King St</div>
+        </div>
+      </div>
+    </div>
+    <div class="stat-strip">
+      ${[['2x','Lease renewal rate','with community'],['5','Post categories'],['Real-time','Like & reply'],['Free','For all Kaya tenants']].map(s=>`<div class="stat-item"><div class="stat-n">${s[0]}</div><div class="stat-l">${s[1]}</div></div>`).join('')}
+    </div>
+  </div>
+  <div class="fp-footer">
+    <h2>Your building, connected.</h2>
+    <p>Every Kaya property gets a community board on day one. No setup required.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → Community Board')">Open community board →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ INVESTOR HUB ═══════════════════════════════ -->
+<div class="fp" id="fp-investor">
+  <div class="fhero dark">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(10,122,82,.15) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(10,122,82,.2);border:1px solid rgba(10,122,82,.3);color:var(--gl)">📊 Investor Hub</div>
+    <h1 class="fh1" style="color:#fff">Know your ROI<br><em>before you buy.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">Live ROI calculator, Toronto market comparables, portfolio performance, and cap rate analysis — everything a property investor needs in one place.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → Investor Hub')">Open Investor Hub</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div class="fg2" style="margin-bottom:48px;align-items:start">
+      <div>
+        <div class="sec-label">Live calculator</div>
+        <h3 style="font-family:var(--serif);font-size:32px;color:var(--tx);margin-bottom:12px">Enter a property.<br><em>See the numbers instantly.</em></h3>
+        <p style="font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:20px">Type in purchase price, down payment, rent, and expenses — Kaya calculates cash-on-cash return, cap rate, monthly cashflow, and break-even in real time. No spreadsheet needed.</p>
+        ${[['Cash-on-cash return','How much you earn on your down payment annually'],['Cap rate','Net income divided by property value — standard investor metric'],['Monthly cashflow','What lands in your account after mortgage, expenses'],['Break-even point','How many years until your down payment pays itself back']].map(m=>`<div style="display:flex;gap:10px;margin-bottom:9px">
+          <div style="width:18px;height:18px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px"><span style="font-size:9px;color:var(--g);font-weight:700">✦</span></div>
+          <div><p style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px">${m[0]}</p><p style="font-size:11px;color:var(--mu)">${m[1]}</p></div>
+        </div>`).join('')}
+      </div>
+      <div class="mock-card">
+        <div class="mock-bar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div><span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:8px">ROI Calculator</span></div>
+        <div class="mock-body">
+          ${[['Purchase Price','$750,000'],['Down Payment','$150,000'],['Monthly Rent','$3,200'],['Monthly Expenses','$1,800']].map(f=>`<div class="mock-row"><span class="mock-val">${f[0]}</span><span class="mock-lbl">${f[1]}</span></div>`).join('')}
+          <div style="padding:14px;background:var(--gl);border-radius:10px;margin-top:12px">
+            <p style="font-size:10px;font-weight:700;color:var(--g);margin-bottom:8px">LIVE RESULTS</p>
+            ${[['Monthly cashflow','$1,246'],['Cash-on-cash return','8.8%'],['Cap rate','5.9%'],['Break-even','2.8 years']].map(r=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(10,122,82,.15)">
+              <span style="font-size:11px;color:#085040">${r[0]}</span>
+              <span style="font-size:12px;font-weight:700;color:var(--g)">${r[1]}</span>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:28px"><h3 style="font-family:var(--serif);font-size:28px;color:var(--tx)">Toronto market <em>right now</em></h3></div>
+    <div class="fg4" style="margin-bottom:40px">
+      ${[['$3,200','2BR avg downtown rent'],['5.4–6.8%','Residential cap rate'],['1.8%','Citywide vacancy'],['+7.2%','YoY rent growth']].map(s=>`<div style="background:#fff;border:1px solid var(--br);border-radius:12px;padding:18px;text-align:center"><div style="font-family:var(--serif);font-size:28px;color:var(--g);margin-bottom:5px">${s[0]}</div><div style="font-size:11px;color:var(--mu)">${s[1]}</div></div>`).join('')}
+    </div>
+  </div>
+  <div class="fp-footer">
+    <h2>Calculate before you commit.</h2>
+    <p>Enter any property in seconds. See the real numbers before you make an offer.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → Investor Hub')">Open ROI Calculator →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ ACCESSIBILITY ═══════════════════════════════ -->
+<div class="fp" id="fp-accessibility">
+  <div class="fhero" style="background:#0f172a">
+    <div class="fhero-grid"></div>
+    <div class="feat-badge" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7)">♿ Accessibility</div>
+    <h1 class="fh1" style="color:#fff">Kaya works for<br><em style="color:var(--g)">absolutely everyone.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">AODA compliant. WCAG 2.1 AA. Screen reader ready. Accessible listing filters. High contrast mode. No extra charge, no add-ons.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → Accessibility Hub')">Open accessibility settings</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div class="fg2" style="margin-bottom:48px;align-items:start">
+      <div>
+        <div class="sec-label">Built-in features</div>
+        <h3 style="font-family:var(--serif);font-size:32px;color:var(--tx);margin-bottom:12px">Not an add-on.<br><em>The foundation.</em></h3>
+        <p style="font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:20px">Accessibility is not a checkbox at Kaya — it's in every component. Every button, form, and page works with screen readers, keyboard navigation, and high-contrast display modes.</p>
+        ${[
+          ['👁 Screen readers','Full ARIA labels and semantic HTML. Works with JAWS, NVDA, VoiceOver, TalkBack.'],
+          ['⌨ Keyboard navigation','Every action completable with Tab, Enter, Escape — no mouse required.'],
+          ['🎨 High contrast','Automatic light/dark switching with manual override. 4.5:1+ contrast everywhere.'],
+          ['🧠 Plain language','AI lease summaries, step-by-step forms, and clear error messages — no jargon.'],
+          ['📱 Voice input','Dictate search, maintenance requests, and messages by voice on mobile.'],
+          ['🔎 Large text controls','Adjust text size and line spacing without breaking any layout.'],
+        ].map(f=>`<div style="display:flex;gap:10px;margin-bottom:10px"><div style="font-size:16px;flex-shrink:0;width:24px">${f[0].split(' ')[0]}</div><div><p style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px">${f[0].split(' ').slice(1).join(' ')}</p><p style="font-size:11px;color:var(--mu)">${f[1]}</p></div></div>`).join('')}
+      </div>
+      <div>
+        <div class="sec-label">Listing filters</div>
+        <h3 style="font-family:var(--serif);font-size:28px;color:var(--tx);margin-bottom:12px">Find the right <em>accessible home.</em></h3>
+        <p style="font-size:13px;color:var(--mu);margin-bottom:16px">Filter listings specifically for accessibility needs — the only Canadian rental platform to do this.</p>
+        <div style="background:#fff;border:1px solid var(--br);border-radius:14px;overflow:hidden">
+          ${[
+            ['Wheelchair accessible entrance','Active'],
+            ['Elevator required (no stairs)','Active'],
+            ['Accessible parking space','Active'],
+            ['Single-level unit','Active'],
+            ['Wide doorways (≥32 inches)','Active'],
+            ['Accessible bathroom fixtures','Beta'],
+            ['Visual fire alarm system','Coming soon'],
+          ].map(f=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid var(--br)">
+            <span style="font-size:12px;color:var(--tx)">${f[0]}</span>
+            <span class="mock-badge ${f[1]==='Active'?'mbg':f[1]==='Beta'?'mbam':'mbgr'}" style="font-size:10px">${f[1]}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="stat-strip">
+      ${[['AODA','Ontario compliant'],['WCAG 2.1','AA standard'],['7','Accessible listing filters'],['Free','No extra cost ever']].map(s=>`<div class="stat-item"><div class="stat-n">${s[0]}</div><div class="stat-l">${s[1]}</div></div>`).join('')}
+    </div>
+  </div>
+  <div class="fp-footer">
+    <h2>Housing without barriers.</h2>
+    <p>Every Kaya feature works for everyone. Period.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → Accessibility Hub')">Explore accessibility settings →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ MULTILINGUAL ═══════════════════════════════ -->
+<div class="fp" id="fp-multilingual">
+  <div class="fhero dark">
+    <div class="fhero-grid"></div>
+    <div class="fhero-glow" style="background:radial-gradient(circle,rgba(10,122,82,.15) 0%,transparent 70%)"></div>
+    <div class="feat-badge" style="background:rgba(10,122,82,.2);border:1px solid rgba(10,122,82,.3);color:var(--gl)">🌍 Multilingual</div>
+    <h1 class="fh1" style="color:#fff">Kaya speaks<br><em>your language.</em></h1>
+    <p class="fsub" style="color:rgba(255,255,255,.5)">Full platform in 8 languages. AI-translated leases. Newcomer support program. Because everyone deserves fair access to housing.</p>
+    <div class="fcta-row">
+      <button class="btn-primary" onclick="alert('Open kaya-complete.html → Languages')">Choose your language</button>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="sec-label">8 languages</div>
+      <h2 class="sec-title">Toronto is multilingual.<br><em>So is Kaya.</em></h2>
+      <p class="sec-sub" style="margin:8px auto 0">1 in 4 Torontonians immigrated in the last decade. Rental scams target newcomers. We're levelling the playing field.</p>
+    </div>
+    <div class="fg4" style="margin-bottom:48px">
+      ${[['🇨🇦','English','Available'],['🇫🇷','Français','Available'],['🇨🇳','普通话','Q3 2026'],['🇮🇳','ਪੰਜਾਬੀ','Q3 2026'],['🇱🇰','தமிழ்','Q4 2026'],['🇪🇸','Español','Q4 2026'],['🇦🇪','العربية','Q4 2026'],['🇺🇦','Українська','Q4 2026']].map(l=>`<div style="background:#fff;border:1px solid var(--br);border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:28px;margin-bottom:8px">${l[0]}</div>
+        <p style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:4px">${l[1]}</p>
+        <span class="mock-badge ${l[2]==='Available'?'mbg':'mbgr'}" style="font-size:9px">${l[2]}</span>
+      </div>`).join('')}
+    </div>
+
+    <div class="fg2" style="margin-bottom:48px;align-items:start">
+      <div>
+        <div class="sec-label">What gets translated</div>
+        <h3 style="font-family:var(--serif);font-size:28px;color:var(--tx);margin-bottom:12px">Everything you <em>actually need.</em></h3>
+        ${[
+          'Full platform UI — every menu, button, and label',
+          'Lease agreements with plain-language AI summary',
+          'LTB notices and legal forms explained simply',
+          'Maintenance requests — submit in your language',
+          'Kaya AI — ask questions in any supported language',
+          'Email notifications in your preferred language',
+        ].map(f=>`<div style="display:flex;gap:9px;margin-bottom:9px"><div style="width:16px;height:16px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:8px;color:var(--g);font-weight:700">✓</span></div><p style="font-size:13px;color:var(--tx)">${f}</p></div>`).join('')}
+      </div>
+      <div>
+        <div style="background:var(--gl);border:1px solid rgba(10,122,82,.2);border-radius:14px;padding:22px;margin-bottom:14px">
+          <p style="font-size:13px;font-weight:700;color:var(--g);margin-bottom:10px">✦ Newcomer Support Program</p>
+          <p style="font-size:13px;color:#085040;line-height:1.7;margin-bottom:14px">New to Canada? Kaya connects you with free lease consultations in your language, scam detection tuned for newcomer targets, and links to tenant rights resources in your community.</p>
+          <button class="btn-primary" onclick="alert('Open kaya-complete.html → Languages')">Get newcomer support →</button>
+        </div>
+        <div class="quote-block">
+          <div class="quote-text">"I didn't understand my lease. Kaya's Mandarin summary explained everything clearly. I knew exactly what I was signing."</div>
+          <div class="quote-author">— Wei L., recently arrived, Toronto</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-strip">
+      ${[['8','Languages supported'],['1 in 4','Torontonians are immigrants'],['Free','For all renters'],['24h','Translation review cycle']].map(s=>`<div class="stat-item"><div class="stat-n">${s[0]}</div><div class="stat-l">${s[1]}</div></div>`).join('')}
+    </div>
+  </div>
+  <div class="fp-footer">
+    <h2>Housing should have no language barrier.</h2>
+    <p>Switch to your language in one click. Kaya works the same — in 8 languages.</p>
+    <button class="btn-wl" onclick="alert('Open kaya-complete.html → Languages')">Choose your language →</button>
+  </div>
+</div>
+
+<script>
+function showFP(id) {
+  document.querySelectorAll('.fp').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('fp-' + id);
+  const pill = document.getElementById('np-' + id);
+  if (page) { page.classList.add('active'); window.scrollTo(0, 0); }
+  if (pill) pill.classList.add('active');
+}
+</script>
+</body>
+</html>

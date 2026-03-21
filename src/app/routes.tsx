@@ -61,6 +61,7 @@ import ComplianceCenter from "./pages/ComplianceCenter";
 import IncomeVerification from "./pages/IncomeVerification";
 import InsuranceMarketplace from "./pages/InsuranceMarketplace";
 import ParalegalMarketplace from "./pages/ParalegalMarketplace";
+import { ListProperty } from "./pages/ListProperty";
 
 export const router = createBrowserRouter([
   // Landing Page - Default home page for visitors
@@ -182,6 +183,7 @@ export const router = createBrowserRouter([
       { path: "income-verify", Component: IncomeVerification },
       { path: "insurance", Component: InsuranceMarketplace },
       { path: "paralegal", Component: ParalegalMarketplace },
+      { path: "list-property", Component: ListProperty },
     ],
   },
   // Premium Tenant Portal (Protected)

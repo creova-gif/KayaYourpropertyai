@@ -97,3 +97,34 @@ src/
 - **Income Verification** (`/app/income-verify`) — AI fraud detection, bank verification status, pay stub AI analysis, fraud signal flagging per applicant
 - **Insurance Marketplace** (`/app/insurance`) — 5 Canadian insurer profiles (Square One, Aviva, Intact, BrokerLink, Wawanesa), quote CTAs, coverage education
 - **Paralegal Marketplace** (`/app/paralegal`) — 5 Ontario-licensed paralegals with LSO badge, ratings, success rates, booking modal, how-it-works flow
+- **List Property** (`/app/list-property`) — 6-step landlord listing wizard: type selector, address/location, beds/baths/parking, amenities multi-select, pricing/availability with Ontario rent rules, review & publish. Builds Kaya's native listing network.
+
+## Sidebar (LayoutPremium)
+- **Dark design:** Near-black (#0C0D0A) sidebar with white Kaya. wordmark and green dot
+- **List Property CTA:** Green button prominently at top of sidebar
+- **Quick strip:** Alerts + Search quick-access buttons
+- **AI nudge card:** Zap icon card linking to Kaya AI assistant
+- **User profile:** Avatar + name + PRO badge + language switcher (dark-mode adapted)
+- **Mobile:** Hamburger button at top-left, full-height slide-in sidebar with backdrop blur
+- **NavigationMenu:** Accepts `dark` prop — dark mode uses white text variants, green active tint, section headers
+
+## PublicSearch (/search)
+- 12 verified Ontario listings (Toronto, Ottawa, Hamilton, Kitchener, London, Windsor)
+- Tour modal: date/time picker → toast confirmation
+- Apply modal: income field + message + PIPEDA notice → toast submission
+- CMHC 2024 data banner (live Toronto avg rents, vacancy, annual change)
+- Filters: property type, sort (price/tours), max rent slider, city quick-pills
+- Empty state with clear-all-filters button; CMHC footer table for all Ontario cities
+- Save/heart button with toast feedback
+
+## NeighbourhoodInsights (/neighbourhood-insights)
+- 9 neighbourhoods across Toronto, Ottawa (Westboro, Centretown), Hamilton (Dundas St W)
+- City filter tabs: All / Toronto / Ottawa / Hamilton
+- Real CMHC 2024 data panel per city (vacancy, avg rent, annual change)
+- Walk Score API integration note (requires VITE_WALKSCORE_API_KEY, free 5k/day)
+- Dynamic AI verdicts referencing actual CMHC vacancy rates
+
+## Listing Network Roadmap
+- **Phase 1 (now):** Native Kaya listings — landlords post directly via /app/list-property
+- **Phase 2:** CREA DDF partnership (~$500-2k/yr, realtor license or data agreement)
+- **Phase 3:** Rentals.ca / Zumper commercial data-sharing agreements (revenue share)
