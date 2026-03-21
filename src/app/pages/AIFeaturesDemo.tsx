@@ -3,6 +3,7 @@ import { Sparkles, MessageSquare, Mic, UserCheck } from "lucide-react";
 import { AIAssistant } from "../components/AIAssistant";
 import { VoiceCommandPanel } from "../components/VoiceCommandPanel";
 import { AITenantScreeningModal } from "../components/AITenantScreeningModal";
+import { PublicNav } from "../components/PublicNav";
 
 export function AIFeaturesDemo() {
   const [showChat, setShowChat] = useState(false);
@@ -11,7 +12,8 @@ export function AIFeaturesDemo() {
 
   return (
     <div className="min-h-screen bg-[#F8F7F4]" style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}>
-      <div className="max-w-6xl mx-auto px-8 py-12">
+      <PublicNav />
+      <div className="max-w-6xl mx-auto px-8 pt-[90px] pb-12">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-[#E1F5EE] text-[#0F6E56] px-4 py-2 rounded-full text-sm font-medium mb-6">

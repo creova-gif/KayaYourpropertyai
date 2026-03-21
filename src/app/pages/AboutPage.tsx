@@ -1,3 +1,4 @@
+import { PublicNav } from "../components/PublicNav";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { Target, Users, Lightbulb, Shield, Heart, TrendingUp } from "lucide-react";
@@ -44,100 +45,7 @@ const stats = [
 export function AboutPage() {
   return (
     <div style={{ minHeight: "100vh", background: BACKGROUND }}>
-      {/* Header */}
-      <header
-        style={{
-          background: "white",
-          borderBottom: "1px solid rgba(0,0,0,0.07)",
-          position: "sticky",
-          top: 0,
-          zIndex: 50,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1280,
-            margin: "0 auto",
-            padding: "20px 24px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Link
-            to="/"
-            style={{
-              fontSize: 24,
-              fontWeight: 500,
-              color: PRIMARY,
-              textDecoration: "none",
-              fontFamily: "'Instrument Serif', Georgia, serif",
-            }}
-          >
-            KAYA
-          </Link>
-          <nav style={{ display: "flex", gap: 24, alignItems: "center" }}>
-            <Link
-              to="/features"
-              style={{
-                fontSize: 14,
-                color: MUTED,
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-            >
-              Features
-            </Link>
-            <Link
-              to="/pricing"
-              style={{
-                fontSize: 14,
-                color: MUTED,
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-            >
-              Pricing
-            </Link>
-            <Link
-              to="/about"
-              style={{
-                fontSize: 14,
-                color: PRIMARY,
-                textDecoration: "none",
-                fontWeight: 600,
-              }}
-            >
-              About
-            </Link>
-            <Link
-              to="/contact"
-              style={{
-                fontSize: 14,
-                color: MUTED,
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-            >
-              Contact
-            </Link>
-            <Link
-              to="/app"
-              style={{
-                padding: "10px 24px",
-                background: PRIMARY,
-                color: "white",
-                borderRadius: 8,
-                fontSize: 14,
-                fontWeight: 600,
-                textDecoration: "none",
-              }}
-            >
-              Launch App
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <PublicNav />
 
       {/* Hero Section */}
       <section

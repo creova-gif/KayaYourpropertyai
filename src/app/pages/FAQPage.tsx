@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ChevronDown, Search, Mail, MessageCircle, Phone, BookOpen } from "lucide-react";
 import { Link } from "react-router";
 import { useLanguage } from "../contexts/LanguageContext";
+import { PublicNav } from "../components/PublicNav";
 
 interface FAQItem {
   category: string;
@@ -196,8 +197,9 @@ export function FAQPage() {
 
   return (
     <div className="min-h-screen bg-[#F8F7F4]">
+      <PublicNav />
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#0A7A52] to-[#085D3D] text-white py-20">
+      <div className="bg-gradient-to-br from-[#0A7A52] to-[#085D3D] text-white pt-[142px] pb-20">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="inline-flex items-center justify-center size-16 bg-white/10 rounded-full mb-6">
             <BookOpen className="size-8 text-white" />

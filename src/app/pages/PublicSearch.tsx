@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { CMHC_RENTAL_DATA } from "../utils/canadianHousingData";
+import { PublicNav } from "../components/PublicNav";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -157,8 +158,9 @@ export function PublicSearch(){
 
   return(
     <div style={{minHeight:"100vh",background:BG,fontFamily:SANS}}>
+      <PublicNav />
       {/* Hero search */}
-      <div style={{background:TX,padding:"52px 40px 44px",textAlign:"center"}}>
+      <div style={{background:TX,padding:"114px 40px 44px",textAlign:"center"}}>
         <p style={{fontFamily:SERIF,fontSize:52,color:"#fff",lineHeight:1,letterSpacing:"-1.5px",marginBottom:10}}>Find your <em style={{color:G,fontStyle:"italic"}}>perfect home.</em></p>
         <p style={{fontSize:14,color:"rgba(255,255,255,.45)",marginBottom:28}}>
           {listings.length}+ verified listings across Ontario · Zero scam guarantee

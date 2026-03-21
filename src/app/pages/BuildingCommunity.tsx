@@ -1,3 +1,4 @@
+import { PublicNav } from "../components/PublicNav";
 import { useState } from "react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
@@ -50,7 +51,8 @@ export function BuildingCommunity(){
 
   return(
     <div style={pg}>
-      <div style={{maxWidth:720,margin:"0 auto",padding:"48px 36px 80px"}}>
+      <PublicNav />
+      <div style={{maxWidth:720,margin:"0 auto",padding:"110px 36px 80px"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:28}}>
           <div>
             <p style={{fontSize:9,fontWeight:700,color:MU,textTransform:"uppercase",letterSpacing:".7px",marginBottom:8}}>123 King Street West</p>

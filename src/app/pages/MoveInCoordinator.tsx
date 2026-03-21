@@ -1,3 +1,4 @@
+import { PublicNav } from "../components/PublicNav";
 import { useState } from "react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
@@ -29,7 +30,8 @@ export function MoveInCoordinator(){
 
   return(
     <div style={pg}>
-      <div style={{maxWidth:760,margin:"0 auto",padding:"48px 36px 80px"}}>
+      <PublicNav />
+      <div style={{maxWidth:760,margin:"0 auto",padding:"110px 36px 80px"}}>
         <div style={{marginBottom:32}}>
           <p style={{...lb,marginBottom:8}}>Welcome to your new home</p>
           <h1 style={{fontFamily:SERIF,fontSize:44,color:TX,lineHeight:1,letterSpacing:"-1px",marginBottom:8}}>

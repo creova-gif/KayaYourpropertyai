@@ -1,4 +1,5 @@
 import { Check, X } from "lucide-react";
+import { PublicNav } from "../components/PublicNav";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useNavigate, Link } from "react-router";
 import { useAuth } from "../contexts/AuthContext";
@@ -166,8 +167,9 @@ export function PricingPage() {
 
   return (
     <div className="min-h-screen bg-[#F8F7F4]">
+      <PublicNav />
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#0A7A52] to-[#085D3D] text-white py-20">
+      <div className="bg-gradient-to-br from-[#0A7A52] to-[#085D3D] text-white pt-[142px] pb-20">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h1 
             className="text-[56px] font-bold mb-6 leading-tight text-[#ffffff]"

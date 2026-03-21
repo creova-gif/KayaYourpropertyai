@@ -1,3 +1,4 @@
+import { PublicNav } from "../components/PublicNav";
 import { useState } from "react";
 import { CMHC_RENTAL_DATA } from "../utils/canadianHousingData";
 import { toast } from "sonner";
@@ -34,7 +35,8 @@ export function NeighbourhoodInsights(){
 
   return(
     <div style={pg}>
-      <div style={{maxWidth:1000,margin:"0 auto",padding:"40px 28px 80px"}}>
+      <PublicNav />
+      <div style={{maxWidth:1000,margin:"0 auto",padding:"100px 28px 80px"}}>
         <div style={{marginBottom:28}}>
           <p style={{...lb,marginBottom:8}}>Location Intelligence · Powered by CMHC Data</p>
           <h1 style={{fontFamily:SERIF,fontSize:42,color:TX,lineHeight:1,letterSpacing:"-1px",marginBottom:8}}>

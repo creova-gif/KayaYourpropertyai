@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { useNavigate, Link } from "react-router";
+import { useNavigate } from "react-router";
 import { 
   Sparkles, Shield, TrendingUp, Zap, Brain, Lock, 
-  CheckCircle, ArrowRight, ChevronRight, Building2, Users, FileText, MapPin
+  CheckCircle, ArrowRight, ChevronRight, Building2, Users, FileText
 } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
-import { LanguageSwitcher } from "../components/LanguageSwitcher";
+import { PublicNav } from "../components/PublicNav";
 
 const G = "#0A7A52";
 const GL = "#E5F4EE";
@@ -15,7 +14,6 @@ const MUTED = "#767570";
 
 export function LandingPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [email, setEmail] = useState("");
 
   const features = [
@@ -66,229 +64,7 @@ export function LandingPage() {
 
   return (
     <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}>
-      {/* Navigation */}
-      <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
-        height: 74, padding: "0 64px",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        background: "rgba(248,247,244,0.85)", backdropFilter: "blur(24px) saturate(180%)",
-        borderBottom: "1px solid rgba(0,0,0,0.06)",
-        boxShadow: "0 1px 0 0 rgba(255,255,255,0.5) inset"
-      }}>
-        {/* Logo with enhanced styling */}
-        <div style={{ 
-          display: "flex", 
-          alignItems: "center", 
-          gap: 12,
-          cursor: "pointer",
-          transition: "transform 0.2s ease"
-        }} 
-        onClick={() => navigate("/")}
-        onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.02)"}
-        onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-        >
-          <div style={{
-            width: 38,
-            height: 38,
-            borderRadius: 10,
-            background: `linear-gradient(135deg, ${G} 0%, #085D3D 100%)`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 2px 8px rgba(10,122,82,0.15), inset 0 1px 0 rgba(255,255,255,0.2)"
-          }}>
-            <Building2 size={20} color="#fff" strokeWidth={2.5} />
-          </div>
-          <div style={{ 
-            fontFamily: "'Instrument Serif', serif", 
-            fontSize: 26, 
-            color: TEXT,
-            letterSpacing: "-0.5px"
-          }}>
-            Kaya<span style={{ color: G }}>.</span>
-          </div>
-          <div style={{
-            fontSize: 9,
-            color: MUTED,
-            fontWeight: 600,
-            textTransform: "uppercase",
-            letterSpacing: "1px",
-            padding: "3px 8px",
-            background: GL,
-            borderRadius: 4,
-            marginLeft: 4
-          }}>
-            BETA
-          </div>
-        </div>
-        
-        {/* Navigation Links with creative hover */}
-        <div style={{ display: "flex", gap: 2, alignItems: "center" }}>
-          {[
-            { label: "Find a Home", path: "/listings" },
-            { label: "Features", path: "/features" },
-            { label: "Pricing", path: "/pricing" },
-            { label: "About", path: "/about" },
-            { label: "Contact", path: "/contact" }
-          ].map(({ label, path }) => (
-            <Link
-              key={label}
-              to={path}
-              style={{ 
-                fontSize: 14, 
-                color: MUTED, 
-                textDecoration: "none", 
-                fontWeight: 500, 
-                cursor: "pointer",
-                padding: "10px 18px",
-                borderRadius: 8,
-                transition: "all 0.2s ease",
-                position: "relative"
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = TEXT;
-                e.currentTarget.style.background = "rgba(10,122,82,0.04)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = MUTED;
-                e.currentTarget.style.background = "transparent";
-              }}
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
-
-        {/* CTA Buttons with enhanced design */}
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <button 
-            onClick={() => navigate("/listings")}
-            style={{ 
-              padding: "10px 20px", 
-              border: `1.5px solid ${G}`, 
-              borderRadius: 10, 
-              background: GL, 
-              fontSize: 14, 
-              fontWeight: 500, 
-              cursor: "pointer", 
-              color: G,
-              transition: "all 0.2s ease",
-              boxShadow: "0 1px 2px rgba(10,122,82,0.08)",
-              display: "flex",
-              alignItems: "center",
-              gap: 6
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = G;
-              e.currentTarget.style.color = "#fff";
-              e.currentTarget.style.boxShadow = "0 2px 8px rgba(10,122,82,0.2)";
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = GL;
-              e.currentTarget.style.color = G;
-              e.currentTarget.style.boxShadow = "0 1px 2px rgba(10,122,82,0.08)";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-          >
-            <MapPin size={16} strokeWidth={2.5} />
-            <span>Browse Homes</span>
-          </button>
-          <LanguageSwitcher />
-          {user ? (
-            <button 
-              onClick={() => navigate("/app")}
-              style={{ 
-                padding: "10px 20px", 
-                border: "1px solid rgba(0,0,0,0.08)", 
-                borderRadius: 10, 
-                background: "white", 
-                fontSize: 14, 
-                fontWeight: 500, 
-                cursor: "pointer", 
-                color: TEXT,
-                transition: "all 0.2s ease",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-                display: "flex",
-                alignItems: "center",
-                gap: 6
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "rgba(0,0,0,0.12)";
-                e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
-                e.currentTarget.style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "rgba(0,0,0,0.08)";
-                e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
-              <Building2 size={16} strokeWidth={2.5} />
-              <span>My Dashboard</span>
-            </button>
-          ) : (
-            <button 
-              onClick={() => navigate("/login")}
-              style={{ 
-                padding: "10px 20px", 
-                border: "1px solid rgba(0,0,0,0.08)", 
-                borderRadius: 10, 
-                background: "white", 
-                fontSize: 14, 
-                fontWeight: 500, 
-                cursor: "pointer", 
-                color: TEXT,
-                transition: "all 0.2s ease",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.04)"
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "rgba(0,0,0,0.12)";
-                e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
-                e.currentTarget.style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "rgba(0,0,0,0.08)";
-                e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
-              Sign in
-            </button>
-          )}
-          <button 
-            onClick={() => navigate("/signup")}
-            style={{ 
-              padding: "11px 24px", 
-              border: "none", 
-              borderRadius: 10, 
-              background: `linear-gradient(135deg, ${G} 0%, #085D3D 100%)`, 
-              fontSize: 14, 
-              fontWeight: 600, 
-              cursor: "pointer", 
-              color: "#fff",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              transition: "all 0.2s ease",
-              boxShadow: "0 2px 8px rgba(10,122,82,0.2), inset 0 1px 0 rgba(255,255,255,0.2)",
-              position: "relative",
-              overflow: "hidden"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = "0 4px 16px rgba(10,122,82,0.3), inset 0 1px 0 rgba(255,255,255,0.2)";
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = "0 2px 8px rgba(10,122,82,0.2), inset 0 1px 0 rgba(255,255,255,0.2)";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-          >
-            <span>Get started</span>
-            <ArrowRight size={16} strokeWidth={2.5} />
-          </button>
-        </div>
-      </nav>
+      <PublicNav />
 
       {/* Hero Section */}
       <section style={{
