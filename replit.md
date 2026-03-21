@@ -98,6 +98,7 @@ src/
 - **Insurance Marketplace** (`/app/insurance`) — 5 Canadian insurer profiles (Square One, Aviva, Intact, BrokerLink, Wawanesa), quote CTAs, coverage education
 - **Paralegal Marketplace** (`/app/paralegal`) — 5 Ontario-licensed paralegals with LSO badge, ratings, success rates, booking modal, how-it-works flow
 - **List Property** (`/app/list-property`) — 6-step landlord listing wizard: type selector, address/location, beds/baths/parking, amenities multi-select, pricing/availability with Ontario rent rules, review & publish. Builds Kaya's native listing network.
+- **Commercial Portfolio** (`/app/commercial`) — Enterprise commercial property management with Portfolio/Lease Tracker/Team tabs for large companies managing multiple commercial properties.
 
 ## Sidebar (LayoutPremium)
 - **Dark design:** Near-black (#0C0D0A) sidebar with white Kaya. wordmark and green dot
@@ -109,13 +110,21 @@ src/
 - **NavigationMenu:** Accepts `dark` prop — dark mode uses white text variants, green active tint, section headers
 
 ## PublicSearch (/search)
-- 12 verified Ontario listings (Toronto, Ottawa, Hamilton, Kitchener, London, Windsor)
-- Tour modal: date/time picker → toast confirmation
-- Apply modal: income field + message + PIPEDA notice → toast submission
-- CMHC 2024 data banner (live Toronto avg rents, vacancy, annual change)
-- Filters: property type, sort (price/tours), max rent slider, city quick-pills
-- Empty state with clear-all-filters button; CMHC footer table for all Ontario cities
-- Save/heart button with toast feedback
+- **Residential / Commercial toggle** at hero — switches entire listing experience
+- **Residential mode:** 12 verified Ontario listings (Toronto, Ottawa, Hamilton, Kitchener, London, Windsor); tour modal, apply modal (income + PIPEDA notice), CMHC 2024 market banner, type/sort/rent filters, save/heart
+- **Commercial mode:** 10 verified commercial spaces (office, retail, industrial/warehouse, flex, mixed-use); class A/B/C filter, sqft slider, lease type, per-sqft pricing, 2-step inquiry modal (company → headcount/timeline), broker confirmation
+
+## CommercialPortfolio (/app/commercial)
+- Enterprise multi-property management for large companies with commercial real estate
+- 3 demo properties: King Street Commerce Centre (Toronto), Queensway Industrial Park (Mississauga), Rideau Commerce Plaza (Ottawa)
+- Commercial unit types: Office Suites, Retail Units, Warehouse Bays, Flex Spaces
+- Unit data: sqft, base rent, CAM charges, lease type (NNN/gross/modified gross), status (leased/vacant/pending/holdover), tenant business name
+- **Portfolio Tab:** Expandable property cards with unit grid, amenities, per-property KPIs
+- **Lease Tracker Tab:** Full lease table across all properties; expiry alerts within 12 months; status summary
+- **Team Tab:** Team member cards with roles + assigned properties; property access matrix
+- KPI strip: total properties, portfolio sqft, occupancy %, monthly revenue, vacant units
+- Add property modal; tenant inquiry modal; "Invite Team Member" placeholder
+- Sidebar nav: Properties → Residential Portfolio + Commercial Portfolio
 
 ## NeighbourhoodInsights (/neighbourhood-insights)
 - 9 neighbourhoods across Toronto, Ottawa (Westboro, Centretown), Hamilton (Dundas St W)

@@ -6,7 +6,7 @@ import {
   Receipt, Bell, Shield, TrendingUp, Send, FolderOpen, BarChart3,
   Award, Brain, CreditCard, Scale, UserCheck, Hammer, FileBarChart,
   Share2, ShieldCheck, Store, Star, BadgeCheck, FileCheck2, Lock,
-  HeartHandshake, PlusCircle,
+  HeartHandshake, PlusCircle, Briefcase,
 } from "lucide-react";
 
 const G = "#0A7A52";
@@ -29,7 +29,13 @@ export function NavigationMenu({ basePath = "/", onNavigate, dark = false }: Pro
 
   const navigation: NavItem[] = [
     { name: "Dashboard", href: mkp(""), icon: LayoutDashboard, section: "MAIN" },
-    { name: "Properties", href: mkp("/properties"), icon: Building2 },
+    {
+      name: "Properties", href: mkp("/properties"), icon: Building2,
+      children: [
+        { name: "Residential Portfolio", href: mkp("/properties"), icon: Building2 },
+        { name: "Commercial Portfolio", href: mkp("/commercial"), icon: Briefcase },
+      ],
+    },
     {
       name: "Applications", href: mkp("/applications"), icon: FileText,
       children: [
