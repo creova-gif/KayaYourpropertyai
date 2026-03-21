@@ -29,6 +29,10 @@ import {
   ShieldCheck,
   Store,
   Star,
+  BadgeCheck,
+  FileCheck2,
+  Lock,
+  HeartHandshake,
 } from "lucide-react";
 
 interface NavItem {
@@ -80,18 +84,6 @@ export function NavigationMenu({ basePath = "/", onNavigate }: { basePath?: stri
       icon: Users,
     },
     {
-      name: "Finances",
-      href: makePath("/payments"),
-      icon: DollarSign,
-      children: [
-        { name: "Payments", href: makePath("/payments"), icon: DollarSign },
-        { name: "Rent Collection", href: makePath("/rent-collection"), icon: CreditCard },
-        { name: "Financial Dashboard", href: makePath("/financial"), icon: TrendingUp },
-        { name: "HST/GST Tracker", href: makePath("/tax-tracker"), icon: Receipt },
-        { name: "Invoices", href: makePath("/invoices"), icon: Receipt },
-      ],
-    },
-    {
       name: "Operations",
       href: makePath("/maintenance"),
       icon: Wrench,
@@ -101,8 +93,23 @@ export function NavigationMenu({ basePath = "/", onNavigate }: { basePath?: stri
         { name: "Vendors", href: makePath("/vendors"), icon: Store },
         { name: "Documents", href: makePath("/documents"), icon: FolderOpen },
         { name: "LTB Forms", href: makePath("/ltb-forms"), icon: Scale },
+        { name: "LTB Workflow", href: makePath("/ltb-workflow"), icon: FileCheck2 },
+        { name: "Paralegal Marketplace", href: makePath("/paralegal"), icon: HeartHandshake },
         { name: "Lease Templates", href: makePath("/province-lease-templates"), icon: FileText },
         { name: "Notices", href: makePath("/notices"), icon: Bell },
+      ],
+    },
+    {
+      name: "Finances",
+      href: makePath("/payments"),
+      icon: DollarSign,
+      children: [
+        { name: "Payments", href: makePath("/payments"), icon: DollarSign },
+        { name: "Rent Collection", href: makePath("/rent-collection"), icon: CreditCard },
+        { name: "Financial Dashboard", href: makePath("/financial"), icon: TrendingUp },
+        { name: "HST/GST Tracker", href: makePath("/tax-tracker"), icon: Receipt },
+        { name: "T776 Tax Report", href: makePath("/t776"), icon: FileText },
+        { name: "Invoices", href: makePath("/invoices"), icon: Receipt },
       ],
     },
     {
@@ -113,6 +120,16 @@ export function NavigationMenu({ basePath = "/", onNavigate }: { basePath?: stri
         { name: "Listing Syndication", href: makePath("/listing-syndication"), icon: Share2 },
         { name: "Deposit-Free (Shield)", href: makePath("/deposit-free"), icon: ShieldCheck },
         { name: "Rent Credit Building", href: makePath("/rent-credit"), icon: Star },
+        { name: "Insurance Marketplace", href: makePath("/insurance"), icon: Shield },
+      ],
+    },
+    {
+      name: "Compliance",
+      href: makePath("/compliance"),
+      icon: Lock,
+      children: [
+        { name: "Compliance Centre", href: makePath("/compliance"), icon: Lock },
+        { name: "Income Verification", href: makePath("/income-verify"), icon: BadgeCheck },
       ],
     },
     {

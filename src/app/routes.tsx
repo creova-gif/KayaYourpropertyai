@@ -55,6 +55,12 @@ import { ListingSyndication } from "./pages/ListingSyndication";
 import { DepositFree } from "./pages/DepositFree";
 import { VendorMarketplace } from "./pages/VendorMarketplace";
 import { RentCreditBuilding } from "./pages/RentCreditBuilding";
+import LTBWorkflow from "./pages/LTBWorkflow";
+import T776Report from "./pages/T776Report";
+import ComplianceCenter from "./pages/ComplianceCenter";
+import IncomeVerification from "./pages/IncomeVerification";
+import InsuranceMarketplace from "./pages/InsuranceMarketplace";
+import ParalegalMarketplace from "./pages/ParalegalMarketplace";
 
 export const router = createBrowserRouter([
   // Landing Page - Default home page for visitors
@@ -170,6 +176,12 @@ export const router = createBrowserRouter([
       { path: "deposit-free", Component: DepositFree },
       { path: "vendors", Component: VendorMarketplace },
       { path: "rent-credit", Component: RentCreditBuilding },
+      { path: "ltb-workflow", Component: LTBWorkflow },
+      { path: "t776", Component: T776Report },
+      { path: "compliance", Component: ComplianceCenter },
+      { path: "income-verify", Component: IncomeVerification },
+      { path: "insurance", Component: InsuranceMarketplace },
+      { path: "paralegal", Component: ParalegalMarketplace },
     ],
   },
   // Premium Tenant Portal (Protected)

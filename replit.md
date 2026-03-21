@@ -91,3 +91,9 @@ src/
 - **Deposit-Free / Kaya Shield** (`/app/deposit-free`) — Deposit-free leasing
 - **Rent Credit Building** (`/app/rent-credit`) — Tenant credit reporting
 - Documents, LTB Forms, Lease Templates, Notices, Reports, Settings, Messages, Admin
+- **LTB Workflow Engine** (`/app/ltb-workflow`) — 8-step guided eviction flow, N4/L1 form generator, case tracker sidebar, paralegal CTA
+- **CRA T776 Report** (`/app/t776`) — Auto-generated Statement of Real Estate Rentals from Kaya rent data; tabs for income, expenses, CCA; PDF export
+- **Compliance Centre** (`/app/compliance`) — PIPEDA, Human Rights Code, CASL, LTB compliance dashboard with scoring, action items, and legal references
+- **Income Verification** (`/app/income-verify`) — AI fraud detection, bank verification status, pay stub AI analysis, fraud signal flagging per applicant
+- **Insurance Marketplace** (`/app/insurance`) — 5 Canadian insurer profiles (Square One, Aviva, Intact, BrokerLink, Wawanesa), quote CTAs, coverage education
+- **Paralegal Marketplace** (`/app/paralegal`) — 5 Ontario-licensed paralegals with LSO badge, ratings, success rates, booking modal, how-it-works flow
