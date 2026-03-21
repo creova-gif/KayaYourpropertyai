@@ -150,6 +150,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true);
 
+      // Demo account bypass — no Supabase call needed
+      if (email.toLowerCase() === 'demo@kaya.ca' && password === 'demo1234') {
+        const demoUser = {
+          id: 'demo-user-id',
+          email: 'demo@kaya.ca',
+          name: 'Demo Landlord',
+          role: 'landlord',
+          phone: '+1 416 555 0100',
+          subscriptionTier: 'pro',
+          subscriptionStatus: 'active',
+        };
+        setUser(demoUser);
+        setSession({ access_token: 'demo-access-token' });
+        console.log('✅ Demo login successful');
+        return;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -191,23 +208,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async (): Promise<void> => {
     try {
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        console.error('❌ Sign out error:', error);
-        return;
-      }
-
+      // Always clear local state immediately
       setUser(null);
       setSession(null);
+
+      // Skip Supabase call for demo account
+      if (session?.access_token !== 'demo-access-token') {
+        const { error } = await supabase.auth.signOut();
+        if (error) console.error('❌ Sign out error:', error);
+      }
+
       console.log('✅ Signed out successfully');
-      
-      // Redirect to landing page
       if (typeof window !== 'undefined') {
         window.location.href = '/';
       }
     } catch (error) {
       console.error('❌ Sign out error:', error);
+      setUser(null);
+      setSession(null);
+      if (typeof window !== 'undefined') window.location.href = '/';
     }
   };
 

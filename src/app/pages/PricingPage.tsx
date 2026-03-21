@@ -113,12 +113,12 @@ export function PricingPage() {
       cta: "Start 7-Day Trial",
       ctaFr: "Essai gratuit 7 jours",
       popular: true,
-      priceId: "price_1NqQ5kL0G0G0G0G0G0G0G0G0",
+      priceId: "price_1TDDgORHjGbBU1sF4a1VFjtR",
     },
     {
       name: "Pro",
       nameFr: "Pro",
-      price: "$79",
+      price: "$69",
       period: "/month",
       periodFr: "/mois",
       description: "For serious property managers",
@@ -137,12 +137,12 @@ export function PricingPage() {
       cta: "Start 7-Day Trial",
       ctaFr: "Essai gratuit 7 jours",
       popular: false,
-      priceId: "price_1NqQ5kL0G0G0G0G0G0G0G0G1",
+      priceId: "price_1TDDgSRHjGbBU1sFNfQrAhhb",
     },
     {
-      name: "Enterprise",
+      name: "Scale",
       nameFr: "Entreprise",
-      price: "$199",
+      price: "$149",
       period: "/month",
       periodFr: "/mois",
       description: "For large property portfolios",
@@ -160,7 +160,7 @@ export function PricingPage() {
       cta: "Contact Sales",
       ctaFr: "Contacter les ventes",
       popular: false,
-      priceId: "price_1NqQ5kL0G0G0G0G0G0G0G0G2",
+      priceId: "price_1TDDgXRHjGbBU1sFzWCrFge6",
     },
   ];
 
@@ -179,7 +179,7 @@ export function PricingPage() {
             className="text-[20px] text-white/90 max-w-2xl mx-auto"
             style={{ fontFamily: "'DM Sans', sans-serif" }}
           >
-            Choose the perfect plan for your property management needs. All plans include 7-day free trial.
+            Choose the perfect plan for your property management needs. All plans include 7-day free trial. Prices in CAD + applicable HST/GST.
           </p>
         </div>
       </div>
@@ -338,7 +338,7 @@ export function PricingPage() {
             Start Your Free Trial
           </Link>
           <p className="mt-4 text-[14px] text-[#767570]">
-            No credit card required · 7-day free trial · Cancel anytime
+            No credit card required · 7-day free trial · Cancel anytime · Prices in CAD · HST/GST applied at checkout based on province
           </p>
         </div>
 

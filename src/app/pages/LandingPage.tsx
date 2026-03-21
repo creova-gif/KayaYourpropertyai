@@ -5,6 +5,8 @@ import {
   Sparkles, Shield, TrendingUp, Zap, Brain, Lock, 
   CheckCircle, ArrowRight, ChevronRight, Building2, Users, FileText, MapPin
 } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 
 const G = "#0A7A52";
 const GL = "#E5F4EE";
@@ -13,6 +15,7 @@ const MUTED = "#767570";
 
 export function LandingPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [email, setEmail] = useState("");
 
   const features = [
@@ -191,64 +194,68 @@ export function LandingPage() {
             <MapPin size={16} strokeWidth={2.5} />
             <span>Browse Homes</span>
           </button>
-          <button 
-            onClick={() => navigate("/app")}
-            style={{ 
-              padding: "10px 20px", 
-              border: "1px solid rgba(0,0,0,0.08)", 
-              borderRadius: 10, 
-              background: "white", 
-              fontSize: 14, 
-              fontWeight: 500, 
-              cursor: "pointer", 
-              color: TEXT,
-              transition: "all 0.2s ease",
-              boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-              display: "flex",
-              alignItems: "center",
-              gap: 6
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(0,0,0,0.12)";
-              e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "rgba(0,0,0,0.08)";
-              e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-          >
-            <Building2 size={16} strokeWidth={2.5} />
-            <span>My Dashboard</span>
-          </button>
-          <button 
-            onClick={() => navigate("/login")}
-            style={{ 
-              padding: "10px 20px", 
-              border: "1px solid rgba(0,0,0,0.08)", 
-              borderRadius: 10, 
-              background: "white", 
-              fontSize: 14, 
-              fontWeight: 500, 
-              cursor: "pointer", 
-              color: TEXT,
-              transition: "all 0.2s ease",
-              boxShadow: "0 1px 2px rgba(0,0,0,0.04)"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(0,0,0,0.12)";
-              e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "rgba(0,0,0,0.08)";
-              e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-          >
-            Sign in
-          </button>
+          <LanguageSwitcher />
+          {user ? (
+            <button 
+              onClick={() => navigate("/app")}
+              style={{ 
+                padding: "10px 20px", 
+                border: "1px solid rgba(0,0,0,0.08)", 
+                borderRadius: 10, 
+                background: "white", 
+                fontSize: 14, 
+                fontWeight: 500, 
+                cursor: "pointer", 
+                color: TEXT,
+                transition: "all 0.2s ease",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                display: "flex",
+                alignItems: "center",
+                gap: 6
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "rgba(0,0,0,0.12)";
+                e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "rgba(0,0,0,0.08)";
+                e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              <Building2 size={16} strokeWidth={2.5} />
+              <span>My Dashboard</span>
+            </button>
+          ) : (
+            <button 
+              onClick={() => navigate("/login")}
+              style={{ 
+                padding: "10px 20px", 
+                border: "1px solid rgba(0,0,0,0.08)", 
+                borderRadius: 10, 
+                background: "white", 
+                fontSize: 14, 
+                fontWeight: 500, 
+                cursor: "pointer", 
+                color: TEXT,
+                transition: "all 0.2s ease",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.04)"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "rgba(0,0,0,0.12)";
+                e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "rgba(0,0,0,0.08)";
+                e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              Sign in
+            </button>
+          )}
           <button 
             onClick={() => navigate("/signup")}
             style={{ 

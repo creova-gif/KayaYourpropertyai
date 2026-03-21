@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { Zap, Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
+import { Zap, Mail, Lock, AlertCircle, Loader2, PlayCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { ErrorHandler } from '../utils/errorHandling';
 
@@ -25,17 +25,25 @@ export function LoginPage() {
     setLoading(true);
 
     try {
-      const result = await signIn(email, password);
+      await signIn(email, password);
+      ErrorHandler.success('Welcome back!', 'Redirecting to dashboard...');
+      setTimeout(() => navigate('/app'), 500);
+    } catch (err: any) {
+      setError(err.message || 'An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      if (result.success) {
-        ErrorHandler.success('Welcome back!', 'Redirecting to dashboard...');
-        // Redirect to dashboard
-        setTimeout(() => navigate('/app'), 500);
-      } else {
-        setError(result.error || 'Login failed');
-      }
-    } catch (err) {
-      setError('An error occurred. Please try again.');
+  const handleDemoLogin = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      await signIn('demo@kaya.ca', 'demo1234');
+      ErrorHandler.success('Demo mode active', 'Exploring Kaya as Demo Landlord...');
+      setTimeout(() => navigate('/app'), 500);
+    } catch (err: any) {
+      setError(err.message || 'Demo login failed');
     } finally {
       setLoading(false);
     }
@@ -253,9 +261,43 @@ export function LoginPage() {
           </button>
         </form>
 
+        {/* Demo Login */}
+        <div style={{ marginTop: 16 }}>
+          <button
+            type="button"
+            onClick={handleDemoLogin}
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '13px',
+              background: '#F0F7F4',
+              color: G,
+              border: `1.5px solid ${G}22`,
+              borderRadius: 12,
+              fontSize: 14,
+              fontWeight: 600,
+              fontFamily: 'inherit',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+            }}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.background = '#E0F0E8')}
+            onMouseLeave={(e) => !loading && (e.currentTarget.style.background = '#F0F7F4')}
+          >
+            <PlayCircle size={17} />
+            Try Demo Account
+          </button>
+          <p style={{ textAlign: 'center', fontSize: 11, color: MUTED, marginTop: 8 }}>
+            Instant access · No sign-up needed · demo@kaya.ca
+          </p>
+        </div>
+
         {/* Divider */}
         <div style={{ 
-          margin: '32px 0',
+          margin: '28px 0',
           display: 'flex',
           alignItems: 'center',
           gap: 16,

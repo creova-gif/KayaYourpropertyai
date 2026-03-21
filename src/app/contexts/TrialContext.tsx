@@ -34,6 +34,21 @@ export function TrialProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    // Demo account — use mock active subscription status
+    if (session.access_token === 'demo-access-token') {
+      setTrialStatus({
+        isTrialActive: false,
+        trialExpired: false,
+        daysRemaining: 0,
+        trialStartDate: null,
+        trialEndDate: null,
+        subscriptionTier: 'pro',
+        subscriptionStatus: 'active',
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-2071350e/auth/trial-status`,
