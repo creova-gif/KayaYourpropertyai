@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Scale, Star, MapPin, CheckCircle2, Clock, Phone, MessageSquare, Filter, Search, Award, TrendingUp, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -219,7 +220,7 @@ export default function ParalegalMarketplace(){
                               style={{padding:"9px 18px",background:G,color:"#fff",borderRadius:9,border:"none",fontSize:13,fontWeight:600,cursor:"pointer"}}>
                               Book a Consultation
                             </button>
-                            <button style={{padding:"9px 14px",background:"#fff",color:MU,borderRadius:9,border:`1px solid ${BD}`,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",gap:5}}>
+                            <button onClick={()=>toast.info("Message sent",{description:`Your inquiry has been sent to ${p.name}. You'll receive a reply via the Kaya messaging centre within 24 hours.`})} style={{padding:"9px 14px",background:"#fff",color:MU,borderRadius:9,border:`1px solid ${BD}`,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",gap:5}}>
                               <MessageSquare size={13}/> Message
                             </button>
                           </div>
@@ -303,7 +304,7 @@ export default function ParalegalMarketplace(){
                       style={{width:"100%",padding:"10px 13px",border:`1px solid ${BD}`,borderRadius:9,fontSize:13,color:TX,fontFamily:SANS,outline:"none",resize:"none",boxSizing:"border-box"}}/>
                   </div>
                 </div>
-                <button style={{width:"100%",padding:"12px",background:G,color:"#fff",borderRadius:10,border:"none",fontSize:14,fontWeight:700,cursor:"pointer",marginTop:16}}>
+                <button onClick={()=>{toast.success("Booking request submitted!",{description:`${bookingP?.name} will confirm your consultation time within 24 hours. Check your Kaya inbox for next steps.`});setBookingP(null)}} style={{width:"100%",padding:"12px",background:G,color:"#fff",borderRadius:10,border:"none",fontSize:14,fontWeight:700,cursor:"pointer",marginTop:16}}>
                   Request Booking
                 </button>
                 <p style={{fontSize:11,color:MU,textAlign:"center",marginTop:8}}>Kaya takes a 10% platform fee from the paralegal's session fee — no extra charge to you.</p>

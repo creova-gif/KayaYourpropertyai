@@ -30,6 +30,9 @@ export function LayoutPremium() {
 
   return (
     <div className="flex min-h-screen bg-[#F8F7F4]">
+      {/* Skip to main content — keyboard/screen-reader users */}
+      <a href="#main-content" className="skip-to-content">Skip to main content</a>
+
       {/* Global AI Components - Always available */}
       <GlobalAIAssistant 
         pageContext={getPageContext()}
@@ -62,7 +65,9 @@ export function LayoutPremium() {
       )}
 
       {/* Premium Minimal Sidebar */}
-      <aside className={`
+      <aside
+        aria-label="Main navigation"
+        className={`
         w-72 sm:w-80 lg:w-64 border-r border-[rgba(0,0,0,0.07)] bg-white flex flex-col
         lg:relative lg:translate-x-0
         fixed inset-y-0 left-0 z-40
@@ -71,10 +76,11 @@ export function LayoutPremium() {
       `}>
         {/* Logo Area */}
         <div className="px-4 sm:px-6 py-6 sm:py-8 border-b border-[rgba(0,0,0,0.07)]">
-          <div 
-            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+          <button
+            aria-label="Go to dashboard"
+            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity w-full text-left bg-transparent border-none p-0"
             onClick={() => {
-              navigate('/');
+              navigate('/app');
               setMobileMenuOpen(false);
             }}
           >
@@ -88,7 +94,7 @@ export function LayoutPremium() {
               </h2>
               <p className="text-[10px] sm:text-[11px] text-[#767570] font-medium uppercase tracking-wider" style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}>Property Platform</p>
             </div>
-          </div>
+          </button>
         </div>
 
         {/* Navigation - Using new NavigationMenu */}
@@ -116,7 +122,7 @@ export function LayoutPremium() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-auto lg:ml-0 pt-16 lg:pt-0">
+      <main id="main-content" className="flex-1 overflow-auto lg:ml-0 pt-16 lg:pt-0">
         <TrialBanner />
         <Outlet />
       </main>

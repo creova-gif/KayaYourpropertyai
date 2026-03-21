@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { BadgeCheck, AlertTriangle, Clock, TrendingUp, FileText, Shield, ChevronRight, CheckCircle2, XCircle, Eye, Link, Search } from "lucide-react";
+import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -203,16 +204,16 @@ export default function IncomeVerification(){
                               )}
                               <div style={{display:"flex",gap:10}}>
                                 {app.status==="pending"&&(
-                                  <button style={{padding:"9px 16px",background:G,color:"#fff",borderRadius:9,border:"none",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+                                  <button onClick={()=>toast.info("Bank link sent",{description:`A secure Plaid bank verification link has been emailed to ${app.name}. They have 72 hours to connect their account.`})} style={{padding:"9px 16px",background:G,color:"#fff",borderRadius:9,border:"none",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
                                     <Link size={13}/> Send Bank Link to Applicant
                                   </button>
                                 )}
                                 {app.status==="fraud_risk"&&(
-                                  <button style={{padding:"9px 16px",background:"#FDECEA",color:"#C0392B",borderRadius:9,border:"1.5px solid #FECACA",fontSize:13,fontWeight:600,cursor:"pointer"}}>
+                                  <button onClick={()=>toast.error("Application declined",{description:`${app.name}'s application has been flagged and declined. They will receive an automated adverse action notice as required by PIPEDA.`})} style={{padding:"9px 16px",background:"#FDECEA",color:"#C0392B",borderRadius:9,border:"1.5px solid #FECACA",fontSize:13,fontWeight:600,cursor:"pointer"}}>
                                     ❌ Decline Application
                                   </button>
                                 )}
-                                <button style={{padding:"9px 16px",background:BG,color:TX,borderRadius:9,border:`1px solid ${BD}`,fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+                                <button onClick={()=>toast.info("Full verification report",{description:`Opening ${app.name}'s complete income verification report with all source documents, AI analysis notes, and fraud signal details.`})} style={{padding:"9px 16px",background:BG,color:TX,borderRadius:9,border:`1px solid ${BD}`,fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
                                   <Eye size={13}/> View Full Report
                                 </button>
                               </div>
@@ -241,7 +242,7 @@ export default function IncomeVerification(){
                     fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:20}}>{m.badge}</span>
                 </div>
                 <p style={{fontSize:13,color:MU,margin:"0 0 14px",lineHeight:1.6}}>{m.desc}</p>
-                <button style={{padding:"8px 16px",background:GL,color:G,borderRadius:8,border:`1px solid ${G}33`,fontSize:13,fontWeight:600,cursor:"pointer"}}>
+                <button onClick={()=>toast.success("Default method updated",{description:"This verification method will now be the default for all new tenant applications."})} style={{padding:"8px 16px",background:GL,color:G,borderRadius:8,border:`1px solid ${G}33`,fontSize:13,fontWeight:600,cursor:"pointer"}}>
                   Set as Default
                 </button>
               </motion.div>
@@ -293,7 +294,7 @@ export default function IncomeVerification(){
                 <Shield size={18} color={G} style={{marginBottom:8}}/>
                 <h4 style={{fontSize:13,fontWeight:700,color:G,margin:"0 0 6px"}}>Kaya Verified Badge</h4>
                 <p style={{fontSize:12,color:MU,margin:"0 0 12px"}}>Applicants who pass all verification checks earn a Kaya Verified badge — shareable across future applications.</p>
-                <button style={{padding:"8px 16px",background:G,color:"#fff",borderRadius:8,border:"none",fontSize:13,fontWeight:600,cursor:"pointer"}}>Learn More</button>
+                <button onClick={()=>toast.info("Kaya Verified Badge",{description:"Applicants who pass AI income check, bank verification, and fraud screening receive a portable Kaya Verified badge. This badge speeds up future applications across all Kaya landlords."})} style={{padding:"8px 16px",background:G,color:"#fff",borderRadius:8,border:"none",fontSize:13,fontWeight:600,cursor:"pointer"}}>Learn More</button>
               </div>
             </div>
           </motion.div>

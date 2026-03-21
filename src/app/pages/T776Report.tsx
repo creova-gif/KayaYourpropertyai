@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Receipt, Download, CheckCircle2, Info, TrendingUp, Home, Wrench, DollarSign, FileText, ChevronRight, AlertTriangle } from "lucide-react";
+import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -98,7 +99,7 @@ export default function T776Report(){
                 <option>2024</option>
                 <option>2023</option>
               </select>
-              <button style={{padding:"9px 18px",background:G,color:"#fff",borderRadius:10,border:"none",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+              <button onClick={()=>{toast.success("T776 PDF generated",{description:"Your CRA T776 Statement of Real Estate Rentals has been prepared. In production, this downloads a CRA-compliant PDF."})}} style={{padding:"9px 18px",background:G,color:"#fff",borderRadius:10,border:"none",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
                 <Download size={14}/> Export PDF
               </button>
             </div>

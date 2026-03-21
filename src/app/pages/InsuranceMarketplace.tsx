@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Shield, Star, ChevronRight, CheckCircle2, Phone, ExternalLink, Info, TrendingDown, Home, DollarSign } from "lucide-react";
+import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -164,7 +165,7 @@ export default function InsuranceMarketplace(){
                   <div style={{fontSize:11,color:MU}}>/month</div>
                 </div>
                 <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                  <button style={{padding:"10px 20px",background:G,color:"#fff",borderRadius:10,border:"none",fontSize:13,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>
+                  <button onClick={()=>{toast.success("Quote request sent",{description:`Your property details have been shared with ${p.name}. They will contact you within 1–2 business days with a customized quote.`})}} style={{padding:"10px 20px",background:G,color:"#fff",borderRadius:10,border:"none",fontSize:13,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>
                     Get Quote →
                   </button>
                   <button onClick={()=>setSelected(selected===p.id?null:p.id)}

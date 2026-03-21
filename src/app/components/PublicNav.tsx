@@ -1,5 +1,5 @@
 import { Building2 } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 
 const G = "#0A7A52";
 
@@ -26,15 +26,17 @@ export function PublicNav() {
       }}
     >
       {/* Logo */}
-      <div
+      <Link
+        to="/"
+        aria-label="Kaya home"
         style={{
           display: "flex",
           alignItems: "center",
           gap: 12,
           cursor: "pointer",
           transition: "transform 0.2s ease",
+          textDecoration: "none",
         }}
-        onClick={() => navigate("/")}
         onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
         onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
       >
@@ -78,7 +80,7 @@ export function PublicNav() {
         >
           BETA
         </div>
-      </div>
+      </Link>
 
       {/* Navigation Links */}
       <div
@@ -90,58 +92,28 @@ export function PublicNav() {
           fontFamily: "'DM Sans', system-ui, sans-serif",
         }}
       >
-        <a
-          onClick={() => navigate("/listings")}
-          style={{
-            color: "#767570",
-            cursor: "pointer",
-            fontWeight: 500,
-            transition: "color 0.2s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#0E0F0C")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#767570")}
-        >
-          Find a home
-        </a>
-        <a
-          onClick={() => navigate("/features")}
-          style={{
-            color: "#767570",
-            cursor: "pointer",
-            fontWeight: 500,
-            transition: "color 0.2s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#0E0F0C")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#767570")}
-        >
-          For landlords
-        </a>
-        <a
-          onClick={() => navigate("/ai-demo")}
-          style={{
-            color: "#767570",
-            cursor: "pointer",
-            fontWeight: 500,
-            transition: "color 0.2s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#0E0F0C")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#767570")}
-        >
-          AI tools
-        </a>
-        <a
-          onClick={() => navigate("/faq")}
-          style={{
-            color: "#767570",
-            cursor: "pointer",
-            fontWeight: 500,
-            transition: "color 0.2s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#0E0F0C")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#767570")}
-        >
-          Resources
-        </a>
+        {[
+          { label: "Find a home", to: "/listings" },
+          { label: "For landlords", to: "/features" },
+          { label: "AI tools", to: "/ai-demo" },
+          { label: "Resources", to: "/faq" },
+        ].map(({ label, to }) => (
+          <Link
+            key={to}
+            to={to}
+            style={{
+              color: "#767570",
+              cursor: "pointer",
+              fontWeight: 500,
+              transition: "color 0.2s",
+              textDecoration: "none",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#0E0F0C")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#767570")}
+          >
+            {label}
+          </Link>
+        ))}
       </div>
 
       {/* CTA Buttons */}

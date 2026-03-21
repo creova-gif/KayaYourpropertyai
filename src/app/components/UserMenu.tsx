@@ -11,16 +11,23 @@ export function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Close menu when clicking outside
+  // Close menu when clicking outside or pressing Escape
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setIsOpen(false);
+    }
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   // Get user initials
@@ -79,6 +86,9 @@ export function UserMenu() {
       {/* User Avatar Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        aria-haspopup="true"
+        aria-expanded={isOpen}
+        aria-label="Open user menu"
         className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-[#F8F7F4] transition-colors"
       >
         <div className="size-9 rounded-full bg-gradient-to-br from-[#0A7A52] to-[#085D3D] flex items-center justify-center text-white font-semibold text-sm">
@@ -99,6 +109,8 @@ export function UserMenu() {
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
             className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-[rgba(0,0,0,0.08)] overflow-hidden z-50"
+          role="menu"
+          aria-label="User menu"
           >
             {/* User Info Header */}
             <div className="px-4 py-4 border-b border-[rgba(0,0,0,0.08)] bg-[#F8F7F4]">
@@ -127,6 +139,7 @@ export function UserMenu() {
                 <button
                   key={index}
                   onClick={item.action}
+                  role="menuitem"
                   className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-[#F8F7F4] transition-colors text-left group"
                 >
                   <item.icon size={18} className="text-[#767570] group-hover:text-[#0A7A52] transition-colors" />

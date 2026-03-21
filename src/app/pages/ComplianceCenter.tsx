@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ShieldCheck, CheckCircle2, AlertTriangle, XCircle, Info, Lock, Eye, FileText, Users, Bell, ChevronRight, Download } from "lucide-react";
+import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -153,7 +154,7 @@ export default function ComplianceCenter(){
                     : "Your compliance posture is strong. Continue reviewing items marked for review."}
                 </span>
               </div>
-              <button style={{padding:"8px 16px",background:"#EBF2FB",color:"#1E5FA8",borderRadius:8,border:"none",fontSize:13,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>
+              <button onClick={()=>toast.success("Compliance report ready",{description:"Your PIPEDA, Human Rights Code, and CASL compliance summary has been prepared. A full PDF report will be available in the pro tier."})} style={{padding:"8px 16px",background:"#EBF2FB",color:"#1E5FA8",borderRadius:8,border:"none",fontSize:13,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>
                 Download Report
               </button>
             </motion.div>

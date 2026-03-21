@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Scale, AlertTriangle, CheckCircle2, Clock, FileText, ChevronRight, ChevronDown, Download, Send, Phone, Calendar, Circle, ArrowRight, Info, TriangleAlert } from "lucide-react";
+import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -386,7 +387,7 @@ export default function LTBWorkflow(){
                 </div>
 
                 <div style={{marginTop:18,display:"flex",gap:10}}>
-                  <button style={{flex:1,padding:"11px",background:G,color:"#fff",borderRadius:10,border:"none",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                  <button onClick={()=>toast.success(`${showForm} form prepared`,{description:"Complete the fields above, then click Official LTB Form to file electronically at Tribunals Ontario. A PDF download will be available in the full release."})} style={{flex:1,padding:"11px",background:G,color:"#fff",borderRadius:10,border:"none",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
                     <Download size={14}/> Download {showForm} PDF
                   </button>
                   <a href={FORMS[showForm]?.url} target="_blank" rel="noopener noreferrer"

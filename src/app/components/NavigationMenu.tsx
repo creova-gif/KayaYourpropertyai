@@ -171,11 +171,12 @@ export function NavigationMenu({ basePath = "/", onNavigate }: { basePath?: stri
   };
 
   return (
-    <nav className="px-3 py-6 space-y-1">
+    <nav aria-label="Application navigation" className="px-3 py-6 space-y-1">
       {navigation.map((item) => {
         const Icon = item.icon;
         const active = isParentActive(item);
         const expanded = expandedItem === item.name;
+        const submenuId = `submenu-${item.name.toLowerCase().replace(/\s+/g, '-')}`;
 
         return (
           <div key={item.name}>
@@ -183,6 +184,8 @@ export function NavigationMenu({ basePath = "/", onNavigate }: { basePath?: stri
               <>
                 <button
                   onClick={() => setExpandedItem(expanded ? null : item.name)}
+                  aria-expanded={expanded}
+                  aria-controls={submenuId}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-[14px] font-medium transition-all duration-300 group relative overflow-hidden ${
                     active
                       ? "bg-gradient-to-r from-[#0A7A52] to-[#085D3D] text-white shadow-lg shadow-[#0A7A52]/20"
@@ -228,7 +231,7 @@ export function NavigationMenu({ basePath = "/", onNavigate }: { basePath?: stri
                 </button>
 
                 {expanded && (
-                  <div className="ml-3 mt-1.5 mb-1 pl-4 border-l-2 border-[#0A7A52]/10 space-y-0.5">
+                  <div id={submenuId} className="ml-3 mt-1.5 mb-1 pl-4 border-l-2 border-[#0A7A52]/10 space-y-0.5">
                     {item.children.map((child) => {
                       const ChildIcon = child.icon;
                       const childActive = isActive(child.href);
