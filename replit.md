@@ -103,6 +103,9 @@ src/
 - **Maintenance Escrow** (`/app/escrow`) — Escrow deposit management: hold/release/dispute flow, per-tenant breakdown table, audit log, fund status cards
 - **Sustainability Dashboard** (`/app/sustainability`) — Energy grade cards per property, monthly CO₂ tracking, ESG report generator, Kaya Green certification badge
 - **Investor Hub** (`/app/investor`) — Live ROI calculator (inputs: price/rent/down/vacancy), AI market signal cards, portfolio performance table with IRR, cap rate, cash-on-cash
+- **Vacancy Marketing / AI Marketing** (`/app/vacancy-marketing`) — Per-vacant-unit cards with AI-generated listing copy, AI listing score meter, pricing analysis vs market avg, platform syndication pills (Zumper/Realtor.ca/PadMapper/Kijiji/Rentals.ca), Publish Now CTA, inline copy editor, price editor
+- **Owner Portal** (`/app/owner-portal`) — Read-only view for property owners using a property manager: owner identity card, 4 KPI cards (properties/units/occupancy/net income), expandable monthly statements with PDF download + breakdown, portfolio summary with per-property occupancy bars + YTD panel, recent activity feed
+- **Property Inspection** (`/app/inspection`) — Move-in/move-out/routine inspection workflow: tabbed New Inspection (form + interactive checklist across 6 rooms) and Inspection History (expandable past inspection cards with condition scores, PDF export, inspector notes)
 
 ## Public Routes (additional)
 - `/accessibility` — Accessibility Hub: 8-filter sidebar (wheelchair, elevator, grab bars, etc.), accessible listing cards with verified badges, Book Tour / Save actions

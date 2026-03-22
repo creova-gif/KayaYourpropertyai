@@ -7,6 +7,7 @@ import {
   Award, Brain, CreditCard, Scale, UserCheck, Hammer, FileBarChart,
   Share2, ShieldCheck, Store, Star, BadgeCheck, FileCheck2, Lock,
   HeartHandshake, PlusCircle, Briefcase, Zap, Leaf, TrendingDown, Wallet,
+  Megaphone, UserCog, ClipboardCheck,
 } from "lucide-react";
 
 const G = "#0A7A52";
@@ -50,6 +51,7 @@ export function NavigationMenu({ basePath = "/", onNavigate, dark = false }: Pro
         { name: "Maintenance", href: mkp("/maintenance"), icon: Wrench },
         { name: "Maintenance Escrow", href: mkp("/escrow"), icon: Wallet },
         { name: "Smart Home Hub", href: mkp("/smart-home"), icon: Zap },
+        { name: "Property Inspection", href: mkp("/inspection"), icon: ClipboardCheck },
         { name: "Contractors", href: mkp("/contractor-marketplace"), icon: Hammer },
         { name: "Vendors", href: mkp("/vendors"), icon: Store },
         { name: "Documents", href: mkp("/documents"), icon: FolderOpen },
@@ -74,6 +76,7 @@ export function NavigationMenu({ basePath = "/", onNavigate, dark = false }: Pro
     {
       name: "Growth", href: mkp("/listing-syndication"), icon: Share2, section: "GROW",
       children: [
+        { name: "AI Marketing", href: mkp("/vacancy-marketing"), icon: Megaphone },
         { name: "Listing Syndication", href: mkp("/listing-syndication"), icon: Share2 },
         { name: "Deposit-Free Shield", href: mkp("/deposit-free"), icon: ShieldCheck },
         { name: "Rent Credit Building", href: mkp("/rent-credit"), icon: Star },
@@ -103,6 +106,7 @@ export function NavigationMenu({ basePath = "/", onNavigate, dark = false }: Pro
       children: [
         { name: "Messages", href: mkp("/messaging-center"), icon: MessageSquare },
         { name: "Notifications", href: mkp("/notification-center"), icon: Bell },
+        { name: "Owner Portal", href: mkp("/owner-portal"), icon: UserCog },
         { name: "Admin", href: mkp("/admin"), icon: Shield },
         { name: "Settings", href: mkp("/settings"), icon: SettingsIcon },
       ],
