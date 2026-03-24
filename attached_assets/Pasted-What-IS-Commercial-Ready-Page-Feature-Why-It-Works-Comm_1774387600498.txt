@@ -1,0 +1,45 @@
+What IS Commercial-Ready ✅
+Page / Feature	Why It Works
+Commercial Portfolio (/app/commercial)	Fully built: NNN / Gross / Modified Gross lease types, CAM charges, sqft pricing, office / retail / warehouse / flex unit types, lease tracker with expiry alerts, team management tab
+Public Search (/search)	Has a Residential/Commercial toggle — commercial mode shows office, retail, industrial, warehouse, flex listings with per-sqft pricing and a business inquiry modal
+Insurance Marketplace	Has a "commercial" filter — 2 of 5 landlord policies are explicitly labelled commercial-suitable
+Pricing Page — Scale Plan	Says "Unlimited properties" and "Unlimited tenants" — no unit cap, so large multi-property companies aren't blocked on paper
+Sustainability Dashboard	Directly relevant to commercial real estate (ESG, LEED, energy grades, carbon reporting)
+Maintenance / Escrow / Vendors	Generic enough to apply to any property type
+Navigation	Sidebar correctly routes to both "Residential Portfolio" and "Commercial Portfolio"
+What is RESIDENTIAL-ONLY ❌
+Page / Feature	The Problem
+Properties.tsx	Hardcoded model: bedrooms, bathrooms, unit number, monthly rent. No sqft, no CAM, no lease type. Adding a commercial property here is impossible
+Property Onboarding Wizard	Only residential types: Apartment, Condo, House, Duplex, Townhouse. Wired directly to Ontario Standard Lease (RTA) — commercial leases never use this
+List Property (/app/list-property)	Same issue — only Condo, Apartment, House selectable. No commercial option
+LTB Workflow	100% residential. The Landlord and Tenant Board in Ontario only handles residential tenancies. Commercial disputes go to Ontario Superior Court or arbitration — completely different process
+Compliance Centre	All items reference RTA, LTB, N-forms. Zero commercial compliance coverage (no REBBA, no OREA, no commercial lease law, no HST registrant obligations)
+Province Lease Templates	Only Ontario Standard Lease (residential) + provincial residential templates. Commercial leases are freeform contracts, not standard forms
+T776 Tax Report	CRA T776 = "Statement of Real Estate Rentals" — this is personal rental income (residential). Commercial properties file differently: HST is charged/collected, CCA classes differ, corporation vs. personal filing matters
+HST/GST Tracker	References T776 and residential CRA lines. Commercial real estate is a taxable supply — the HST rules are completely different (input tax credits, self-supply rules, etc.)
+Tenant Screening / Applications	Screens individual people (credit score, employment, eviction history). Cannot screen a business entity (corporate credit, CBCA incorporation docs, financial statements, personal guarantees)
+Rent Collection	Built around individual rent payments via Interac e-Transfer / Stripe. No CAM reconciliation, no NNN adjustments, no holdover rent, no base + variable rent structures
+Financial Dashboard	Shows rent income as a flat number. No CAM breakdown, no lease type differentiation, no gross-to-net calculation for commercial portfolios
+Dashboard (main)	Generates N4 notices for units — a residential-only LTB form. Shows bedroom counts
+Vacancy Marketing (new)	Uses beds/baths model for vacant units. No commercial sqft / price-per-sqft / lease type framing
+Owner Portal (new)	Shows residential net income model. No CAM, NNN, or commercial lease breakdowns
+Property Inspection (new)	Checklist items are residential (kitchen appliances, bathroom fixtures, etc.) — doesn't reflect commercial inspection needs (HVAC systems, electrical panels, loading docks, fire suppression, ADA compliance)
+What's Completely Missing for Commercial ❌❌
+These things don't exist anywhere in the app:
+
+Missing Feature	Why Commercial Needs It
+Business tenant screening	Companies need corporate credit checks, articles of incorporation, financial statements, personal guarantees from principals — not individual Equifax scores
+Letter of Intent (LOI) generator	Standard first step in commercial leasing before a formal lease
+Commercial lease builder	Freeform negotiated contracts, not standard forms. Includes exclusivity clauses, tenant improvement allowances, rent-free periods, renewal options
+CAM reconciliation	Annual true-up of estimated vs. actual CAM charges — every NNN lease requires this
+Commercial compliance	REBBA 2002, OREA forms, Ontario Business Corporations Act, HST registrant rules, ESA commercial disclosure
+Corporate owner/entity management	Commercial properties are held in corporations or partnerships — the app only knows individual landlords
+Lease abstraction	Large portfolios need key dates (rent steps, option deadlines, termination rights) extracted from lease documents
+Summary Scorecard
+Category	Score	Notes
+Small residential landlords (1–10 units)	9/10	The app was built for exactly this
+Mid-size residential (10–50 units)	7/10	Works, but no team roles, no bulk workflows
+Large residential portfolio (50+ units)	5/10	Scale plan removes limits but features aren't built for it
+Commercial (dedicated module)	6/10	CommercialPortfolio is solid but isolated from everything else
+Mixed-use (residential + commercial same building)	3/10	No way to represent a property with both residential floors and commercial ground floor
+Enterprise company managing their own portfolio	4/10

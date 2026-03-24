@@ -397,69 +397,90 @@ export function ListProperty() {
           <div style={{ display: "grid", gap: 14 }}>
             <div style={card}>
               <h2 style={{ fontFamily: SERIF, fontSize: 22, color: TX, margin: "0 0 4px" }}>Pricing & availability</h2>
-              <p style={{ fontSize: 13, color: MU, margin: "0 0 20px" }}>Set the rent and move-in date. Ontario landlord rules apply.</p>
+              <p style={{ fontSize: 13, color: MU, margin: "0 0 20px" }}>
+                {isCommercial ? "Set the monthly base rent and occupancy date. HST applies to all commercial rents in Ontario." : "Set the rent and move-in date. Ontario landlord rules apply."}
+              </p>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
                 <div>
-                  <label style={label}>Monthly Rent (CAD) *</label>
+                  <label style={label}>{isCommercial ? "Monthly Base Rent (CAD) *" : "Monthly Rent (CAD) *"}</label>
                   <div style={{ position: "relative" }}>
                     <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: MU, fontSize: 13 }}>$</span>
-                    <input value={form.rent} onChange={e => set("rent", e.target.value)} type="number" placeholder="2,200" style={{ ...inp, paddingLeft: 26 }} />
+                    <input value={form.rent} onChange={e => set("rent", e.target.value)} type="number" placeholder={isCommercial ? "5,800" : "2,200"} style={{ ...inp, paddingLeft: 26 }} />
                   </div>
                 </div>
                 <div>
-                  <label style={label}>Last Month's Deposit (CAD)</label>
+                  <label style={label}>{isCommercial ? "Security Deposit (CAD)" : "Last Month's Deposit (CAD)"}</label>
                   <div style={{ position: "relative" }}>
                     <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: MU, fontSize: 13 }}>$</span>
-                    <input value={form.deposit} onChange={e => set("deposit", e.target.value)} type="number" placeholder="Same as rent" style={{ ...inp, paddingLeft: 26 }} />
+                    <input value={form.deposit} onChange={e => set("deposit", e.target.value)} type="number" placeholder={isCommercial ? "17,400" : "Same as rent"} style={{ ...inp, paddingLeft: 26 }} />
                   </div>
                 </div>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
                 <div>
-                  <label style={label}>Available From *</label>
+                  <label style={label}>{isCommercial ? "Occupancy Date *" : "Available From *"}</label>
                   <input value={form.available} onChange={e => set("available", e.target.value)} type="date" min={new Date().toISOString().split("T")[0]} style={inp} />
                 </div>
                 <div>
-                  <label style={label}>Lease Type</label>
-                  <select value={form.leaseType} onChange={e => set("leaseType", e.target.value)} style={inp}>
-                    <option value="12-month">12-Month Fixed</option>
-                    <option value="month-to-month">Month-to-Month</option>
-                    <option value="6-month">6-Month Fixed</option>
-                    <option value="furnished">Furnished (short-term)</option>
-                  </select>
+                  <label style={label}>Lease Structure</label>
+                  {isCommercial ? (
+                    <select value={form.leaseType} onChange={e => set("leaseType", e.target.value)} style={inp}>
+                      <option value="NNN">NNN (Triple Net)</option>
+                      <option value="Gross">Gross Lease</option>
+                      <option value="Modified Gross">Modified Gross</option>
+                    </select>
+                  ) : (
+                    <select value={form.leaseType} onChange={e => set("leaseType", e.target.value)} style={inp}>
+                      <option value="12-month">12-Month Fixed</option>
+                      <option value="month-to-month">Month-to-Month</option>
+                      <option value="6-month">6-Month Fixed</option>
+                      <option value="furnished">Furnished (short-term)</option>
+                    </select>
+                  )}
                 </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <button
-                  onClick={() => set("petsAllowed", !form.petsAllowed)}
-                  style={{
-                    width: 40, height: 22, borderRadius: 11, border: "none",
-                    background: form.petsAllowed ? G : "#D1D5DB",
-                    cursor: "pointer", position: "relative", transition: "background .2s",
-                    flexShrink: 0
-                  }}
-                >
-                  <div style={{
-                    width: 16, height: 16, borderRadius: "50%", background: "#fff",
-                    position: "absolute", top: 3, left: form.petsAllowed ? 21 : 3,
-                    transition: "left .2s"
-                  }} />
-                </button>
-                <span style={{ fontSize: 13, color: TX, fontWeight: 500 }}>Pets allowed</span>
-              </div>
+              {!isCommercial && (
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <button
+                    onClick={() => set("petsAllowed", !form.petsAllowed)}
+                    style={{
+                      width: 40, height: 22, borderRadius: 11, border: "none",
+                      background: form.petsAllowed ? G : "#D1D5DB",
+                      cursor: "pointer", position: "relative", transition: "background .2s",
+                      flexShrink: 0
+                    }}
+                  >
+                    <div style={{
+                      width: 16, height: 16, borderRadius: "50%", background: "#fff",
+                      position: "absolute", top: 3, left: form.petsAllowed ? 21 : 3,
+                      transition: "left .2s"
+                    }} />
+                  </button>
+                  <span style={{ fontSize: 13, color: TX, fontWeight: 500 }}>Pets allowed</span>
+                </div>
+              )}
             </div>
 
             {/* Legal note */}
             <div style={{ ...card, background: GL, border: `1px solid ${G}33` }}>
               <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                 <Shield size={16} color={G} style={{ flexShrink: 0, marginTop: 2 }} />
-                <div>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: G, margin: "0 0 4px" }}>Ontario Rent Guidelines — 2024</p>
-                  <p style={{ fontSize: 12, color: "#085040", margin: 0, lineHeight: 1.6 }}>
-                    For units first occupied after Nov 15, 2018: <strong>no rent increase cap applies</strong> under the Residential Tenancies Act.
-                    For older units: the 2024 guideline is <strong>2.5%</strong>. Kaya automatically applies the correct rules to your rent history.
-                  </p>
-                </div>
+                {isCommercial ? (
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: G, margin: "0 0 4px" }}>Commercial Leasing — Ontario</p>
+                    <p style={{ fontSize: 12, color: "#085040", margin: 0, lineHeight: 1.6 }}>
+                      The <strong>Residential Tenancies Act does not apply</strong> to commercial leases. Rent increases, notice periods, and lease terms are governed by the commercial lease agreement. <strong>HST (13%)</strong> applies to all base rent and additional rent (CAM/TMI). Kaya generates HST-compliant invoices automatically.
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: G, margin: "0 0 4px" }}>Ontario Rent Guidelines — 2024</p>
+                    <p style={{ fontSize: 12, color: "#085040", margin: 0, lineHeight: 1.6 }}>
+                      For units first occupied after Nov 15, 2018: <strong>no rent increase cap applies</strong> under the Residential Tenancies Act.
+                      For older units: the 2024 guideline is <strong>2.5%</strong>. Kaya automatically applies the correct rules to your rent history.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -486,9 +507,11 @@ export function ListProperty() {
                 </div>
               </div>
               <div style={{ display: "flex", gap: 14, fontSize: 12, color: MU, marginBottom: 12 }}>
-                <span>{form.beds === 0 ? "Studio" : `${form.beds} bed`}</span>
-                <span>·</span><span>{form.baths} bath</span>
-                {form.sqft && <><span>·</span><span>{form.sqft} sqft</span></>}
+                {isCommercial ? (
+                  <>{form.sqft && <span>{form.sqft} sqft</span>}{form.sqft && <span>·</span>}<span style={{ fontWeight: 600 }}>{form.leaseType || "Commercial"}</span></>
+                ) : (
+                  <><span>{form.beds === 0 ? "Studio" : `${form.beds} bed`}</span><span>·</span><span>{form.baths} bath</span>{form.sqft && <><span>·</span><span>{form.sqft} sqft</span></>}</>
+                )}
                 <span>·</span><span style={{ color: G, fontWeight: 600 }}>Avail {form.available || "TBD"}</span>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
@@ -506,7 +529,9 @@ export function ListProperty() {
               {[
                 { label: "Property type selected", done: !!form.type },
                 { label: "Address entered", done: !!(form.address && form.city && form.postalCode) },
-                { label: "Beds & baths set", done: !!(form.beds !== undefined && form.baths) },
+                isCommercial
+                  ? { label: "Size & lease type set", done: !!(form.sqft && form.leaseType) }
+                  : { label: "Beds & baths set", done: !!(form.beds !== undefined && form.baths) },
                 { label: "Rent price entered", done: !!form.rent },
                 { label: "Availability date set", done: !!form.available },
               ].map(c => (
