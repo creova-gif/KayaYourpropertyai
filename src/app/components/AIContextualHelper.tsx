@@ -27,31 +27,31 @@ export function AIContextualHelper({
     if (onSuggestionClick) {
       onSuggestionClick(suggestion);
     } else {
-      // Default action: Open AI command palette with the suggestion
-      // This will be handled by the GlobalAIAssistant
       const event = new CustomEvent('openAIWithQuery', { detail: { query: suggestion } });
       window.dispatchEvent(event);
     }
+    // Dismiss the panel after any suggestion click
+    handleDismiss();
   };
 
   if (isDismissed) return null;
 
   const positionClasses = {
-    "top-right": "top-4 right-4",
+    "top-right": "top-[72px] right-4",
     "bottom-right": "bottom-4 right-4",
     "bottom-left": "bottom-4 left-4",
-    "top-left": "top-4 left-4"
+    "top-left": "top-[72px] left-4"
   };
 
   return (
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: -10 }}
+          initial={{ opacity: 0, scale: 0.96, y: -8 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: -10 }}
-          transition={{ duration: 0.2 }}
-          className={`fixed ${positionClasses[position]} z-30 w-80 max-w-[calc(100vw-2rem)]`}
+          exit={{ opacity: 0, scale: 0.96, y: -8 }}
+          transition={{ duration: 0.18 }}
+          className={`fixed ${positionClasses[position]} z-40 w-72 max-w-[calc(100vw-2rem)]`}
           style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
         >
           <div className="bg-white rounded-2xl shadow-2xl border border-[rgba(0,0,0,0.08)] overflow-hidden">

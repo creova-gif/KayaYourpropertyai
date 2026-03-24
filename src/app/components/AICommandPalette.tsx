@@ -60,6 +60,23 @@ export function AICommandPalette({ userId }: AICommandPaletteProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Listen for openAIWithQuery events from AIContextualHelper suggestions
+  useEffect(() => {
+    const handleOpenWithQuery = (e: Event) => {
+      const query = (e as CustomEvent<{ query: string }>).detail?.query;
+      if (!query) return;
+      setSearch(query);
+      setAiResponse(null);
+      setSelectedIndex(0);
+      setIsOpen(true);
+      // Auto-execute the AI query after palette opens
+      setTimeout(() => handleAICommand(query), 200);
+    };
+    window.addEventListener("openAIWithQuery", handleOpenWithQuery);
+    return () => window.removeEventListener("openAIWithQuery", handleOpenWithQuery);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Focus input when opened
   useEffect(() => {
     if (isOpen && inputRef.current) {
