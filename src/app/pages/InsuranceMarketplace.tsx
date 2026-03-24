@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Shield, Star, ChevronRight, CheckCircle2, Phone, ExternalLink, Info, TrendingDown, Home, DollarSign } from "lucide-react";
+import { Shield, Star, ChevronRight, CheckCircle2, Phone, ExternalLink, Info, TrendingDown, Home, DollarSign, Scale, Wrench, Droplets, Landmark, ClipboardList, CreditCard, Users, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
@@ -18,35 +18,35 @@ interface InsuranceProvider{
 
 const PROVIDERS:InsuranceProvider[]=[
   {
-    id:"square-one",name:"Square One Insurance",logo:"🟦",rating:4.8,reviews:2847,monthlyFrom:28,
+    id:"square-one",name:"Square One Insurance",logo:"SQ",rating:4.8,reviews:2847,monthlyFrom:28,
     coverage:["Rental property","Liability ($2M)","Loss of rent (12 mo)","Water damage","Earthquake add-on"],
     highlights:["Instant online quotes","No broker needed","Cancel anytime","Covers short-term rentals"],
     bestFor:"Small landlords with 1–5 properties",badge:"Kaya Recommended",brokerPartner:true,
     categories:["landlord","condo","multi-unit"],claimRating:4.7
   },
   {
-    id:"aviva",name:"Aviva Canada",logo:"🔴",rating:4.5,reviews:5213,monthlyFrom:35,
+    id:"aviva",name:"Aviva Canada",logo:"AV",rating:4.5,reviews:5213,monthlyFrom:35,
     coverage:["Rental dwelling","Personal liability ($1M–$5M)","Loss of rental income","Vandalism","Legal expense add-on"],
     highlights:["Canada's largest insurer","Multi-property discounts","LTB eviction cost coverage","24/7 claims"],
     bestFor:"Landlords with 5+ properties or commercial units",badge:undefined,brokerPartner:true,
     categories:["landlord","multi-unit","commercial"],claimRating:4.4
   },
   {
-    id:"intact",name:"Intact Insurance",logo:"🟢",rating:4.6,reviews:4102,monthlyFrom:32,
+    id:"intact",name:"Intact Insurance",logo:"IN",rating:4.6,reviews:4102,monthlyFrom:32,
     coverage:["Rental home","Liability up to $5M","Lost rent coverage","All-risk contents","Flood add-on"],
     highlights:["Largest P&C insurer in Canada","Fast claim payouts","Discount for alarm/sprinkler systems","Multi-policy bundle"],
     bestFor:"Landlords who want all-risk coverage with high limits",badge:undefined,brokerPartner:true,
     categories:["landlord","condo","multi-unit"],claimRating:4.5
   },
   {
-    id:"brokerlink",name:"BrokerLink",logo:"🔷",rating:4.4,reviews:1689,monthlyFrom:30,
+    id:"brokerlink",name:"BrokerLink",logo:"BL",rating:4.4,reviews:1689,monthlyFrom:30,
     coverage:["Rental property","Liability","Loss of income","Scheduled property","Umbrella policy"],
     highlights:["Shops 30+ insurers","One contact for all claims","Landlord bundle discounts","Kaya data export for claims"],
     bestFor:"Landlords who want a broker to compare and manage policies",badge:undefined,brokerPartner:true,
     categories:["landlord","commercial","specialty"],claimRating:4.3
   },
   {
-    id:"wawanesa",name:"Wawanesa Insurance",logo:"🟡",rating:4.3,reviews:2104,monthlyFrom:26,
+    id:"wawanesa",name:"Wawanesa Insurance",logo:"WA",rating:4.3,reviews:2104,monthlyFrom:26,
     coverage:["Rental property","Liability","Loss of rent","Fire & theft","Additional structures"],
     highlights:["Competitive pricing","No claims discount","Long-term customer rewards","Strong Western Canada presence"],
     bestFor:"Budget-conscious landlords, especially in Ontario and Western Canada",badge:"Best Value",brokerPartner:false,
@@ -55,12 +55,12 @@ const PROVIDERS:InsuranceProvider[]=[
 ];
 
 const COVERAGE_TYPES=[
-  {icon:"🏠",title:"Rental Dwelling",desc:"Protects the physical structure of your rental property against fire, wind, water, and more."},
-  {icon:"⚖️",title:"Personal Liability",desc:"Covers you if a tenant or visitor is injured on the property and sues for damages."},
-  {icon:"💰",title:"Loss of Rental Income",desc:"Pays your lost rent if the property becomes uninhabitable due to a covered event."},
-  {icon:"🔨",title:"Vandalism & Malicious Damage",desc:"Covers damage intentionally caused by tenants or third parties — critical for landlords."},
-  {icon:"💧",title:"Water Damage",desc:"Covers sudden water damage (burst pipes, appliance leaks). Flood add-on often available."},
-  {icon:"🏛️",title:"Legal Expense Coverage",desc:"Covers legal costs for LTB disputes, evictions, or tenant lawsuits. Add-on with select providers."},
+  {icon:Home,title:"Rental Dwelling",desc:"Protects the physical structure of your rental property against fire, wind, water, and more."},
+  {icon:Scale,title:"Personal Liability",desc:"Covers you if a tenant or visitor is injured on the property and sues for damages."},
+  {icon:DollarSign,title:"Loss of Rental Income",desc:"Pays your lost rent if the property becomes uninhabitable due to a covered event."},
+  {icon:Wrench,title:"Vandalism & Malicious Damage",desc:"Covers damage intentionally caused by tenants or third parties — critical for landlords."},
+  {icon:Droplets,title:"Water Damage",desc:"Covers sudden water damage (burst pipes, appliance leaks). Flood add-on often available."},
+  {icon:Landmark,title:"Legal Expense Coverage",desc:"Covers legal costs for LTB disputes, evictions, or tenant lawsuits. Add-on with select providers."},
 ];
 
 const TIPS=[
@@ -83,9 +83,9 @@ function StarRating({rating,small=false}:{rating:number;small?:boolean}){
 }
 
 const RENTERS_PLANS=[
-  {id:"basic",name:"Basic",color:"#1E5FA8",bg:"#EBF2FB",price:12,icon:"🛡",coverage:["Personal belongings up to $20K","Personal liability ($100K)","Additional living expenses","Fire & theft"],best:"Ideal for tenants with fewer valuables"},
-  {id:"standard",name:"Standard",color:"#0A7A52",bg:"#E5F4EE",price:22,icon:"🛡️",coverage:["Personal belongings up to $50K","Personal liability ($500K)","All-risk coverage","Water damage","Bike theft"],best:"Most popular — covers 95% of scenarios"},
-  {id:"premium",name:"Premium",color:"#7C3AED",bg:"#F3F0FF",price:38,icon:"⭐",coverage:["Personal belongings up to $100K","Personal liability ($2M)","Identity theft protection","Scheduled valuables","Home office equipment","Travel coverage"],best:"For tenants with high-value items or WFH"},
+  {id:"basic",name:"Basic",color:"#1E5FA8",bg:"#EBF2FB",price:12,icon:Shield,coverage:["Personal belongings up to $20K","Personal liability ($100K)","Additional living expenses","Fire & theft"],best:"Ideal for tenants with fewer valuables"},
+  {id:"standard",name:"Standard",color:"#0A7A52",bg:"#E5F4EE",price:22,icon:Shield,coverage:["Personal belongings up to $50K","Personal liability ($500K)","All-risk coverage","Water damage","Bike theft"],best:"Most popular — covers 95% of scenarios"},
+  {id:"premium",name:"Premium",color:"#7C3AED",bg:"#F3F0FF",price:38,icon:Star,coverage:["Personal belongings up to $100K","Personal liability ($2M)","Identity theft protection","Scheduled valuables","Home office equipment","Travel coverage"],best:"For tenants with high-value items or WFH"},
 ];
 
 const ADD_ONS=[
@@ -137,7 +137,7 @@ export default function InsuranceMarketplace(){
           </div>
           {/* Main tabs */}
           <div style={{display:"inline-flex",background:"#F0F0EE",borderRadius:10,padding:3,gap:3,marginBottom:8}}>
-            {[{id:"landlord",label:"🏠 Landlord Insurance"},{id:"renters",label:"🧑‍🤝‍🧑 Renters Insurance"}].map(t=>(
+            {[{id:"landlord",label:"Landlord Insurance"},{id:"renters",label:"Renters Insurance"}].map(t=>(
               <button key={t.id} onClick={()=>setMainTab(t.id as typeof mainTab)}
                 style={{padding:"8px 18px",background:mainTab===t.id?"#fff":"transparent",color:mainTab===t.id?TX:MU,border:"none",borderRadius:8,fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:SANS,transition:"all .2s",boxShadow:mainTab===t.id?"0 1px 4px rgba(0,0,0,.1)":"none"}}>
                 {t.label}
@@ -156,11 +156,11 @@ export default function InsuranceMarketplace(){
             {/* Plan comparison */}
             <p style={{fontFamily:SERIF,fontSize:22,color:TX,marginBottom:14}}>Choose a Plan for Your Tenants</p>
             <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14,marginBottom:28}}>
-              {RENTERS_PLANS.map(p=>(
+              {RENTERS_PLANS.map(p=>{const PIcon=p.icon;return(
                 <div key={p.id} onClick={()=>setSelectedPlan(p.id)}
                   style={{background:"#fff",border:`2px solid ${selectedPlan===p.id?p.color:"rgba(0,0,0,0.07)"}`,borderRadius:16,padding:"20px",cursor:"pointer",transition:"border-color .2s"}}>
                   <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
-                    <div style={{width:42,height:42,borderRadius:10,background:p.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>{p.icon}</div>
+                    <div style={{width:42,height:42,borderRadius:10,background:p.bg,display:"flex",alignItems:"center",justifyContent:"center"}}><PIcon size={22} color={p.color}/></div>
                     <div>
                       <p style={{fontSize:14,fontWeight:700,color:p.color,margin:0}}>{p.name}</p>
                       <p style={{fontSize:22,fontWeight:800,color:TX,margin:0,fontFamily:SERIF}}>${p.price}<span style={{fontSize:11,fontWeight:400,color:MU}}>/mo</span></p>
@@ -179,9 +179,8 @@ export default function InsuranceMarketplace(){
                     Share with Tenants →
                   </button>
                 </div>
-              ))}
+              );})}
             </div>
-
             {/* Add-on toggles */}
             <div style={{background:"#fff",border:"1px solid rgba(0,0,0,0.07)",borderRadius:16,padding:"22px",marginBottom:24}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
@@ -260,22 +259,22 @@ export default function InsuranceMarketplace(){
               <p style={{fontSize:13,color:"rgba(255,255,255,.5)",marginBottom:20}}>5 reasons landlords are making it a lease condition</p>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                 {[
-                  {icon:"⚖️",title:"Reduces your liability",desc:"If a tenant's negligence causes damage, their insurance pays first — protecting you from costly claims."},
-                  {icon:"💧",title:"Covers tenant-caused damage",desc:"Water leaks, kitchen fires, and accidents cost you nothing when tenants are covered."},
-                  {icon:"🏠",title:"Protects their belongings",desc:"Tenant satisfaction improves when they know their possessions are protected — leads to longer tenancies."},
-                  {icon:"📋",title:"Lease compliance tool",desc:"Including renters insurance as a lease requirement is 100% legal in Ontario and adds a layer of protection."},
-                  {icon:"💰",title:"They're affordable",desc:"At $12–$38/month, tenants have no excuse. Kaya makes it one-click easy to get covered through this page."},
-                ].map(r=>(
+                  {icon:Scale,title:"Reduces your liability",desc:"If a tenant's negligence causes damage, their insurance pays first — protecting you from costly claims."},
+                  {icon:Droplets,title:"Covers tenant-caused damage",desc:"Water leaks, kitchen fires, and accidents cost you nothing when tenants are covered."},
+                  {icon:Home,title:"Protects their belongings",desc:"Tenant satisfaction improves when they know their possessions are protected — leads to longer tenancies."},
+                  {icon:ClipboardList,title:"Lease compliance tool",desc:"Including renters insurance as a lease requirement is 100% legal in Ontario and adds a layer of protection."},
+                  {icon:DollarSign,title:"They're affordable",desc:"At $12–$38/month, tenants have no excuse. Kaya makes it one-click easy to get covered through this page."},
+                ].map(r=>{const RIcon=r.icon;return(
                   <div key={r.title} style={{background:"rgba(255,255,255,.06)",borderRadius:10,padding:"14px"}}>
                     <div style={{display:"flex",gap:10,alignItems:"flex-start"}}>
-                      <span style={{fontSize:22,flexShrink:0}}>{r.icon}</span>
+                      <div style={{width:32,height:32,borderRadius:8,background:"rgba(255,255,255,0.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><RIcon size={16} color="rgba(255,255,255,0.8)"/></div>
                       <div>
                         <p style={{fontSize:12,fontWeight:700,color:"#fff",marginBottom:4}}>{r.title}</p>
                         <p style={{fontSize:11,color:"rgba(255,255,255,.5)",lineHeight:1.5}}>{r.desc}</p>
                       </div>
                     </div>
                   </div>
-                ))}
+                );})}
               </div>
             </div>
           </>
@@ -288,19 +287,19 @@ export default function InsuranceMarketplace(){
         {/* Stats */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:28}}>
           {[
-            {label:"Avg. Monthly Premium",value:"$31",icon:"💳",color:G,sub:"For 1 rental property"},
-            {label:"Avg. Savings vs. Standalone",value:"18%",icon:"📉",color:"#059669",sub:"With Kaya bundle discount"},
-            {label:"Claims Paid in 2025",value:"94%",icon:"✅",color:G,sub:"Within 30 days — industry avg"},
-            {label:"Partner Providers",value:"5",icon:"🤝",color:"#1E5FA8",sub:"Vetted Canadian insurers"},
-          ].map((s,i)=>(
+            {label:"Avg. Monthly Premium",value:"$31",icon:CreditCard,color:G,sub:"For 1 rental property"},
+            {label:"Avg. Savings vs. Standalone",value:"18%",icon:TrendingDown,color:"#059669",sub:"With Kaya bundle discount"},
+            {label:"Claims Paid in 2025",value:"94%",icon:CheckCircle2,color:G,sub:"Within 30 days — industry avg"},
+            {label:"Partner Providers",value:"5",icon:Users,color:"#1E5FA8",sub:"Vetted Canadian insurers"},
+          ].map((s,i)=>{const SIcon=s.icon;return(
             <motion.div key={s.label} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:i*0.08}}
               style={{...cd,padding:"16px 18px"}}>
-              <div style={{fontSize:22,marginBottom:6}}>{s.icon}</div>
+              <div style={{marginBottom:6}}><SIcon size={22} color={s.color}/></div>
               <div style={{fontSize:22,fontWeight:700,color:s.color,fontFamily:SERIF}}>{s.value}</div>
               <div style={{fontSize:12,fontWeight:600,color:TX,marginTop:1}}>{s.label}</div>
               <div style={{fontSize:11,color:MU,marginTop:1}}>{s.sub}</div>
             </motion.div>
-          ))}
+          );})}
         </div>
 
         {/* Filters */}
@@ -321,8 +320,8 @@ export default function InsuranceMarketplace(){
             <motion.div key={p.id} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:i*0.07}}
               style={{...cd,overflow:"hidden",border:`1.5px solid ${selected===p.id?G:BD}`}}>
               <div style={{padding:"20px 24px",display:"grid",gridTemplateColumns:"60px 1fr auto auto",gap:20,alignItems:"center"}}>
-                <div style={{width:56,height:56,borderRadius:12,background:BG,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,border:`1px solid ${BD}`}}>
-                  {p.logo}
+                <div style={{width:56,height:56,borderRadius:12,background:TX,display:"flex",alignItems:"center",justifyContent:"center",border:`1px solid ${BD}`,flexShrink:0}}>
+                  <span style={{fontSize:14,fontWeight:800,color:"#fff",letterSpacing:"0.5px"}}>{p.logo}</span>
                 </div>
                 <div>
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:5}}>
@@ -384,13 +383,13 @@ export default function InsuranceMarketplace(){
           <h3 style={{fontSize:18,fontWeight:700,color:TX,margin:"0 0 4px",fontFamily:SERIF}}>What Should My Policy Cover?</h3>
           <p style={{fontSize:13,color:MU,margin:"0 0 20px"}}>A comprehensive landlord policy typically includes these coverage types:</p>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14}}>
-            {COVERAGE_TYPES.map((c,i)=>(
+            {COVERAGE_TYPES.map((c,i)=>{const CIcon=c.icon;return(
               <div key={i} style={{background:BG,borderRadius:10,padding:"14px 16px"}}>
-                <div style={{fontSize:22,marginBottom:8}}>{c.icon}</div>
+                <div style={{width:40,height:40,borderRadius:10,background:GL,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:8}}><CIcon size={20} color={G}/></div>
                 <div style={{fontSize:13,fontWeight:700,color:TX,marginBottom:4}}>{c.title}</div>
                 <div style={{fontSize:12,color:MU,lineHeight:1.5}}>{c.desc}</div>
               </div>
-            ))}
+            );})}
           </div>
         </motion.div>
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X } from "lucide-react";
+import { X, Search, Droplets, Zap, Wind, Sparkles, Wrench, Palette } from "lucide-react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -26,13 +26,13 @@ function KCard({children,delay=0,style={}}:{children:React.ReactNode;delay?:numb
 }
 
 const categories=[
-  {id:"all",label:"All",icon:"🔍"},
-  {id:"plumbing",label:"Plumbing",icon:"💧"},
-  {id:"electrical",label:"Electrical",icon:"⚡"},
-  {id:"hvac",label:"HVAC",icon:"❄"},
-  {id:"cleaning",label:"Cleaning",icon:"✨"},
-  {id:"appliance",label:"Appliances",icon:"🔧"},
-  {id:"painting",label:"Painting",icon:"🎨"},
+  {id:"all",label:"All",Icon:Search},
+  {id:"plumbing",label:"Plumbing",Icon:Droplets},
+  {id:"electrical",label:"Electrical",Icon:Zap},
+  {id:"hvac",label:"HVAC",Icon:Wind},
+  {id:"cleaning",label:"Cleaning",Icon:Sparkles},
+  {id:"appliance",label:"Appliances",Icon:Wrench},
+  {id:"painting",label:"Painting",Icon:Palette},
 ];
 
 const vendors=[
@@ -74,7 +74,7 @@ export function VendorMarketplace(){
           {categories.map(c=>(
             <button key={c.id} onClick={()=>setCat(c.id)}
               style={{padding:"8px 16px",borderRadius:20,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:SANS,border:"1px solid",background:cat===c.id?TX:"#fff",color:cat===c.id?"#fff":MU,borderColor:cat===c.id?TX:BD,transition:"all .15s"}}>
-              {c.icon} {c.label}
+{(()=>{const CI=c.Icon;return<CI size={12} style={{display:"inline",verticalAlign:"middle",marginRight:4}}/>;})()}{c.label}
             </button>
           ))}
         </div>

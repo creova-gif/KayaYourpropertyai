@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, MessageSquare, Mic, UserCheck } from "lucide-react";
+import { Sparkles, MessageSquare, Mic, UserCheck, Globe, Zap, Target, Wrench, Rocket } from "lucide-react";
 import { AIAssistant } from "../components/AIAssistant";
 import { VoiceCommandPanel } from "../components/VoiceCommandPanel";
 import { AITenantScreeningModal } from "../components/AITenantScreeningModal";
@@ -178,7 +178,7 @@ export function AIFeaturesDemo() {
               <Sparkles className="size-8 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="text-2xl font-semibold mb-2">🚀 Deep AI Integration Complete!</h3>
+              <h3 className="text-2xl font-semibold mb-2 flex items-center gap-2"><Rocket className="size-6"/> Deep AI Integration Complete!</h3>
               <p className="text-white/90 leading-relaxed">
                 All AI features are now fully functional with Claude 3.5 Sonnet, plus we've added powerful new integrations throughout the entire platform!
               </p>
@@ -188,7 +188,7 @@ export function AIFeaturesDemo() {
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
               <h4 className="font-semibold mb-3 flex items-center gap-2">
-                <span className="text-xl">🌐</span> Always-Available AI
+                <Globe className="size-5"/> Always-Available AI
               </h4>
               <ul className="space-y-2 text-sm text-white/90">
                 <li>• Floating AI button on every page</li>
@@ -200,7 +200,7 @@ export function AIFeaturesDemo() {
 
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
               <h4 className="font-semibold mb-3 flex items-center gap-2">
-                <span className="text-xl">⚡</span> Command Palette
+                <Zap className="size-5"/> Command Palette
               </h4>
               <ul className="space-y-2 text-sm text-white/90">
                 <li>• Press ⌘K or Ctrl+K anywhere</li>
@@ -212,7 +212,7 @@ export function AIFeaturesDemo() {
 
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
               <h4 className="font-semibold mb-3 flex items-center gap-2">
-                <span className="text-xl">🎯</span> Smart Context
+                <Target className="size-5"/> Smart Context
               </h4>
               <ul className="space-y-2 text-sm text-white/90">
                 <li>• AI knows your property data</li>
@@ -224,7 +224,7 @@ export function AIFeaturesDemo() {
 
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
               <h4 className="font-semibold mb-3 flex items-center gap-2">
-                <span className="text-xl">🔧</span> Enhanced Backend
+                <Wrench className="size-5"/> Enhanced Backend
               </h4>
               <ul className="space-y-2 text-sm text-white/90">
                 <li>• Improved AI prompts</li>

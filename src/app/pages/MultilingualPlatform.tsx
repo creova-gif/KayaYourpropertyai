@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { PublicNav } from "../components/PublicNav";
+import { ClipboardList, Mail, Home, Phone, BookOpen, CreditCard, CheckCircle2, Target, Globe, FileText, Zap } from "lucide-react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -19,20 +20,20 @@ const LANGUAGES=[
 ];
 
 const translated=[
-  {icon:"📋",title:"Lease Agreements",desc:"Full lease text translated with legal accuracy and provincial variants"},
-  {icon:"📬",title:"Notices & Letters",desc:"N4, N5, N12, rent increase letters — all auto-translated"},
-  {icon:"🏠",title:"Listing Descriptions",desc:"Property listings shown in your preferred language"},
-  {icon:"📞",title:"Support Conversations",desc:"Live chat and support in your language"},
-  {icon:"📖",title:"LTB Forms Guide",desc:"Plain-language guides to every LTB form in 8 languages"},
-  {icon:"💳",title:"Payment Instructions",desc:"Rent payment instructions and receipts in your language"},
-  {icon:"✅",title:"Tenant Rights Summary",desc:"Know your rights: Ontario Residential Tenancies Act explained clearly"},
+  {icon:ClipboardList,title:"Lease Agreements",desc:"Full lease text translated with legal accuracy and provincial variants"},
+  {icon:Mail,title:"Notices & Letters",desc:"N4, N5, N12, rent increase letters — all auto-translated"},
+  {icon:Home,title:"Listing Descriptions",desc:"Property listings shown in your preferred language"},
+  {icon:Phone,title:"Support Conversations",desc:"Live chat and support in your language"},
+  {icon:BookOpen,title:"LTB Forms Guide",desc:"Plain-language guides to every LTB form in 8 languages"},
+  {icon:CreditCard,title:"Payment Instructions",desc:"Rent payment instructions and receipts in your language"},
+  {icon:CheckCircle2,title:"Tenant Rights Summary",desc:"Know your rights: Ontario Residential Tenancies Act explained clearly"},
 ];
 
 const aiMetrics=[
-  {label:"Translation Accuracy",val:"98.4%",icon:"🎯"},
-  {label:"Languages Supported",val:"8",icon:"🌍"},
-  {label:"Documents Translated",val:"140K+",icon:"📄"},
-  {label:"Avg Translation Time",val:"< 2s",icon:"⚡"},
+  {label:"Translation Accuracy",val:"98.4%",icon:Target},
+  {label:"Languages Supported",val:"8",icon:Globe},
+  {label:"Documents Translated",val:"140K+",icon:FileText},
+  {label:"Avg Translation Time",val:"< 2s",icon:Zap},
 ];
 
 export function MultilingualPlatform(){
@@ -59,13 +60,13 @@ export function MultilingualPlatform(){
 
         {/* AI quality metrics */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12,marginBottom:28}}>
-          {aiMetrics.map(m=>(
+          {aiMetrics.map(m=>{const MIcon=m.icon;return(
             <div key={m.label} style={{...cd,padding:"18px",textAlign:"center"}}>
-              <span style={{fontSize:28}}>{m.icon}</span>
-              <p style={{fontFamily:SERIF,fontSize:28,color:TX,margin:"8px 0 4px"}}>{m.val}</p>
+              <div style={{display:"flex",justifyContent:"center",marginBottom:6}}><MIcon size={24} color={G}/></div>
+              <p style={{fontFamily:SERIF,fontSize:28,color:TX,margin:"4px 0 4px"}}>{m.val}</p>
               <p style={{fontSize:11,color:MU}}>{m.label}</p>
             </div>
-          ))}
+          );})}
         </div>
 
         <div style={{display:"grid",gridTemplateColumns:"1fr 340px",gap:20,marginBottom:28}}>
@@ -113,7 +114,7 @@ export function MultilingualPlatform(){
 
             {/* Newcomer support CTA */}
             <div style={{...cd,padding:"20px"}}>
-              <span style={{fontSize:24}}>🆕</span>
+              <div style={{width:38,height:38,borderRadius:10,background:GL,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:4}}><Globe size={18} color={G}/></div>
               <p style={{fontFamily:SERIF,fontSize:16,color:TX,marginTop:8,marginBottom:6}}>New to Canada?</p>
               <p style={{fontSize:12,color:MU,lineHeight:1.6,marginBottom:14}}>
                 Our newcomer support team can help you understand your rental rights, navigate lease agreements, and find accessible housing in your language.
@@ -129,15 +130,15 @@ export function MultilingualPlatform(){
         {/* What gets translated */}
         <p style={{fontFamily:SERIF,fontSize:20,color:TX,marginBottom:14}}>What Gets Translated</p>
         <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:12}}>
-          {translated.map(t=>(
+          {translated.map(t=>{const TIcon=t.icon;return(
             <div key={t.title} style={{...cd,padding:"18px",display:"flex",gap:14,alignItems:"flex-start"}}>
-              <span style={{fontSize:24,flexShrink:0}}>{t.icon}</span>
+              <div style={{width:38,height:38,borderRadius:10,background:GL,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><TIcon size={18} color={G}/></div>
               <div>
                 <p style={{fontSize:13,fontWeight:600,color:TX,marginBottom:4}}>{t.title}</p>
                 <p style={{fontSize:11,color:MU,lineHeight:1.5}}>{t.desc}</p>
               </div>
             </div>
-          ))}
+          );})}
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { PublicNav } from "../components/PublicNav";
 import { useState } from "react";
+import { ClipboardList, Bus, Stethoscope, ShoppingCart, PawPrint, Package, KeyRound } from "lucide-react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -72,7 +73,7 @@ export function MoveInCoordinator(){
         {/* Landlord check-in notice */}
         <div style={{...cd,padding:"20px",marginBottom:16,borderLeft:`3px solid #1E5FA8`}}>
           <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-            <span style={{fontSize:22,flexShrink:0}}>📋</span>
+            <div style={{width:36,height:36,borderRadius:9,background:"#EBF2FB",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><ClipboardList size={18} color="#1E5FA8"/></div>
             <div>
               <p style={{fontSize:13,fontWeight:600,color:TX,marginBottom:4}}>Landlord Check-In Scheduled</p>
               <p style={{fontSize:12,color:MU,lineHeight:1.6}}>Your landlord <strong>John M.</strong> has requested a move-in inspection walkthrough on <strong>April 5 at 11:00 AM</strong>. Make sure your initial inspection report (task 2 above) is complete before then.</p>
@@ -84,13 +85,20 @@ export function MoveInCoordinator(){
         <div style={{...cd,padding:"20px"}}>
           <p style={{fontFamily:SERIF,fontSize:18,color:TX,marginBottom:14}}>Useful for new residents</p>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10}}>
-            {[["🚍","Transit (TTC)","Plan your commute"],["🏥","Nearest clinic","Find a doctor"],["🛒","Grocery stores","What's nearby"],["🐾","Pet services","Vet, grooming, park"],["📦","Parcel lockers","Building info"],["🔑","Building access","Key fob setup"]].map(item=>(
-              <div key={item[1]} style={{background:BG,borderRadius:10,padding:"12px",cursor:"pointer",textAlign:"center"}} onMouseOver={e=>(e.currentTarget.style.background=GL)} onMouseOut={e=>(e.currentTarget.style.background=BG)}>
-                <div style={{fontSize:20,marginBottom:5}}>{item[0]}</div>
-                <p style={{fontSize:12,fontWeight:600,color:TX,marginBottom:2}}>{item[1]}</p>
-                <p style={{fontSize:10,color:MU}}>{item[2]}</p>
+            {([
+              {icon:Bus,label:"Transit (TTC)",sub:"Plan your commute"},
+              {icon:Stethoscope,label:"Nearest clinic",sub:"Find a doctor"},
+              {icon:ShoppingCart,label:"Grocery stores",sub:"What's nearby"},
+              {icon:PawPrint,label:"Pet services",sub:"Vet, grooming, park"},
+              {icon:Package,label:"Parcel lockers",sub:"Building info"},
+              {icon:KeyRound,label:"Building access",sub:"Key fob setup"},
+            ] as const).map(item=>{const IIcon=item.icon;return(
+              <div key={item.label} style={{background:BG,borderRadius:10,padding:"12px",cursor:"pointer",textAlign:"center"}} onMouseOver={e=>(e.currentTarget.style.background=GL)} onMouseOut={e=>(e.currentTarget.style.background=BG)}>
+                <div style={{display:"flex",justifyContent:"center",marginBottom:5}}><IIcon size={20} color={G}/></div>
+                <p style={{fontSize:12,fontWeight:600,color:TX,marginBottom:2}}>{item.label}</p>
+                <p style={{fontSize:10,color:MU}}>{item.sub}</p>
               </div>
-            ))}
+            );})}
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { PublicNav } from "../components/PublicNav";
+import { Accessibility, ArrowUpDown, DoorOpen, Grip, PersonStanding, Bell, ChefHat, ParkingCircle, Contrast, Type, Wind, Volume2, CheckCircle2, Globe, Users } from "lucide-react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -8,30 +9,30 @@ const SERIF="'Instrument Serif',Georgia,serif",SANS="'DM Sans',system-ui,sans-se
 const cd:React.CSSProperties={background:"#fff",border:`1px solid ${BD}`,borderRadius:16};
 
 const filters=[
-  {id:"ramp",label:"Wheelchair Ramp",icon:"♿",active:false},
-  {id:"elevator",label:"Elevator Access",icon:"🛗",active:true},
-  {id:"wide",label:"Wide Doorways (32\"+)",icon:"🚪",active:false},
-  {id:"grab",label:"Grab Bars",icon:"🅿",active:false},
-  {id:"nostairs",label:"No Steps to Entry",icon:"🚶",active:false},
-  {id:"visual",label:"Visual Fire Alerts",icon:"🔆",active:true},
-  {id:"lowcounters",label:"Lowered Counters",icon:"🍳",active:false},
-  {id:"parking",label:"Accessible Parking",icon:"🅰",active:true},
+  {id:"ramp",label:"Wheelchair Ramp",icon:Accessibility,active:false},
+  {id:"elevator",label:"Elevator Access",icon:ArrowUpDown,active:true},
+  {id:"wide",label:"Wide Doorways (32\"+)",icon:DoorOpen,active:false},
+  {id:"grab",label:"Grab Bars",icon:Grip,active:false},
+  {id:"nostairs",label:"No Steps to Entry",icon:PersonStanding,active:false},
+  {id:"visual",label:"Visual Fire Alerts",icon:Bell,active:true},
+  {id:"lowcounters",label:"Lowered Counters",icon:ChefHat,active:false},
+  {id:"parking",label:"Accessible Parking",icon:ParkingCircle,active:true},
 ];
 
 const displayControls=[
-  {id:"highcontrast",label:"High Contrast Mode",icon:"🌗",on:false},
-  {id:"largetext",label:"Large Text Mode",icon:"🔤",on:false},
-  {id:"reducemotion",label:"Reduce Motion",icon:"💤",on:true},
-  {id:"screenreader",label:"Screen Reader Mode",icon:"🔈",on:false},
+  {id:"highcontrast",label:"High Contrast Mode",icon:Contrast,on:false},
+  {id:"largetext",label:"Large Text Mode",icon:Type,on:false},
+  {id:"reducemotion",label:"Reduce Motion",icon:Wind,on:true},
+  {id:"screenreader",label:"Screen Reader Mode",icon:Volume2,on:false},
 ];
 
 const features=[
-  {icon:"♿",title:"Accessibility Filters",desc:"Filter listings by 8+ accessibility features instantly",status:"Active"},
-  {icon:"🔈",title:"Screen Reader Support",desc:"Full ARIA labelling across all KAYA pages",status:"Active"},
-  {icon:"🌗",title:"High Contrast Mode",desc:"Switch to high-contrast colour scheme for low vision",status:"Active"},
-  {icon:"🔤",title:"Large Text Mode",desc:"Scale UI text to 140% for improved readability",status:"Active"},
-  {icon:"🤝",title:"Assisted Applications",desc:"Step-by-step guide with plain language throughout",status:"Beta"},
-  {icon:"🌐",title:"Translated Listings",desc:"Auto-translate listing descriptions to 8+ languages",status:"Beta"},
+  {icon:Accessibility,title:"Accessibility Filters",desc:"Filter listings by 8+ accessibility features instantly",status:"Active"},
+  {icon:Volume2,title:"Screen Reader Support",desc:"Full ARIA labelling across all KAYA pages",status:"Active"},
+  {icon:Contrast,title:"High Contrast Mode",desc:"Switch to high-contrast colour scheme for low vision",status:"Active"},
+  {icon:Type,title:"Large Text Mode",desc:"Scale UI text to 140% for improved readability",status:"Active"},
+  {icon:Users,title:"Assisted Applications",desc:"Step-by-step guide with plain language throughout",status:"Beta"},
+  {icon:Globe,title:"Translated Listings",desc:"Auto-translate listing descriptions to 8+ languages",status:"Beta"},
 ];
 
 const listings=[
@@ -80,14 +81,14 @@ export function AccessibilityHub(){
             <div style={{...cd,padding:"18px",marginBottom:14}}>
               <p style={{fontFamily:SERIF,fontSize:16,color:TX,marginBottom:14}}>Accessibility Filters</p>
               <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                {activeFilters.map(f=>(
+                {activeFilters.map(f=>{const FIcon=f.icon;return(
                   <button key={f.id} onClick={()=>toggleFilter(f.id)}
                     style={{display:"flex",alignItems:"center",gap:10,padding:"9px 12px",background:f.active?GL:"transparent",border:`1px solid ${f.active?G:BD}`,borderRadius:9,cursor:"pointer",fontFamily:SANS,textAlign:"left",transition:"all .2s"}}>
-                    <span style={{fontSize:16}}>{f.icon}</span>
+                    <FIcon size={15} color={f.active?G:MU}/>
                     <span style={{fontSize:12,fontWeight:600,color:f.active?G:TX}}>{f.label}</span>
                     {f.active&&<span style={{marginLeft:"auto",width:16,height:16,background:G,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:"#fff",fontWeight:700,flexShrink:0}}>✓</span>}
                   </button>
-                ))}
+                );})}
               </div>
             </div>
 
@@ -95,10 +96,10 @@ export function AccessibilityHub(){
             <div style={{...cd,padding:"18px"}}>
               <p style={{fontFamily:SERIF,fontSize:16,color:TX,marginBottom:14}}>Display Controls</p>
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                {controls.map(c=>(
+                {controls.map(c=>{const CIcon=c.icon;return(
                   <div key={c.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                     <div style={{display:"flex",alignItems:"center",gap:8}}>
-                      <span style={{fontSize:16}}>{c.icon}</span>
+                      <CIcon size={14} color={c.on?G:MU}/>
                       <span style={{fontSize:12,color:TX}}>{c.label}</span>
                     </div>
                     <button onClick={()=>toggleControl(c.id)}
@@ -106,7 +107,7 @@ export function AccessibilityHub(){
                       <div style={{width:18,height:18,borderRadius:"50%",background:"#fff",position:"absolute",top:3,left:c.on?21:3,transition:"left .25s",boxShadow:"0 1px 3px rgba(0,0,0,.2)"}}/>
                     </button>
                   </div>
-                ))}
+                );})}
               </div>
             </div>
           </div>
@@ -115,12 +116,12 @@ export function AccessibilityHub(){
           <div>
             {active.length>0&&(
               <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>
-                {active.map(f=>(
+                {active.map(f=>{const FChip=f.icon;return(
                   <span key={f.id} style={{background:GL,color:G,fontSize:11,fontWeight:600,padding:"4px 10px",borderRadius:20,display:"flex",alignItems:"center",gap:4}}>
-                    {f.icon} {f.label}
+                    <FChip size={11} color={G}/> {f.label}
                     <button onClick={()=>toggleFilter(f.id)} style={{background:"none",border:"none",cursor:"pointer",color:G,fontSize:11,padding:0,marginLeft:2}}>×</button>
                   </span>
-                ))}
+                );})}
               </div>
             )}
             <div style={{display:"flex",flexDirection:"column",gap:14}}>
@@ -170,16 +171,16 @@ export function AccessibilityHub(){
         {/* Feature cards */}
         <p style={{fontFamily:SERIF,fontSize:22,color:TX,marginBottom:16}}>Platform Accessibility Features</p>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14}}>
-          {features.map(f=>(
+          {features.map(f=>{const FIcon=f.icon;return(
             <div key={f.title} style={{...cd,padding:"18px"}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
-                <span style={{fontSize:28}}>{f.icon}</span>
+                <div style={{width:40,height:40,borderRadius:10,background:GL,display:"flex",alignItems:"center",justifyContent:"center"}}><FIcon size={20} color={G}/></div>
                 <span style={{fontSize:10,fontWeight:700,padding:"2px 9px",borderRadius:10,background:f.status==="Active"?GL:BG,color:f.status==="Active"?G:MU}}>{f.status}</span>
               </div>
               <p style={{fontSize:13,fontWeight:600,color:TX,marginBottom:4}}>{f.title}</p>
               <p style={{fontSize:11,color:MU,lineHeight:1.5}}>{f.desc}</p>
             </div>
-          ))}
+          );})}
         </div>
       </div>
     </div>

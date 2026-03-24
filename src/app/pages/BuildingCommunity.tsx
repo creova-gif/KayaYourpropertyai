@@ -1,5 +1,6 @@
 import { PublicNav } from "../components/PublicNav";
 import { useState } from "react";
+import { Pin, MessageCircle } from "lucide-react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -103,7 +104,7 @@ export function BuildingCommunity(){
                       <div style={{display:"flex",alignItems:"center",gap:6}}>
                         <span style={{fontSize:12,fontWeight:600,color:TX}}>{p.author}</span>
                         <span style={{background:tbg,color:ttc,fontSize:9,fontWeight:700,padding:"2px 7px",borderRadius:20,textTransform:"capitalize"}}>{p.type.replace("-"," ")}</span>
-                        {p.pinned&&<span style={{background:GL,color:G,fontSize:9,fontWeight:700,padding:"2px 7px",borderRadius:20}}>📌 Pinned</span>}
+                        {p.pinned&&<span style={{background:GL,color:G,fontSize:9,fontWeight:700,padding:"2px 7px",borderRadius:20,display:"inline-flex",alignItems:"center",gap:3}}><Pin size={8}/> Pinned</span>}
                       </div>
                       <span style={{fontSize:10,color:MU}}>{p.time}</span>
                     </div>
@@ -116,7 +117,7 @@ export function BuildingCommunity(){
                     {liked.includes(p.id)?"♥":"♡"} {p.likes}
                   </button>
                   <button style={{display:"flex",alignItems:"center",gap:5,background:"none",border:"none",cursor:"pointer",fontSize:12,color:MU,fontFamily:SANS}}>
-                    💬 {p.replies} replies
+                    <MessageCircle size={12}/> {p.replies} replies
                   </button>
                   <button style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:5,background:"none",border:"none",cursor:"pointer",fontSize:11,color:MU,fontFamily:SANS}}>Share</button>
                 </div>

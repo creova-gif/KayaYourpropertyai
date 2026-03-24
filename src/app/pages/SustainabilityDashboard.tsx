@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { Thermometer, Lightbulb, Sun, Droplets, BatteryCharging, Zap, Leaf } from "lucide-react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -15,12 +16,13 @@ const properties=[
   {id:4,name:"300 Bloor W, Etobicoke",units:6,grade:"B",kwh:5100,co2:2.3,water:400,score:69},
 ];
 
+type LIcon=React.ComponentType<{size?:number;color?:string}>;
 const upgrades=[
-  {id:1,icon:"🌡",title:"Smart Thermostat Upgrade",prop:"456 Queen St W",save:"$1,200/yr",payback:"8 months",effort:"Low",saved:false},
-  {id:2,icon:"💡",title:"LED Common Area Retrofit",prop:"789 Bloor St W",save:"$840/yr",payback:"6 months",effort:"Low",saved:false},
-  {id:3,icon:"☀️",title:"Rooftop Solar Array",prop:"123 King St W",save:"$3,400/yr",payback:"6 years",effort:"High",saved:false},
-  {id:4,icon:"🚿",title:"Low-Flow Fixture Package",prop:"789 Bloor St W",save:"$610/yr",payback:"14 months",effort:"Medium",saved:false},
-  {id:5,icon:"🔋",title:"EV Charging Station (x4)",prop:"300 Bloor W",save:"$2,100/yr",payback:"3 years",effort:"Medium",saved:false},
+  {id:1,Icon:Thermometer as LIcon,title:"Smart Thermostat Upgrade",prop:"456 Queen St W",save:"$1,200/yr",payback:"8 months",effort:"Low",saved:false},
+  {id:2,Icon:Lightbulb as LIcon,title:"LED Common Area Retrofit",prop:"789 Bloor St W",save:"$840/yr",payback:"6 months",effort:"Low",saved:false},
+  {id:3,Icon:Sun as LIcon,title:"Rooftop Solar Array",prop:"123 King St W",save:"$3,400/yr",payback:"6 years",effort:"High",saved:false},
+  {id:4,Icon:Droplets as LIcon,title:"Low-Flow Fixture Package",prop:"789 Bloor St W",save:"$610/yr",payback:"14 months",effort:"Medium",saved:false},
+  {id:5,Icon:BatteryCharging as LIcon,title:"EV Charging Station (x4)",prop:"300 Bloor W",save:"$2,100/yr",payback:"3 years",effort:"Medium",saved:false},
 ];
 
 const effortColor:Record<string,[string,string]>={Low:[GL,G],Medium:["#FEF3C7","#B45309"],High:["#FDECEA","#C0392B"]};
@@ -46,7 +48,7 @@ export function SustainabilityDashboard(){
             </h1>
             {certified?(
               <div style={{display:"flex",alignItems:"center",gap:8,background:GL,border:`1px solid ${G}`,borderRadius:10,padding:"10px 16px"}}>
-                <span style={{fontSize:20}}>🌿</span>
+                <Leaf size={20} color={G}/>
                 <div>
                   <p style={{fontSize:11,fontWeight:700,color:G,margin:0}}>Kaya Green Certified</p>
                   <p style={{fontSize:10,color:"#085040",margin:0}}>Portfolio meets ESG standards</p>
@@ -55,7 +57,7 @@ export function SustainabilityDashboard(){
             ):(
               <button onClick={()=>{toast.success("Certification application submitted!");setCertified(true);}}
                 style={{padding:"9px 18px",background:G,color:"#fff",border:"none",borderRadius:9,fontFamily:SANS,fontSize:12,fontWeight:600,cursor:"pointer"}}>
-                🌿 Apply for Kaya Green Badge
+Apply for Kaya Green Badge
               </button>
             )}
           </div>
@@ -117,12 +119,12 @@ export function SustainabilityDashboard(){
             </div>
             <div style={{padding:"18px 20px"}}>
               {[
-                {icon:"⚡",label:"Energy Saved",val:"12.4 MWh",trend:"+8%",up:true},
-                {icon:"💧",label:"Water Reduced",val:"340 m³",trend:"-14%",up:true},
-                {icon:"🌿",label:"Carbon Offset",val:"4.2 tonnes",trend:"+22%",up:true},
+                {Icon:Zap,label:"Energy Saved",val:"12.4 MWh",trend:"+8%",up:true},
+                {Icon:Droplets,label:"Water Reduced",val:"340 m³",trend:"-14%",up:true},
+                {Icon:Sun,label:"Carbon Offset",val:"4.2 tonnes",trend:"+22%",up:true},
               ].map(m=>(
                 <div key={m.label} style={{...cd,padding:"14px",marginBottom:10,display:"flex",alignItems:"center",gap:12}}>
-                  <span style={{fontSize:24}}>{m.icon}</span>
+                  <m.Icon size={24} color={G}/>
                   <div style={{flex:1}}>
                     <p style={{fontSize:11,color:MU,marginBottom:2}}>{m.label}</p>
                     <p style={{fontSize:18,fontWeight:700,color:TX,margin:0}}>{m.val}</p>
@@ -144,7 +146,7 @@ export function SustainabilityDashboard(){
             const [ebg,etc]=effortColor[u.effort];
             return(
               <div key={u.id} style={{...cd,padding:"18px 20px",display:"flex",alignItems:"center",gap:16,flexWrap:"wrap"}}>
-                <span style={{fontSize:28}}>{u.icon}</span>
+                <u.Icon size={28} color={G}/>
                 <div style={{flex:1,minWidth:180}}>
                   <p style={{fontSize:13,fontWeight:600,color:TX,marginBottom:2}}>{u.title}</p>
                   <p style={{fontSize:11,color:MU}}>{u.prop}</p>

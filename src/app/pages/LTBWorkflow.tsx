@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Scale, AlertTriangle, CheckCircle2, Clock, FileText, ChevronRight, ChevronDown, Download, Send, Phone, Calendar, Circle, ArrowRight, Info, TriangleAlert } from "lucide-react";
+import { Scale, AlertTriangle, CheckCircle2, Clock, FileText, ChevronRight, ChevronDown, Download, Send, Phone, Calendar, Circle, ArrowRight, Info, TriangleAlert, DollarSign, FolderOpen, Landmark, ClipboardList, Key, CreditCard, Timer } from "lucide-react";
 import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
@@ -18,7 +18,7 @@ function Badge({t,c="green"}:{t:string;c?:"green"|"amber"|"red"|"gray"|"blue"}){
 
 const STEPS=[
   {
-    id:1, title:"Non-Payment Detected", icon:"💰", tag:"Step 1",
+    id:1, title:"Non-Payment Detected", icon:DollarSign, tag:"Step 1",
     description:"Rent is overdue. Document the missed payment before anything else.",
     timeline:"Day 1–3",
     actions:[
@@ -32,7 +32,7 @@ const STEPS=[
     status:"complete"
   },
   {
-    id:2, title:"Issue N4 Notice to End Tenancy", icon:"📄", tag:"Step 2",
+    id:2, title:"Issue N4 Notice to End Tenancy", icon:FileText, tag:"Step 2",
     description:"Serve the tenant a Notice to End Tenancy Early for Non-payment of Rent (N4).",
     timeline:"Day 4–7",
     actions:[
@@ -46,7 +46,7 @@ const STEPS=[
     status:"active"
   },
   {
-    id:3, title:"Wait 14 Days", icon:"⏳", tag:"Step 3",
+    id:3, title:"Wait 14 Days", icon:Clock, tag:"Step 3",
     description:"The tenant has 14 days to pay the full amount or move out voluntarily.",
     timeline:"Day 7–21",
     actions:[
@@ -60,7 +60,7 @@ const STEPS=[
     status:"pending"
   },
   {
-    id:4, title:"File L1 Application with LTB", icon:"⚖️", tag:"Step 4",
+    id:4, title:"File L1 Application with LTB", icon:Scale, tag:"Step 4",
     description:"File the L1 Application to Evict a Tenant for Non-payment of Rent with the Landlord and Tenant Board.",
     timeline:"Day 22–30",
     actions:[
@@ -74,7 +74,7 @@ const STEPS=[
     status:"pending"
   },
   {
-    id:5, title:"Gather Evidence for Hearing", icon:"📂", tag:"Step 5",
+    id:5, title:"Gather Evidence for Hearing", icon:FolderOpen, tag:"Step 5",
     description:"Prepare your case for the LTB hearing. Evidence wins cases.",
     timeline:"2–8 weeks before hearing",
     actions:[
@@ -89,7 +89,7 @@ const STEPS=[
     status:"pending"
   },
   {
-    id:6, title:"Attend LTB Hearing", icon:"🏛️", tag:"Step 6",
+    id:6, title:"Attend LTB Hearing", icon:Landmark, tag:"Step 6",
     description:"Present your case at the scheduled LTB hearing (most are done by video or phone).",
     timeline:"Hearing date",
     actions:[
@@ -104,7 +104,7 @@ const STEPS=[
     status:"pending"
   },
   {
-    id:7, title:"Receive LTB Order", icon:"📋", tag:"Step 7",
+    id:7, title:"Receive LTB Order", icon:ClipboardList, tag:"Step 7",
     description:"The LTB issues a written order — typically within 5–10 business days of the hearing.",
     timeline:"5–10 days after hearing",
     actions:[
@@ -118,7 +118,7 @@ const STEPS=[
     status:"pending"
   },
   {
-    id:8, title:"Sheriff Enforcement", icon:"🔑", tag:"Step 8",
+    id:8, title:"Sheriff Enforcement", icon:Key, tag:"Step 8",
     description:"If the tenant still hasn't vacated, file with the Court Enforcement Office (Sheriff) to carry out the eviction.",
     timeline:"2–6 weeks after order",
     actions:[
@@ -148,10 +148,10 @@ const FORMS:{[k:string]:{description:string;fields:string[];url:string}}={
 };
 
 const TIMELINE_STATS=[
-  {label:"Typical L1 to Hearing",value:"4–12 wks",icon:"📅",color:G},
-  {label:"Sheriff Wait Time",value:"4–8 wks",icon:"🔑",color:"#B45309"},
-  {label:"Total Door-to-Door",value:"5–8 mo",icon:"⏱️",color:"#C0392B"},
-  {label:"LTB Filing Fee",value:"$201",icon:"💳",color:"#1E5FA8"},
+  {label:"Typical L1 to Hearing",value:"4–12 wks",icon:Calendar,color:G},
+  {label:"Sheriff Wait Time",value:"4–8 wks",icon:Key,color:"#B45309"},
+  {label:"Total Door-to-Door",value:"5–8 mo",icon:Timer,color:"#C0392B"},
+  {label:"LTB Filing Fee",value:"$201",icon:CreditCard,color:"#1E5FA8"},
 ];
 
 export default function LTBWorkflow(){
@@ -190,14 +190,14 @@ export default function LTBWorkflow(){
 
         {/* Timeline Stats */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:32}}>
-          {TIMELINE_STATS.map((s,i)=>(
+          {TIMELINE_STATS.map((s,i)=>{const SIcon=s.icon;return(
             <motion.div key={s.label} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:i*0.08}}
               style={{...cd,padding:"16px 18px",textAlign:"center"}}>
-              <div style={{fontSize:24,marginBottom:6}}>{s.icon}</div>
+              <div style={{display:"flex",justifyContent:"center",marginBottom:6}}><SIcon size={22} color={s.color}/></div>
               <div style={{fontSize:22,fontWeight:700,color:s.color,fontFamily:SERIF}}>{s.value}</div>
               <div style={{fontSize:12,color:MU,marginTop:2}}>{s.label}</div>
             </motion.div>
-          ))}
+          );})}
         </div>
 
         <div style={{display:"grid",gridTemplateColumns:"1fr 340px",gap:24,alignItems:"start"}}>
@@ -207,6 +207,7 @@ export default function LTBWorkflow(){
             {STEPS.map((step,i)=>{
               const isActive=activeStep===step.id;
               const isDone=step.status==="complete"||(step.id<activeStep);
+              const StepIcon=step.icon;
               return(
                 <motion.div key={step.id} initial={{opacity:0,x:-12}} animate={{opacity:1,x:0}} transition={{delay:i*0.05}}>
                   <div
@@ -218,7 +219,7 @@ export default function LTBWorkflow(){
                       <div style={{width:40,height:40,borderRadius:10,background:isDone?G:isActive?GL:"#F1F1EE",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                         {isDone
                           ? <CheckCircle2 size={20} color="#fff"/>
-                          : <span style={{fontSize:18}}>{step.icon}</span>
+                          : <StepIcon size={18} color={isActive?G:MU}/>
                         }
                       </div>
                       <div style={{flex:1}}>
@@ -292,7 +293,7 @@ export default function LTBWorkflow(){
 
             {/* Active Case Tracker */}
             <motion.div initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{delay:.2}} style={{...cd,padding:20}}>
-              <h3 style={{fontSize:14,fontWeight:700,color:TX,margin:"0 0 14px"}}>📁 Case Tracker</h3>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><FolderOpen size={14} color={G}/><h3 style={{fontSize:14,fontWeight:700,color:TX,margin:0}}>Case Tracker</h3></div>
               <div style={{display:"flex",flexDirection:"column",gap:8}}>
                 {STEPS.map(s=>(
                   <div key={s.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:9,background:activeStep===s.id?GL:"transparent",cursor:"pointer"}}
@@ -311,7 +312,7 @@ export default function LTBWorkflow(){
 
             {/* Emergency contacts */}
             <motion.div initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{delay:.3}} style={{...cd,padding:20}}>
-              <h3 style={{fontSize:14,fontWeight:700,color:TX,margin:"0 0 14px"}}>📞 Key Contacts</h3>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><Phone size={14} color={G}/><h3 style={{fontSize:14,fontWeight:700,color:TX,margin:0}}>Key Contacts</h3></div>
               {[
                 {label:"LTB Customer Service",value:"416-645-8080"},
                 {label:"Tribunals Ontario",value:"1-888-332-3234"},
@@ -328,7 +329,7 @@ export default function LTBWorkflow(){
             {/* Paralegal CTA */}
             <motion.div initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{delay:.35}}
               style={{...cd,padding:20,background:G,border:"none"}}>
-              <div style={{fontSize:20,marginBottom:8}}>⚖️</div>
+              <div style={{marginBottom:8}}><Scale size={20} color="#fff"/></div>
               <h3 style={{fontSize:14,fontWeight:700,color:"#fff",margin:"0 0 6px"}}>Need a Paralegal?</h3>
               <p style={{fontSize:12,color:"rgba(255,255,255,0.75)",margin:"0 0 14px"}}>Connect with Ontario-licensed paralegals who specialize in LTB hearings for as low as $150/hearing.</p>
               <a href="/app/paralegal" style={{display:"block",padding:"10px",background:"rgba(255,255,255,0.15)",borderRadius:9,color:"#fff",fontWeight:600,fontSize:13,textAlign:"center",textDecoration:"none",border:"1px solid rgba(255,255,255,0.2)"}}>

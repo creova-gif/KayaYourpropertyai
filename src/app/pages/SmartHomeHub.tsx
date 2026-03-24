@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { Lock, LockOpen, Thermometer, Camera, Zap, Lightbulb, Ticket, Battery, CheckCircle2 } from "lucide-react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -7,26 +8,27 @@ const SERIF="'Instrument Serif',Georgia,serif",SANS="'DM Sans',system-ui,sans-se
 const cd:React.CSSProperties={background:"#fff",border:`1px solid ${BD}`,borderRadius:16};
 
 type DeviceStatus="online"|"offline"|"charging"|"locked"|"unlocked";
-interface Device{id:string;name:string;type:string;icon:string;status:DeviceStatus;location:string;battery?:number;temp?:number;setpoint?:number;evPct?:number;}
+type LucideIcon=React.ComponentType<{size?:number;color?:string}>;
+interface Device{id:string;name:string;type:string;Icon:LucideIcon;status:DeviceStatus;location:string;battery?:number;temp?:number;setpoint?:number;evPct?:number;}
 
 const initDevices:Device[]=[
-  {id:"lock1",name:"Front Door Lock",type:"lock",icon:"🔐",status:"locked",location:"Main Entrance",battery:78},
-  {id:"lock2",name:"Parking Garage Lock",type:"lock",icon:"🔒",status:"locked",location:"Garage Level P1",battery:42},
-  {id:"therm1",name:"Living Room Thermostat",type:"thermostat",icon:"🌡",status:"online",location:"Unit 4A",temp:21.5,setpoint:22},
-  {id:"cam1",name:"Lobby Camera",type:"camera",icon:"📷",status:"online",location:"Main Lobby"},
-  {id:"ev1",name:"EV Charger — Spot 12",type:"ev",icon:"⚡",status:"charging",location:"Garage P1",evPct:63},
-  {id:"lights1",name:"Common Area Lights",type:"lights",icon:"💡",status:"online",location:"Hallways 1–5F"},
+  {id:"lock1",name:"Front Door Lock",type:"lock",Icon:Lock,status:"locked",location:"Main Entrance",battery:78},
+  {id:"lock2",name:"Parking Garage Lock",type:"lock",Icon:Lock,status:"locked",location:"Garage Level P1",battery:42},
+  {id:"therm1",name:"Living Room Thermostat",type:"thermostat",Icon:Thermometer,status:"online",location:"Unit 4A",temp:21.5,setpoint:22},
+  {id:"cam1",name:"Lobby Camera",type:"camera",Icon:Camera,status:"online",location:"Main Lobby"},
+  {id:"ev1",name:"EV Charger — Spot 12",type:"ev",Icon:Zap,status:"charging",location:"Garage P1",evPct:63},
+  {id:"lights1",name:"Common Area Lights",type:"lights",Icon:Lightbulb,status:"online",location:"Hallways 1–5F"},
 ];
 
 const activityLog=[
-  {time:"9:14 AM",event:"Front Door Lock: Tenant Sarah K. unlocked",icon:"🔓",type:"lock"},
-  {time:"9:02 AM",event:"EV Charger: Session started — Tesla Model 3, Spot 12",icon:"⚡",type:"ev"},
-  {time:"8:47 AM",event:"Lobby Camera: Motion detected — package delivery",icon:"📷",type:"camera"},
-  {time:"8:30 AM",event:"Living Room Thermostat: Set to 22°C by tenant",icon:"🌡",type:"therm"},
-  {time:"7:58 AM",event:"Front Door Lock: Visitor pass used (expired 8:00 AM)",icon:"🎫",type:"pass"},
-  {time:"7:30 AM",event:"Common Area Lights: Auto-activated (sunrise schedule)",icon:"💡",type:"lights"},
-  {time:"Yesterday 11:42 PM",event:"Parking Garage Lock: Battery at 42% — reminder sent",icon:"🔋",type:"alert"},
-  {time:"Yesterday 6:00 PM",event:"EV Charger: Session ended — 34 kWh delivered",icon:"✅",type:"ev"},
+  {time:"9:14 AM",event:"Front Door Lock: Tenant Sarah K. unlocked",Icon:LockOpen,type:"lock"},
+  {time:"9:02 AM",event:"EV Charger: Session started — Tesla Model 3, Spot 12",Icon:Zap,type:"ev"},
+  {time:"8:47 AM",event:"Lobby Camera: Motion detected — package delivery",Icon:Camera,type:"camera"},
+  {time:"8:30 AM",event:"Living Room Thermostat: Set to 22°C by tenant",Icon:Thermometer,type:"therm"},
+  {time:"7:58 AM",event:"Front Door Lock: Visitor pass used (expired 8:00 AM)",Icon:Ticket,type:"pass"},
+  {time:"7:30 AM",event:"Common Area Lights: Auto-activated (sunrise schedule)",Icon:Lightbulb,type:"lights"},
+  {time:"Yesterday 11:42 PM",event:"Parking Garage Lock: Battery at 42% — reminder sent",Icon:Battery,type:"alert"},
+  {time:"Yesterday 6:00 PM",event:"EV Charger: Session ended — 34 kWh delivered",Icon:CheckCircle2,type:"ev"},
 ];
 
 function BatteryBar({pct}:{pct:number}){
@@ -79,7 +81,7 @@ export function SmartHomeHub(){
             </h1>
             <div style={{display:"flex",gap:10}}>
               <button onClick={()=>setShowPass(true)} style={{padding:"9px 18px",background:TX,color:"#fff",border:"none",borderRadius:9,fontFamily:SANS,fontSize:12,fontWeight:600,cursor:"pointer"}}>
-                🎫 Issue Temp Pass
+Issue Temp Pass
               </button>
             </div>
           </div>
@@ -93,7 +95,7 @@ export function SmartHomeHub(){
               onMouseOver={e=>(e.currentTarget.style.boxShadow="0 4px 20px rgba(0,0,0,0.08)")}
               onMouseOut={e=>(e.currentTarget.style.boxShadow="none")}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
-                <span style={{fontSize:28}}>{d.icon}</span>
+                <d.Icon size={28} color={MU}/>
                 <div style={{display:"flex",alignItems:"center",gap:4}}>
                   <div style={{width:7,height:7,borderRadius:"50%",background:statusColor[d.status]}}/>
                   <span style={{fontSize:10,fontWeight:600,color:statusColor[d.status]}}>{statusLabel[d.status]}</span>
@@ -160,7 +162,7 @@ export function SmartHomeHub(){
             <div style={{padding:"8px 0"}}>
               {activityLog.map((e,i)=>(
                 <div key={i} style={{display:"flex",gap:12,padding:"12px 20px",borderBottom:i<activityLog.length-1?`1px solid ${BD}`:"none"}}>
-                  <span style={{fontSize:18,flexShrink:0,marginTop:1}}>{e.icon}</span>
+                  <e.Icon size={18} color={MU}/>
                   <div style={{flex:1}}>
                     <p style={{fontSize:12,color:TX,lineHeight:1.5}}>{e.event}</p>
                     <p style={{fontSize:10,color:MU,marginTop:2}}>{e.time}</p>

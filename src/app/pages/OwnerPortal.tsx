@@ -1,5 +1,7 @@
 import { useState, type CSSProperties } from "react";
 import { toast } from "sonner";
+import { BarChart2, DollarSign, Wrench, Home, FileText } from "lucide-react";
+type LIcon=React.ComponentType<{size?:number;color?:string}>;
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -31,12 +33,12 @@ const statements = [
   { month: "December 2025", net: 23100, gross: 25800, expenses: 2700 },
 ];
 
-const ownerActivity = [
-  { type: "statement", label: "March statement available", time: "Today", icon: "📊" },
-  { type: "payment", label: "Rent collected — 789 Bloor", time: "Mar 1", icon: "💰" },
-  { type: "maintenance", label: "HVAC repair completed — Unit 4A", time: "Feb 28", icon: "🔧" },
-  { type: "tenancy", label: "New tenant — Unit 2B, Queen St", time: "Feb 15", icon: "🏠" },
-];
+const ownerActivity:[{type:string;label:string;time:string;Icon:LIcon}]=[
+  { type: "statement", label: "March statement available", time: "Today", Icon: BarChart2 },
+  { type: "payment", label: "Rent collected — 789 Bloor", time: "Mar 1", Icon: DollarSign },
+  { type: "maintenance", label: "HVAC repair completed — Unit 4A", time: "Feb 28", Icon: Wrench },
+  { type: "tenancy", label: "New tenant — Unit 2B, Queen St", time: "Feb 15", Icon: Home },
+] as any;
 
 export function OwnerPortal() {
   const [selectedStatement, setSelectedStatement] = useState<number | null>(null);
@@ -102,7 +104,7 @@ export function OwnerPortal() {
               style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "13px 18px", borderBottom: `1px solid ${BD}`, cursor: "pointer", background: selectedStatement === i ? GL : "transparent", transition: "background .15s" }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: BG, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>📊</div>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: BG, display: "flex", alignItems: "center", justifyContent: "center" }}><FileText size={14} color={MU}/></div>
                 <div>
                   <p style={{ fontSize: 13, fontWeight: 600, color: TX, marginBottom: 2 }}>{s.month}</p>
                   <p style={{ fontSize: 10, color: MU }}>Statement · PDF</p>
@@ -242,7 +244,7 @@ export function OwnerPortal() {
         {ownerActivity.map((a, i) => (
           <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "13px 18px", borderBottom: `1px solid ${BD}` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 34, height: 34, borderRadius: 9, background: BG, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}>{a.icon}</div>
+              <div style={{ width: 34, height: 34, borderRadius: 9, background: BG, display: "flex", alignItems: "center", justifyContent: "center" }}><a.Icon size={15} color={MU}/></div>
               <div>
                 <p style={{ fontSize: 13, fontWeight: 600, color: TX, marginBottom: 1 }}>{a.label}</p>
                 <p style={{ fontSize: 10, color: MU }}>{a.time}</p>

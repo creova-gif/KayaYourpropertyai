@@ -98,7 +98,7 @@ export function SignupPage() {
             color: TEXT,
             marginBottom: 12,
           }}>
-            Account created! 🎉
+            Account created!
           </h2>
           <p style={{ fontSize: 14, color: MUTED, marginBottom: 24 }}>
             Redirecting you to dashboard...

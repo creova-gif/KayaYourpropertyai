@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Building2, Users, DollarSign, Plus, MapPin, TrendingUp, BarChart3, CheckCircle, Clock, AlertCircle, X, ChevronRight, Briefcase, Layers, FileText } from "lucide-react";
+import { Building2, Users, DollarSign, Plus, MapPin, TrendingUp, BarChart3, CheckCircle, Clock, AlertCircle, X, ChevronRight, Briefcase, Layers, FileText, ShoppingBag, Package, Store } from "lucide-react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570",BD="rgba(0,0,0,0.07)";
 const SERIF="'Instrument Serif',Georgia,serif",SANS="'DM Sans',system-ui,sans-serif";
@@ -113,8 +113,8 @@ const CLASS_CONFIG: Record<PropertyClass, { bg: string; color: string }> = {
   B: { bg: "#EBF2FB", color: "#1E5FA8" },
   C: { bg: "#F3F0FF", color: "#6D28D9" },
 };
-const TYPE_ICON: Record<string, string> = {
-  office: "🏢", retail: "🏪", warehouse: "🏭", flex: "🏗", "ground-floor": "🛍",
+const TYPE_ICON: Record<string, React.ComponentType<{size?:number;color?:string}>> = {
+  office: Building2, retail: ShoppingBag, warehouse: Package, flex: Layers, "ground-floor": Store,
 };
 
 function Stat({ label, value, sub, accent }: { label: string; value: string; sub?: string; accent?: boolean }) {
@@ -176,7 +176,7 @@ function InquireModal({ onClose }: { onClose: () => void }) {
           </>
         ) : (
           <div style={{ textAlign: "center", padding: "30px 0" }}>
-            <div style={{ fontSize: 44, marginBottom: 14 }}>✅</div>
+            <div style={{ display:"flex",justifyContent:"center",marginBottom: 14 }}><CheckCircle size={44} color={G}/></div>
             <p style={{ fontFamily: SERIF, fontSize: 20, color: TX, marginBottom: 6 }}>Inquiry Sent!</p>
             <p style={{ fontSize: 13, color: MU }}>Our leasing team will contact you within 1 business day.</p>
             <button onClick={onClose} style={{ marginTop: 20, padding: "10px 28px", background: G, color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Close</button>
@@ -388,7 +388,7 @@ export function CommercialPortfolio() {
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                               <div>
                                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
-                                  <span style={{ fontSize: 16 }}>{TYPE_ICON[unit.type]}</span>
+                                  {(()=>{const TI=TYPE_ICON[unit.type]||Building2;return<TI size={14} color={MU}/>;})()}
                                   <p style={{ fontSize: 14, fontWeight: 700, color: TX, margin: 0 }}>{unit.suite}</p>
                                 </div>
                                 <p style={{ fontSize: 11, color: MU, margin: 0 }}>{unit.sqft.toLocaleString()} sqft · {LEASE_LABEL[unit.leaseType]}</p>

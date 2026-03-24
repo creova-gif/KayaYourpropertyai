@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Receipt, Download, CheckCircle2, Info, TrendingUp, Home, Wrench, DollarSign, FileText, ChevronRight, AlertTriangle } from "lucide-react";
+import { Receipt, Download, CheckCircle2, Info, TrendingUp, Home, Wrench, DollarSign, FileText, ChevronRight, AlertTriangle, Building, BarChart2, Shield, User, Scale, Megaphone, Zap, Laptop2, Leaf, TrendingDown, Construction, Calendar, Clipboard } from "lucide-react";
+type LIcon=React.ComponentType<{size?:number;color?:string}>;
 import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
@@ -38,19 +39,19 @@ const CCA_ITEMS:LineItem[]=[
   {label:"New Appliances",amount:3200,category:"cca",eligible:true,ccaClass:"Class 8 (20%)"},
 ];
 
-const TAX_CATEGORIES=[
-  {key:"rental_income",label:"Gross Rental Income",icon:"🏠",color:G},
-  {key:"property_tax",label:"Property Taxes",icon:"🏛️",color:"#1E5FA8"},
-  {key:"interest",label:"Mortgage Interest",icon:"📊",color:"#7C3AED"},
-  {key:"insurance",label:"Insurance",icon:"🛡️",color:"#B45309"},
-  {key:"repairs",label:"Repairs & Maintenance",icon:"🔧",color:"#059669"},
-  {key:"management",label:"Management Fees",icon:"👤",color:"#DC2626"},
-  {key:"professional",label:"Professional Fees",icon:"⚖️",color:"#0891B2"},
-  {key:"advertising",label:"Advertising",icon:"📢",color:"#7C3AED"},
-  {key:"utilities",label:"Utilities",icon:"⚡",color:"#D97706"},
-  {key:"software",label:"Software & Subscriptions",icon:"💻",color:G},
-  {key:"maintenance",label:"Other Maintenance",icon:"🌿",color:"#059669"},
-];
+const TAX_CATEGORIES:[{key:string;label:string;Icon:LIcon;color:string}]=[
+  {key:"rental_income",label:"Gross Rental Income",Icon:Home,color:G},
+  {key:"property_tax",label:"Property Taxes",Icon:Building,color:"#1E5FA8"},
+  {key:"interest",label:"Mortgage Interest",Icon:BarChart2,color:"#7C3AED"},
+  {key:"insurance",label:"Insurance",Icon:Shield,color:"#B45309"},
+  {key:"repairs",label:"Repairs & Maintenance",Icon:Wrench,color:"#059669"},
+  {key:"management",label:"Management Fees",Icon:User,color:"#DC2626"},
+  {key:"professional",label:"Professional Fees",Icon:Scale,color:"#0891B2"},
+  {key:"advertising",label:"Advertising",Icon:Megaphone,color:"#7C3AED"},
+  {key:"utilities",label:"Utilities",Icon:Zap,color:"#D97706"},
+  {key:"software",label:"Software & Subscriptions",Icon:Laptop2,color:G},
+  {key:"maintenance",label:"Other Maintenance",Icon:Leaf,color:"#059669"},
+] as any;
 
 const TAX_YEAR="2025";
 
@@ -116,14 +117,14 @@ export default function T776Report(){
         {/* Summary cards */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:28}}>
           {[
-            {label:"Gross Rental Income",value:`$${grossIncome.toLocaleString()}`,icon:"🏠",color:G,sub:"All units combined"},
-            {label:"Total Deductions",value:`$${(totalExpenses+ccaCurrentYear).toLocaleString()}`,icon:"📉",color:"#1E5FA8",sub:"Expenses + CCA"},
-            {label:"Net Rental Income",value:`$${netIncome.toLocaleString()}`,icon:"📊",color:netIncome>=0?G:"#C0392B",sub:"Line 9600 on T776"},
-            {label:"CCA This Year",value:`$${Math.round(ccaCurrentYear).toLocaleString()}`,icon:"🏗️",color:"#7C3AED",sub:"Capital Cost Allowance"},
+            {label:"Gross Rental Income",value:`$${grossIncome.toLocaleString()}`,Icon:Home as LIcon,color:G,sub:"All units combined"},
+            {label:"Total Deductions",value:`$${(totalExpenses+ccaCurrentYear).toLocaleString()}`,Icon:TrendingDown as LIcon,color:"#1E5FA8",sub:"Expenses + CCA"},
+            {label:"Net Rental Income",value:`$${netIncome.toLocaleString()}`,Icon:BarChart2 as LIcon,color:netIncome>=0?G:"#C0392B",sub:"Line 9600 on T776"},
+            {label:"CCA This Year",value:`$${Math.round(ccaCurrentYear).toLocaleString()}`,Icon:Construction as LIcon,color:"#7C3AED",sub:"Capital Cost Allowance"},
           ].map((s,i)=>(
             <motion.div key={s.label} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:i*0.08}}
               style={{...cd,padding:"18px 20px"}}>
-              <div style={{fontSize:22,marginBottom:6}}>{s.icon}</div>
+              <div style={{marginBottom:6}}><s.Icon size={22} color={s.color}/></div>
               <div style={{fontSize:22,fontWeight:700,color:s.color,fontFamily:SERIF}}>{s.value}</div>
               <div style={{fontSize:12,fontWeight:600,color:TX,marginTop:2}}>{s.label}</div>
               <div style={{fontSize:11,color:MU,marginTop:2}}>{s.sub}</div>
@@ -158,13 +159,13 @@ export default function T776Report(){
                     if(!catTotal) return null;
                     return(
                       <div key={cat.key} style={{display:"flex",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${BD}`}}>
-                        <span style={{fontSize:13,color:MU}}>{cat.icon} {cat.label}</span>
+                        <span style={{fontSize:13,color:MU,display:"flex",alignItems:"center",gap:5}}><cat.Icon size={12} color={cat.color}/> {cat.label}</span>
                         <span style={{fontSize:13,color:TX}}>(${ catTotal.toLocaleString()})</span>
                       </div>
                     );
                   })}
                   <div style={{display:"flex",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${BD}`}}>
-                    <span style={{fontSize:13,color:MU}}>🏗️ CCA — Capital Cost Allowance</span>
+                    <span style={{fontSize:13,color:MU,display:"flex",alignItems:"center",gap:5}}><Construction size={12} color={MU}/> CCA — Capital Cost Allowance</span>
                     <span style={{fontSize:13,color:TX}}>(${Math.round(ccaCurrentYear).toLocaleString()})</span>
                   </div>
                   <div style={{display:"flex",justifyContent:"space-between",padding:"14px 0",background:GL,marginTop:4,borderRadius:8,paddingInline:12}}>
@@ -192,7 +193,7 @@ export default function T776Report(){
             {/* Sidebar */}
             <div style={{display:"flex",flexDirection:"column",gap:14}}>
               <div style={{...cd,padding:20}}>
-                <h3 style={{fontSize:14,fontWeight:700,color:TX,margin:"0 0 14px"}}>📋 T776 Checklist</h3>
+                <h3 style={{fontSize:14,fontWeight:700,color:TX,margin:"0 0 14px",display:"flex",alignItems:"center",gap:6}}><Clipboard size={14} color={TX}/> T776 Checklist</h3>
                 {[
                   {t:"All rental income reported",done:true},
                   {t:"Property address listed",done:true},
@@ -210,7 +211,7 @@ export default function T776Report(){
               </div>
 
               <div style={{...cd,padding:20}}>
-                <h3 style={{fontSize:14,fontWeight:700,color:TX,margin:"0 0 12px"}}>🗓️ Filing Deadlines</h3>
+                <h3 style={{fontSize:14,fontWeight:700,color:TX,margin:"0 0 12px",display:"flex",alignItems:"center",gap:6}}><Calendar size={14} color={TX}/> Filing Deadlines</h3>
                 {[
                   {label:"T1 Personal Return",date:"April 30, 2026"},
                   {label:"Self-employed",date:"June 15, 2026"},

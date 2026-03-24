@@ -245,7 +245,7 @@ export function ListProperty() {
             {COMMERCIAL_TYPES.includes(form.type) ? (
               <div style={{ display: "grid", gap: 14 }}>
                 <div style={{ padding: "10px 14px", background: "#EBF2FB", border: "1px solid #BFDBFE", borderRadius: 10, fontSize: 12, color: "#1E5FA8" }}>
-                  💼 Commercial listing — HST applies at 13%. This unit will appear on the commercial listings section of Kaya.
+                  <span style={{display:"inline-flex",alignItems:"center",gap:6}}><Briefcase size={13}/> Commercial listing — HST applies at 13%. This unit will appear on the commercial listings section of Kaya.</span>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   <div>
@@ -491,8 +491,8 @@ export function ListProperty() {
           <div style={{ display: "grid", gap: 14 }}>
             {/* Preview card */}
             <div style={{ ...card, overflow: "hidden" }}>
-              <div style={{ margin: "-24px -24px 20px", height: 140, background: `linear-gradient(135deg, #0C0D0A 0%, ${G}22 100%)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 52 }}>
-                {form.type === "house" ? "🏡" : form.type === "townhouse" ? "🏘" : form.type === "basement" ? "🏠" : "🏢"}
+              <div style={{ margin: "-24px -24px 20px", height: 140, background: `linear-gradient(135deg, #0C0D0A 0%, ${G}22 100%)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {form.type === "house" ? <Home size={52} color="rgba(255,255,255,0.7)"/> : form.type === "townhouse" ? <Layers size={52} color="rgba(255,255,255,0.7)"/> : form.type === "basement" ? <Home size={52} color="rgba(255,255,255,0.7)"/> : <Building2 size={52} color="rgba(255,255,255,0.7)"/>}
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                 <div>
@@ -605,7 +605,7 @@ export function ListProperty() {
                 border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700,
                 cursor: submitting ? "wait" : "pointer", color: "#fff", fontFamily: SANS
               }}>
-              {submitting ? "Publishing…" : "🚀 Publish Listing"}
+              {submitting ? "Publishing…" : <><Zap size={14}/> Publish Listing</>}
             </button>
           )}
         </div>

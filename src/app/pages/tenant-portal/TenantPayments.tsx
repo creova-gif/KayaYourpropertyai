@@ -161,7 +161,7 @@ export function TenantPayments() {
               <CheckCircle2 className="size-5 text-green-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-green-900 mb-2">Excellent Payment Record! 🎉</h3>
+              <h3 className="font-semibold text-green-900 mb-2">Excellent Payment Record!</h3>
               <p className="text-sm text-green-800">
                 You've made all {paymentHistory.length} payments on time. Keep it up! This helps build a strong rental history.
               </p>

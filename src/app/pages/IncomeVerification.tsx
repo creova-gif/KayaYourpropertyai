@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { BadgeCheck, AlertTriangle, Clock, TrendingUp, FileText, Shield, ChevronRight, CheckCircle2, XCircle, Eye, Link, Search } from "lucide-react";
+import { BadgeCheck, AlertTriangle, Clock, TrendingUp, FileText, Shield, ChevronRight, CheckCircle2, XCircle, Eye, Link, Search, Landmark, Briefcase, AlertCircle, X } from "lucide-react";
 import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
@@ -43,10 +43,10 @@ const STATUS_CONFIG:{[k in VerifStatus]:{label:string;color:string;bg:string;ico
 };
 
 const METHODS=[
-  {icon:"🏦",title:"Direct Bank Verification",desc:"Connect to applicant's bank via Flinks or Plaid Canada to verify income deposits directly. Most accurate — no documents needed.",badge:"Most Reliable",badgeColor:"green" as const},
-  {icon:"💼",title:"Employer Letter Verification",desc:"Kaya sends a verification request directly to the applicant's stated employer HR department. Bypass forged letters.",badge:"High Accuracy",badgeColor:"blue" as const},
-  {icon:"📄",title:"AI Pay Stub Analysis",desc:"Upload a pay stub and Kaya's AI cross-checks: PDF metadata, font consistency, amount calculations, and CRA T4 formatting.",badge:"Fast",badgeColor:"amber" as const},
-  {icon:"🏛️",title:"NOA / CRA Verification",desc:"Request applicant to share their CRA My Account summary (Notice of Assessment). Shows actual reported income, not just stated.",badge:"CRA Official",badgeColor:"green" as const},
+  {icon:Landmark,title:"Direct Bank Verification",desc:"Connect to applicant's bank via Flinks or Plaid Canada to verify income deposits directly. Most accurate — no documents needed.",badge:"Most Reliable",badgeColor:"green" as const},
+  {icon:Briefcase,title:"Employer Letter Verification",desc:"Kaya sends a verification request directly to the applicant's stated employer HR department. Bypass forged letters.",badge:"High Accuracy",badgeColor:"blue" as const},
+  {icon:FileText,title:"AI Pay Stub Analysis",desc:"Upload a pay stub and Kaya's AI cross-checks: PDF metadata, font consistency, amount calculations, and CRA T4 formatting.",badge:"Fast",badgeColor:"amber" as const},
+  {icon:Shield,title:"NOA / CRA Verification",desc:"Request applicant to share their CRA My Account summary (Notice of Assessment). Shows actual reported income, not just stated.",badge:"CRA Official",badgeColor:"green" as const},
 ];
 
 function ScoreMeter({score}:{score:number}){
@@ -95,18 +95,18 @@ export default function IncomeVerification(){
         {/* Stats */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:28}}>
           {[
-            {label:"Verified",value:verifiedCount,icon:"✅",color:G},
-            {label:"Fraud Risks",value:fraudCount,icon:"🚨",color:"#C0392B"},
-            {label:"Pending",value:APPLICANTS.filter(a=>a.status==="pending").length,icon:"⏳",color:"#B45309"},
-            {label:"Avg Fraud Savings",value:"$4,200",icon:"💰",color:"#7C3AED"},
-          ].map((s,i)=>(
+            {label:"Verified",value:verifiedCount,icon:CheckCircle2,color:G},
+            {label:"Fraud Risks",value:fraudCount,icon:AlertCircle,color:"#C0392B"},
+            {label:"Pending",value:APPLICANTS.filter(a=>a.status==="pending").length,icon:Clock,color:"#B45309"},
+            {label:"Avg Fraud Savings",value:"$4,200",icon:TrendingUp,color:"#7C3AED"},
+          ].map((s,i)=>{const SIcon=s.icon;return(
             <motion.div key={s.label} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:i*0.08}}
               style={{...cd,padding:"16px 18px"}}>
-              <div style={{fontSize:22,marginBottom:6}}>{s.icon}</div>
+              <div style={{marginBottom:6}}><SIcon size={22} color={s.color}/></div>
               <div style={{fontSize:22,fontWeight:700,color:s.color,fontFamily:SERIF}}>{s.value}</div>
               <div style={{fontSize:12,color:MU,marginTop:2}}>{s.label}</div>
             </motion.div>
-          ))}
+          );})}
         </div>
 
         {/* Tabs */}
@@ -178,17 +178,17 @@ export default function IncomeVerification(){
                               </div>
                               <div style={{display:"flex",gap:10,marginBottom:app.fraudSignals.length>0?14:0,flexWrap:"wrap"}}>
                                 {[
-                                  {label:"Bank Connected",done:app.bankVerified,icon:"🏦"},
-                                  {label:"Pay Stub Verified",done:app.payStubMatch===true,icon:"📄"},
-                                  {label:"Employer Confirmed",done:app.bankVerified,icon:"💼"},
-                                ].map(c=>(
+                                  {label:"Bank Connected",done:app.bankVerified,icon:Landmark},
+                                  {label:"Pay Stub Verified",done:app.payStubMatch===true,icon:FileText},
+                                  {label:"Employer Confirmed",done:app.bankVerified,icon:Briefcase},
+                                ].map(c=>{const CIcon=c.icon;return(
                                   <div key={c.label} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",borderRadius:20,
                                     background:c.done?GL:"#FDECEA",border:`1px solid ${c.done?G+"33":"#FECACA"}`}}>
-                                    <span style={{fontSize:12}}>{c.icon}</span>
+                                    <CIcon size={12} color={c.done?G:"#C0392B"}/>
                                     {c.done?<CheckCircle2 size={11} color={G}/>:<XCircle size={11} color="#C0392B"/>}
                                     <span style={{fontSize:12,fontWeight:500,color:c.done?G:"#C0392B"}}>{c.label}</span>
                                   </div>
-                                ))}
+                                );})}
                               </div>
                               {app.fraudSignals.length>0&&(
                                 <div style={{background:"#FDECEA",borderRadius:10,padding:"12px 16px",marginBottom:14}}>
@@ -209,8 +209,8 @@ export default function IncomeVerification(){
                                   </button>
                                 )}
                                 {app.status==="fraud_risk"&&(
-                                  <button onClick={()=>toast.error("Application declined",{description:`${app.name}'s application has been flagged and declined. They will receive an automated adverse action notice as required by PIPEDA.`})} style={{padding:"9px 16px",background:"#FDECEA",color:"#C0392B",borderRadius:9,border:"1.5px solid #FECACA",fontSize:13,fontWeight:600,cursor:"pointer"}}>
-                                    ❌ Decline Application
+                                  <button onClick={()=>toast.error("Application declined",{description:`${app.name}'s application has been flagged and declined. They will receive an automated adverse action notice as required by PIPEDA.`})} style={{padding:"9px 16px",background:"#FDECEA",color:"#C0392B",borderRadius:9,border:"1.5px solid #FECACA",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+                                    <X size={13}/> Decline Application
                                   </button>
                                 )}
                                 <button onClick={()=>toast.info("Full verification report",{description:`Opening ${app.name}'s complete income verification report with all source documents, AI analysis notes, and fraud signal details.`})} style={{padding:"9px 16px",background:BG,color:TX,borderRadius:9,border:`1px solid ${BD}`,fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
@@ -231,10 +231,10 @@ export default function IncomeVerification(){
 
         {activeTab==="methods"&&(
           <motion.div initial={{opacity:0}} animate={{opacity:1}} style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16}}>
-            {METHODS.map((m,i)=>(
+            {METHODS.map((m,i)=>{const MIcon=m.icon;return(
               <motion.div key={m.title} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:i*0.1}}
                 style={{...cd,padding:22}}>
-                <div style={{fontSize:30,marginBottom:12}}>{m.icon}</div>
+                <div style={{width:48,height:48,borderRadius:12,background:GL,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:12}}><MIcon size={24} color={G}/></div>
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
                   <h3 style={{fontSize:15,fontWeight:700,color:TX,margin:0}}>{m.title}</h3>
                   <span style={{background:m.badgeColor==="green"?GL:m.badgeColor==="blue"?"#EBF2FB":"#FEF3C7",
@@ -246,7 +246,7 @@ export default function IncomeVerification(){
                   Set as Default
                 </button>
               </motion.div>
-            ))}
+            );})}
           </motion.div>
         )}
 

@@ -18,7 +18,13 @@ import {
   CheckCircle2,
   Building2,
   Info,
+  Shield,
+  Leaf,
+  Sparkles,
+  Wind,
+  ParkingCircle,
 } from "lucide-react";
+type LIcon=React.ComponentType<{size?:number;color?:string}>;
 
 interface Payment {
   id: string;
@@ -626,18 +632,18 @@ export function RentCollection() {
               <h3 style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 18, color: "#0E0F0C", margin: "0 0 16px" }}>Annual CAM Cost Components</h3>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
                 {[
-                  { category: "Building Insurance", estimated: 28000, actual: 31200, icon: "🛡️" },
-                  { category: "Property Tax (common)", estimated: 42000, actual: 42000, icon: "🏛️" },
-                  { category: "Landscaping / Snow", estimated: 8400, actual: 9100, icon: "🌿" },
-                  { category: "Cleaning / Janitorial", estimated: 14400, actual: 13800, icon: "🧹" },
-                  { category: "HVAC Maintenance", estimated: 6000, actual: 8400, icon: "❄️" },
-                  { category: "Parking Lot Repairs", estimated: 3600, actual: 2200, icon: "🅿️" },
+                  { category: "Building Insurance", estimated: 28000, actual: 31200, Icon: Shield as LIcon },
+                  { category: "Property Tax (common)", estimated: 42000, actual: 42000, Icon: Building2 as LIcon },
+                  { category: "Landscaping / Snow", estimated: 8400, actual: 9100, Icon: Leaf as LIcon },
+                  { category: "Cleaning / Janitorial", estimated: 14400, actual: 13800, Icon: Sparkles as LIcon },
+                  { category: "HVAC Maintenance", estimated: 6000, actual: 8400, Icon: Wind as LIcon },
+                  { category: "Parking Lot Repairs", estimated: 3600, actual: 2200, Icon: ParkingCircle as LIcon },
                 ].map((c, i) => {
                   const diff = c.actual - c.estimated;
                   return (
                     <div key={i} style={{ padding: "14px", background: "#F8F7F4", borderRadius: 10 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                        <span style={{ fontSize: 18 }}>{c.icon}</span>
+                        <c.Icon size={18} color={MU}/>
                         <span style={{ fontSize: 12, fontWeight: 600, color: "#0E0F0C" }}>{c.category}</span>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>

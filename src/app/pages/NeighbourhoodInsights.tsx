@@ -2,6 +2,7 @@ import { PublicNav } from "../components/PublicNav";
 import { useState } from "react";
 import { CMHC_RENTAL_DATA } from "../utils/canadianHousingData";
 import { toast } from "sonner";
+import { Map } from "lucide-react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -167,7 +168,7 @@ export function NeighbourhoodInsights(){
         {/* Walk Score API integration note */}
         <div style={{...cd,padding:"18px",marginBottom:20,background:"#EBF2FB",border:"1px solid #BFDBFE"}}>
           <div style={{display:"flex",gap:12,alignItems:"flex-start"}}>
-            <span style={{fontSize:20,flexShrink:0}}>🗺️</span>
+            <Map size={20} color="#1E5FA8" style={{flexShrink:0}}/>
             <div>
               <p style={{fontSize:13,fontWeight:700,color:"#1E5FA8",marginBottom:4}}>Live Walk Score Integration Available</p>
               <p style={{fontSize:12,color:"#1E5FA8",margin:"0 0 10px",lineHeight:1.6}}>

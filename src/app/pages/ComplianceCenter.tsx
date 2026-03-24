@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ShieldCheck, CheckCircle2, AlertTriangle, XCircle, Info, Lock, Eye, FileText, Users, Bell, ChevronRight, Download, Building2 } from "lucide-react";
+import { ShieldCheck, CheckCircle2, AlertTriangle, XCircle, Info, Lock, Eye, FileText, Users, Bell, ChevronRight, Download, Building2, Scale, Mail } from "lucide-react";
 import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
@@ -190,17 +190,17 @@ export default function ComplianceCenter(){
           {/* Status breakdown */}
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14}}>
             {[
-              {label:"Compliant",value:compliantCount,color:G,bg:GL,icon:"✅"},
-              {label:"Action Required",value:actionCount,color:"#C0392B",bg:"#FDECEA",icon:"🚨"},
-              {label:"Review Needed",value:reviewCount,color:"#B45309",bg:"#FEF3C7",icon:"⚠️"},
-            ].map((s,i)=>(
+              {label:"Compliant",value:compliantCount,color:G,bg:GL,icon:CheckCircle2},
+              {label:"Action Required",value:actionCount,color:"#C0392B",bg:"#FDECEA",icon:XCircle},
+              {label:"Review Needed",value:reviewCount,color:"#B45309",bg:"#FEF3C7",icon:AlertTriangle},
+            ].map((s,i)=>{const SIcon=s.icon;return(
               <motion.div key={s.label} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:i*0.1}}
                 style={{...cd,padding:"18px 20px"}}>
-                <div style={{fontSize:26,marginBottom:6}}>{s.icon}</div>
+                <div style={{marginBottom:6}}><SIcon size={26} color={s.color}/></div>
                 <div style={{fontSize:28,fontWeight:700,color:s.color,fontFamily:SERIF}}>{s.value}</div>
                 <div style={{fontSize:13,fontWeight:600,color:TX}}>{s.label}</div>
               </motion.div>
-            ))}
+            );})}
             <motion.div initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:.3}}
               style={{...cd,padding:"18px 20px",gridColumn:"1/-1",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
@@ -294,19 +294,19 @@ export default function ComplianceCenter(){
           <h3 style={{fontSize:16,fontWeight:700,color:TX,margin:"0 0 16px",fontFamily:SERIF}}>Compliance Resources</h3>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
             {[
-              {title:"PIPEDA Privacy Law Guide",desc:"Office of the Privacy Commissioner of Canada",url:"https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/",icon:"🔒"},
-              {title:"Ontario Human Rights Code",desc:"OHRC tenant screening guidelines",url:"https://www.ohrc.on.ca/en/human-rights-and-rental-housing",icon:"⚖️"},
-              {title:"CASL Compliance Guide",desc:"Anti-Spam Legislation — landlord obligations",url:"https://fightspam.gc.ca/eic/site/030.nsf/eng/home",icon:"📧"},
-            ].map(r=>(
+              {title:"PIPEDA Privacy Law Guide",desc:"Office of the Privacy Commissioner of Canada",url:"https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/",icon:Lock},
+              {title:"Ontario Human Rights Code",desc:"OHRC tenant screening guidelines",url:"https://www.ohrc.on.ca/en/human-rights-and-rental-housing",icon:Scale},
+              {title:"CASL Compliance Guide",desc:"Anti-Spam Legislation — landlord obligations",url:"https://fightspam.gc.ca/eic/site/030.nsf/eng/home",icon:Mail},
+            ].map(r=>{const RIcon=r.icon;return(
               <a key={r.title} href={r.url} target="_blank" rel="noopener noreferrer"
                 style={{...{background:BG,border:`1px solid ${BD}`,borderRadius:12,padding:"14px",display:"flex",gap:10,textDecoration:"none"}}}>
-                <span style={{fontSize:22}}>{r.icon}</span>
+                <div style={{width:36,height:36,borderRadius:9,background:GL,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><RIcon size={18} color={G}/></div>
                 <div>
                   <div style={{fontSize:13,fontWeight:600,color:TX,marginBottom:3}}>{r.title}</div>
                   <div style={{fontSize:11,color:MU}}>{r.desc}</div>
                 </div>
               </a>
-            ))}
+            );})}
           </div>
         </motion.div>
       </div>

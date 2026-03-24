@@ -2,6 +2,15 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { CMHC_RENTAL_DATA } from "../utils/canadianHousingData";
 import { PublicNav } from "../components/PublicNav";
+import { Home, Building2, Building, Layers, Briefcase, ShoppingBag, Warehouse, GraduationCap, Laptop, Lock } from "lucide-react";
+
+type LIcon=React.ComponentType<{size?:number;color?:string}>;
+const TYPE_ICON:Record<string,LIcon>={
+  condo:Building2,apartment:Home,townhouse:Building,house:Home,
+  office:Briefcase,retail:ShoppingBag,warehouse:Warehouse,
+  "mixed-use":Layers,flex:Laptop,
+};
+function getListingIcon(type:string):LIcon{return TYPE_ICON[type]||Building2;}
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -127,7 +136,7 @@ function ApplyModal({l,onClose}:{l:ResListing,onClose:()=>void}){
           <textarea value={msg} onChange={e=>setMsg(e.target.value)} rows={3} placeholder="Tell the landlord about yourself..." style={{...inp,resize:"none"}}/>
         </div>
         <div style={{background:GL,borderRadius:10,padding:"10px 14px",marginBottom:16,display:"flex",gap:8,alignItems:"flex-start"}}>
-          <span style={{fontSize:16}}>🔒</span>
+          <Lock size={16} color={G}/>
           <p style={{fontSize:12,color:G,margin:0}}>Your personal data is shared only with this landlord and is protected under PIPEDA. Kaya never stores your SIN.</p>
         </div>
         <div style={{display:"flex",gap:8}}>
@@ -195,7 +204,7 @@ function CommercialInquiryModal({l,onClose}:{l:CommListing,onClose:()=>void}){
                   </select>
                 </div>
                 <div style={{background:"#EBF2FB",borderRadius:10,padding:"10px 14px",marginBottom:16,display:"flex",gap:8,alignItems:"flex-start"}}>
-                  <span style={{fontSize:16}}>🏢</span>
+                  <Building2 size={16} color="#1E5FA8"/>
                   <p style={{fontSize:12,color:"#1E5FA8",margin:0}}>A licensed commercial broker from {l.broker} will reach out within 1 business day to arrange a private showing.</p>
                 </div>
                 <div style={{display:"flex",gap:8}}>
@@ -272,7 +281,7 @@ export function PublicSearch(){
   const torontoCMHC=CMHC_RENTAL_DATA.find(c=>c.city==="Toronto");
   const COMM_CITIES=["Toronto","Mississauga","Ottawa","Hamilton","Kitchener","London","North York"];
 
-  const TYPE_ICONS:{[k:string]:string}={office:"🏢",retail:"🏪",warehouse:"🏭","mixed-use":"🛍",flex:"💻"};
+  const COMM_ICON:{[k:string]:LIcon}={office:Briefcase,retail:ShoppingBag,warehouse:Warehouse,"mixed-use":Layers,flex:Laptop};
   const CLASS_CONFIG:{[k:string]:{bg:string,color:string}}={A:{bg:GL,color:G},B:{bg:"#EBF2FB",color:"#1E5FA8"},C:{bg:"#F3F0FF",color:"#6D28D9"}};
 
   return(
@@ -283,7 +292,7 @@ export function PublicSearch(){
       <div style={{background:TX,padding:"114px 40px 44px",textAlign:"center"}}>
         {/* Mode toggle */}
         <div style={{display:"inline-flex",background:"rgba(255,255,255,.1)",borderRadius:12,padding:4,marginBottom:28,gap:4}}>
-          {[{id:"residential",label:"🏠 Residential"},{ id:"commercial",label:"🏢 Commercial"}].map(m=>(
+          {[{id:"residential",label:"Residential"},{ id:"commercial",label:"Commercial"}].map(m=>(
             <button key={m.id} onClick={()=>{setMode(m.id as typeof mode);setCommSearch("");setSearch("");}} style={{padding:"9px 22px",background:mode===m.id?"#fff":"transparent",color:mode===m.id?TX:"rgba(255,255,255,.7)",border:"none",borderRadius:9,fontSize:13,fontWeight:600,cursor:"pointer",transition:"all .2s",fontFamily:SANS}}>
               {m.label}
             </button>
@@ -354,7 +363,7 @@ export function PublicSearch(){
       {mode==="residential"&&torontoCMHC&&(
         <div style={{background:"#fff",borderBottom:`1px solid ${BD}`,padding:"12px 36px"}}>
           <div style={{maxWidth:1100,margin:"0 auto",display:"flex",gap:24,alignItems:"center",flexWrap:"wrap"}}>
-            <span style={{fontSize:11,fontWeight:700,color:MU,textTransform:"uppercase",letterSpacing:"0.7px",flexShrink:0}}>📊 CMHC Market Data 2024</span>
+            <span style={{fontSize:11,fontWeight:700,color:MU,textTransform:"uppercase",letterSpacing:"0.7px",flexShrink:0}}>CMHC Market Data 2024</span>
             {[["Toronto avg 1BR",`$${torontoCMHC.avgRent1BR.toLocaleString()}/mo`],["Toronto avg 2BR",`$${torontoCMHC.avgRent2BR.toLocaleString()}/mo`],["Toronto vacancy",`${torontoCMHC.vacancyRate}%`],["Annual rent change",`+${torontoCMHC.annualRentChange}%`]].map(([k,v])=>(
               <div key={k} style={{display:"flex",gap:6,alignItems:"center"}}>
                 <span style={{fontSize:12,color:MU}}>{k}:</span>
@@ -370,7 +379,7 @@ export function PublicSearch(){
       {mode==="commercial"&&(
         <div style={{background:"#fff",borderBottom:`1px solid ${BD}`,padding:"12px 36px"}}>
           <div style={{maxWidth:1100,margin:"0 auto",display:"flex",gap:24,alignItems:"center",flexWrap:"wrap"}}>
-            <span style={{fontSize:11,fontWeight:700,color:MU,textTransform:"uppercase",letterSpacing:"0.7px",flexShrink:0}}>📈 Ontario Commercial Market</span>
+            <span style={{fontSize:11,fontWeight:700,color:MU,textTransform:"uppercase",letterSpacing:"0.7px",flexShrink:0}}>Ontario Commercial Market</span>
             {[["Toronto Office avg","$28–$55 psf"],["Industrial avg","$14–$20 psf"],["Retail avg","$20–$45 psf"],["Vacancy (GTA Office)","13.2%"]].map(([k,v])=>(
               <div key={k} style={{display:"flex",gap:6,alignItems:"center"}}>
                 <span style={{fontSize:12,color:MU}}>{k}:</span>
@@ -424,7 +433,7 @@ export function PublicSearch(){
 
             {filtered.length===0?(
               <div style={{textAlign:"center",padding:"60px 20px",color:MU}}>
-                <p style={{fontSize:40,marginBottom:12}}>🏠</p>
+                <div style={{marginBottom:12,display:"flex",justifyContent:"center"}}><Home size={40} color={MU}/></div>
                 <p style={{fontFamily:SERIF,fontSize:22,color:TX,marginBottom:8}}>No listings match your search</p>
                 <p style={{fontSize:14}}>Try adjusting your filters, increasing the max rent, or searching a different city.</p>
                 <button onClick={()=>{setSearch("");setBedF("any");setMaxRent(5000);setTypeF("all");}} style={{marginTop:16,padding:"10px 24px",background:G,color:"#fff",border:"none",borderRadius:10,fontSize:13,fontWeight:600,cursor:"pointer"}}>Clear all filters</button>
@@ -435,8 +444,8 @@ export function PublicSearch(){
                   <div key={l.id} style={{...cd,overflow:"hidden",cursor:"pointer",transition:"transform .2s,box-shadow .2s"}}
                     onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 8px 24px rgba(0,0,0,0.1)"}}
                     onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow=""}}>
-                    <div style={{height:140,background:`linear-gradient(135deg,${i%2?"#1a1a1a":"#0d1117"} 0%,${G}22 100%)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:52,position:"relative"}}>
-                      {l.img}
+                    <div style={{height:140,background:`linear-gradient(135deg,${i%2?"#1a1a1a":"#0d1117"} 0%,${G}22 100%)`,display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}}>
+                      {(()=>{const LI=getListingIcon(l.type);return<LI size={52} color="rgba(255,255,255,0.4)"/>;})()}
                       <div style={{position:"absolute",top:10,left:10,display:"flex",gap:5,flexWrap:"wrap"}}>
                         {l.verified&&<Badge t="✓ Verified" c="green"/>}
                         {l.tours>0&&<Badge t={`${l.tours} tours booked`} c="blue"/>}
@@ -554,7 +563,7 @@ export function PublicSearch(){
 
             {filteredComm.length===0?(
               <div style={{textAlign:"center",padding:"60px 20px",color:MU}}>
-                <p style={{fontSize:40,marginBottom:12}}>🏢</p>
+                <div style={{marginBottom:12,display:"flex",justifyContent:"center"}}><Building2 size={40} color={MU}/></div>
                 <p style={{fontFamily:SERIF,fontSize:22,color:TX,marginBottom:8}}>No commercial spaces match</p>
                 <p style={{fontSize:14}}>Try adjusting your filters or searching a different city.</p>
                 <button onClick={()=>{setCommSearch("");setCommType("all");setCommClass("all");setCommMaxSqft(20000);}} style={{marginTop:16,padding:"10px 24px",background:G,color:"#fff",border:"none",borderRadius:10,fontSize:13,fontWeight:600,cursor:"pointer"}}>Clear filters</button>
@@ -568,8 +577,8 @@ export function PublicSearch(){
                       onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 8px 24px rgba(0,0,0,0.1)"}}
                       onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow=""}}>
                       {/* Header band */}
-                      <div style={{height:130,background:`linear-gradient(135deg,#0a1628 0%,#1a3a5c 100%)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:52,position:"relative"}}>
-                        {TYPE_ICONS[l.type]||"🏢"}
+                      <div style={{height:130,background:`linear-gradient(135deg,#0a1628 0%,#1a3a5c 100%)`,display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}}>
+                        {(()=>{const CI=COMM_ICON[l.type]||Building2;return<CI size={52} color="rgba(255,255,255,0.35)"/>;})()}
                         <div style={{position:"absolute",top:10,left:10,display:"flex",gap:5,flexWrap:"wrap"}}>
                           {l.verified&&<Badge t="✓ Verified" c="green"/>}
                           <span style={{background:cc.bg,color:cc.color,fontSize:10,fontWeight:700,padding:"3px 9px",borderRadius:20}}>Class {l.class}</span>
@@ -626,7 +635,7 @@ export function PublicSearch(){
               <p style={{fontFamily:SERIF,fontSize:20,color:TX,marginBottom:6}}>Looking to list a <em style={{color:G}}>commercial space?</em></p>
               <p style={{fontSize:13,color:MU,marginBottom:20}}>Kaya connects Ontario commercial landlords and property managers with verified business tenants. List spaces, manage leases, and track NNN income in one platform.</p>
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:12,marginBottom:20}}>
-                {[["🏢 Portfolio Management","Multi-property dashboards for enterprise landlords with commercial units"],["📋 Lease Tracking","Monitor NNN, gross, and modified gross leases with expiry alerts"],["👥 Team Access","Assign leasing managers, facilities staff, and accountants by property"],["📊 Commercial Analytics","Sqft occupancy, CAM reconciliation, and rental income dashboards"]].map(([t,d])=>(
+                {[["Portfolio Management","Multi-property dashboards for enterprise landlords with commercial units"],["Lease Tracking","Monitor NNN, gross, and modified gross leases with expiry alerts"],["Team Access","Assign leasing managers, facilities staff, and accountants by property"],["Commercial Analytics","Sqft occupancy, CAM reconciliation, and rental income dashboards"]].map(([t,d])=>(
                   <div key={t} style={{background:BG,borderRadius:12,padding:"14px 16px"}}>
                     <p style={{fontSize:13,fontWeight:700,color:TX,margin:"0 0 4px"}}>{t}</p>
                     <p style={{fontSize:12,color:MU,margin:0}}>{d}</p>

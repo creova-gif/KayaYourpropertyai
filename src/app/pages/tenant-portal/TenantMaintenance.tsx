@@ -1,4 +1,4 @@
-import { Wrench, Plus, Image as ImageIcon, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import { Wrench, Plus, Image as ImageIcon, Clock, CheckCircle2, AlertCircle, Droplets, Zap, Thermometer, Home } from "lucide-react";
 
 export function TenantMaintenance() {
   const requests = [
@@ -33,12 +33,12 @@ export function TenantMaintenance() {
     pending: { bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-700", icon: AlertCircle }
   };
 
-  const categoryEmoji = {
-    "Plumbing": "💧",
-    "Electrical": "⚡",
-    "Appliance": "🔧",
-    "HVAC": "🌡️",
-    "Other": "🏠"
+  const categoryIcon = {
+    "Plumbing": Droplets,
+    "Electrical": Zap,
+    "Appliance": Wrench,
+    "HVAC": Thermometer,
+    "Other": Home
   };
 
   return (
@@ -121,8 +121,8 @@ export function TenantMaintenance() {
               <div key={request.id} className={`bg-white rounded-xl border-2 ${statusStyle.border} p-6`}>
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-4">
-                    <div className="text-4xl">
-                      {categoryEmoji[request.category as keyof typeof categoryEmoji]}
+                    <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center">
+                      {(()=>{const CI=categoryIcon[request.category as keyof typeof categoryIcon]||Home;return<CI className="size-6 text-slate-500"/>;})()}
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-slate-900">{request.issue}</h3>
@@ -180,7 +180,7 @@ export function TenantMaintenance() {
               <AlertCircle className="size-5 text-amber-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-amber-900 mb-2">💡 Tips for Faster Resolution</h3>
+              <h3 className="font-semibold text-amber-900 mb-2">Tips for Faster Resolution</h3>
               <ul className="text-sm text-amber-800 space-y-1">
                 <li>• Include photos whenever possible</li>
                 <li>• Describe the issue in detail (when it started, how often it occurs)</li>

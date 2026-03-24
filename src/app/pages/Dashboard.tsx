@@ -101,7 +101,7 @@ export function Dashboard() {
         {/* Header */}
         <div className="mb-8">
           <p className="text-[10px] font-semibold text-[#767570] uppercase tracking-wider mb-2">Dashboard</p>
-          <h1 className="text-[48px] font-normal text-[#0E0F0C] tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>Good evening, Justin 👋</h1>
+          <h1 className="text-[48px] font-normal text-[#0E0F0C] tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>Good evening, Justin</h1>
           <p className="mt-2 text-[14px] text-[#767570]">Here's what's happening with your properties today.</p>
         </div>
 

@@ -1,4 +1,4 @@
-import { FileText, Download, Eye, Calendar, Shield } from "lucide-react";
+import { FileText, Download, Eye, Calendar, Shield, Receipt, Clipboard, Pin, Folder } from "lucide-react";
 
 export function TenantDocuments() {
   const documents = [
@@ -51,11 +51,11 @@ export function TenantDocuments() {
 
   const getDocIcon = (type: string) => {
     switch (type) {
-      case "lease": return { color: "indigo", icon: "📄" };
-      case "receipt": return { color: "green", icon: "🧾" };
-      case "inspection": return { color: "blue", icon: "📋" };
-      case "info": return { color: "purple", icon: "📌" };
-      default: return { color: "slate", icon: "📁" };
+      case "lease": return { color: "indigo", icon: FileText };
+      case "receipt": return { color: "green", icon: Receipt };
+      case "inspection": return { color: "blue", icon: Clipboard };
+      case "info": return { color: "purple", icon: Pin };
+      default: return { color: "slate", icon: Folder };
     }
   };
 
@@ -145,7 +145,7 @@ export function TenantDocuments() {
               return (
                 <div key={doc.id} className="flex items-center justify-between p-4 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className="text-3xl">{docStyle.icon}</div>
+                    <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">{(()=>{const DI=docStyle.icon;return<DI className="size-5 text-slate-500"/>;})()}</div>
                     <div>
                       <h3 className="font-semibold text-slate-900">{doc.name}</h3>
                       <p className="text-sm text-slate-500 mt-1">{doc.description}</p>

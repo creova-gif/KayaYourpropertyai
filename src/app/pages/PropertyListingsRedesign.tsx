@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, Check, MapPin, ArrowRight, Sparkles, X, Loader2, TrendingUp, AlertCircle, Building2 } from "lucide-react";
+import { Heart, Check, MapPin, ArrowRight, Sparkles, X, Loader2, TrendingUp, AlertCircle, Building2, Home, Layers, Building, Search, BedDouble, Bath, Ruler, Map, Lock, Lightbulb } from "lucide-react";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
 import { useNavigate } from "react-router";
 import { PublicNav } from "../components/PublicNav";
@@ -22,7 +22,7 @@ interface Listing {
   agentColor: string;
   photos: number;
   verified: boolean;
-  emoji: string;
+  icon: React.ComponentType<{size?:number;color?:string}>;
   gradientFrom: string;
   gradientTo: string;
   favorited?: boolean;
@@ -95,7 +95,7 @@ export function PropertyListingsRedesign() {
       agentColor: "#E1F5EE",
       photos: 12,
       verified: true,
-      emoji: "🏠",
+      icon: Home,
       gradientFrom: "#E6F1FB",
       gradientTo: "#B5D4F4",
     },
@@ -118,7 +118,7 @@ export function PropertyListingsRedesign() {
       agentColor: "#FAEEDA",
       photos: 8,
       verified: true,
-      emoji: "🏡",
+      icon: Building,
       gradientFrom: "#FAEEDA",
       gradientTo: "#FAC775",
       favorited: true,
@@ -141,7 +141,7 @@ export function PropertyListingsRedesign() {
       agentColor: "#FBEAF0",
       photos: 6,
       verified: true,
-      emoji: "🏢",
+      icon: Building2,
       gradientFrom: "#FBEAF0",
       gradientTo: "#F4C0D1",
     },
@@ -163,7 +163,7 @@ export function PropertyListingsRedesign() {
       agentColor: "#E1F5EE",
       photos: 10,
       verified: true,
-      emoji: "🌆",
+      icon: Layers,
       gradientFrom: "#E1F5EE",
       gradientTo: "#9FE1CB",
     },
@@ -279,7 +279,7 @@ export function PropertyListingsRedesign() {
     { id: "under-1500", label: "Under $1,500" },
     { id: "1500-2500", label: "$1,500 – $2,500" },
     { id: "2500+", label: "$2,500+" },
-    { id: "pets", label: "🐕 Pets OK" },
+    { id: "pets", label: "Pets OK" },
     { id: "furnished", label: "Furnished" },
     { id: "parking", label: "Parking" },
   ];
@@ -442,7 +442,7 @@ export function PropertyListingsRedesign() {
 
           {sortedListings.length === 0 ? (
             <div className="bg-white border border-[rgba(0,0,0,0.05)] rounded-[14px] p-12 text-center">
-              <div className="text-4xl mb-4">🔍</div>
+              <div className="mb-4"><Search size={40} color="#9CA3AF"/></div>
               <h3 className="text-lg font-medium text-[#1A1A1A] mb-2">No listings found</h3>
               <p className="text-sm text-[#6B7280] mb-4">Try adjusting your filters to see more results</p>
               <button 
@@ -462,10 +462,10 @@ export function PropertyListingsRedesign() {
                   {/* IMAGE */}
                   <div className="w-[200px] min-h-[160px] bg-[#F9FAFB] flex-shrink-0 relative overflow-hidden">
                     <div
-                      className="w-full h-full flex items-center justify-center text-[32px]"
+                      className="w-full h-full flex items-center justify-center"
                       style={{ background: `linear-gradient(135deg, ${listing.gradientFrom} 0%, ${listing.gradientTo} 100%)` }}
                     >
-                      {listing.emoji}
+                      {(()=>{const LIcon=listing.icon;return<LIcon size={40} color="rgba(0,0,0,0.3)"/>;})()}
                     </div>
                     <div className="absolute top-2.5 left-2.5 bg-black/60 text-white text-[11px] px-2 py-0.5 rounded-[20px]">
                       {listing.photos} photos
@@ -484,9 +484,9 @@ export function PropertyListingsRedesign() {
                       <div className="text-[15px] font-medium mb-1 text-[#1A1A1A]">{listing.title}</div>
                       <div className="text-[13px] text-[#6B7280] mb-2.5">{listing.address}</div>
                       <div className="flex gap-3.5 text-[13px] text-[#6B7280] mb-3">
-                        <span className="flex items-center gap-1">🛏 {listing.beds} {typeof listing.beds === "number" ? "beds" : ""}</span>
-                        <span className="flex items-center gap-1">🛁 {listing.baths} bath</span>
-                        <span className="flex items-center gap-1">📐 {listing.sqft} sqft</span>
+                        <span className="flex items-center gap-1"><BedDouble size={13}/> {listing.beds} {typeof listing.beds === "number" ? "beds" : ""}</span>
+                        <span className="flex items-center gap-1"><Bath size={13}/> {listing.baths} bath</span>
+                        <span className="flex items-center gap-1"><Ruler size={13}/> {listing.sqft} sqft</span>
                       </div>
                       <div className="flex gap-1.5 flex-wrap">
                         {listing.tags.map((tag, idx) => (
@@ -558,7 +558,7 @@ export function PropertyListingsRedesign() {
 
           {/* MAP */}
           <div className="bg-[#F9FAFB] border border-[rgba(0,0,0,0.05)] rounded-[14px] h-[180px] flex items-center justify-center flex-col gap-2 mb-4 text-[13px] text-[#6B7280] cursor-pointer hover:border-[rgba(0,0,0,0.12)] transition">
-            <div className="text-[28px]">🗺</div>
+            <Map size={28} color="#9CA3AF"/>
             <div>View listings on map</div>
           </div>
 
@@ -605,7 +605,7 @@ export function PropertyListingsRedesign() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-[10px] bg-[#E1F5EE] flex items-center justify-center text-sm flex-shrink-0">🔒</div>
+                <div className="w-8 h-8 rounded-[10px] bg-[#E1F5EE] flex items-center justify-center flex-shrink-0"><Lock size={14} color="#0A7A52"/></div>
                 <div>
                   <h4 className="text-[13px] font-medium text-[#1A1A1A]">Secure payments</h4>
                   <p className="text-xs text-[#6B7280] leading-snug mt-0.5">
@@ -848,7 +848,7 @@ export function PropertyListingsRedesign() {
                       <h3 className="text-sm font-medium text-[#185FA5] mb-2">Tips for First-Time Renters</h3>
                       <ul className="space-y-1.5">
                         {leaseGuide.tips.map((tip, i) => (
-                          <li key={i} className="text-sm text-[#1A1A1A] leading-snug">💡 {tip}</li>
+                          <li key={i} className="text-sm text-[#1A1A1A] leading-snug flex items-start gap-1.5"><Lightbulb size={13} className="mt-0.5 flex-shrink-0" color="#B45309"/> {tip}</li>
                         ))}
                       </ul>
                     </div>

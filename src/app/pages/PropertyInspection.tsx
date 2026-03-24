@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { Home as HomeIcon, Package, Clipboard as ClipboardIcon } from "lucide-react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -267,7 +268,7 @@ export function PropertyInspection() {
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                   <div style={{ width: 40, height: 40, borderRadius: 10, background: BG, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>
-                    {insp.type === "Move-In" ? "🏠" : insp.type === "Move-Out" ? "📦" : "📋"}
+                    {(()=>{const I=insp.type==="Move-In"?HomeIcon:insp.type==="Move-Out"?Package:ClipboardIcon;return<I size={18} color={MU}/>;})()}
                   </div>
                   <div>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>

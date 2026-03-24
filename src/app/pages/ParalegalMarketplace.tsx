@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Scale, Star, MapPin, CheckCircle2, Clock, Phone, MessageSquare, Filter, Search, Award, TrendingUp, ChevronRight } from "lucide-react";
+import { Scale, Star, MapPin, CheckCircle2, Clock, Phone, MessageSquare, Filter, Search, Award, TrendingUp, ChevronRight, Briefcase, Zap } from "lucide-react";
 import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
@@ -123,14 +123,14 @@ export default function ParalegalMarketplace(){
         {/* Stats */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:28}}>
           {[
-            {label:"Avg. Hearing Fee",value:"$168",icon:"💼",color:G},
-            {label:"Avg. Success Rate",color:"#059669",value:"91%",icon:"✅"},
-            {label:"Median Response Time",value:"2 hrs",icon:"⚡",color:"#1E5FA8"},
-            {label:"Hearings Handled",value:"2,591",icon:"⚖️",color:"#7C3AED"},
+            {label:"Avg. Hearing Fee",value:"$168",Icon:Briefcase,color:G},
+            {label:"Avg. Success Rate",color:"#059669",value:"91%",Icon:CheckCircle2},
+            {label:"Median Response Time",value:"2 hrs",Icon:Zap,color:"#1E5FA8"},
+            {label:"Hearings Handled",value:"2,591",Icon:Scale,color:"#7C3AED"},
           ].map((s,i)=>(
             <motion.div key={s.label} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:i*0.08}}
               style={{...cd,padding:"16px 18px"}}>
-              <div style={{fontSize:22,marginBottom:6}}>{s.icon}</div>
+              <div style={{marginBottom:6}}>{(()=>{const SI=s.Icon;return<SI size={22} color={s.color??MU}/>;})()}</div>
               <div style={{fontSize:22,fontWeight:700,color:s.color,fontFamily:SERIF}}>{s.value}</div>
               <div style={{fontSize:12,color:MU,marginTop:2}}>{s.label}</div>
             </motion.div>
@@ -169,9 +169,9 @@ export default function ParalegalMarketplace(){
                       <div style={{fontSize:12,color:MU,marginBottom:5}}>{p.firm} · {p.city}</div>
                       <StarRating rating={p.rating} count={p.reviews}/>
                       <div style={{display:"flex",gap:12,marginTop:6}}>
-                        <span style={{fontSize:12,color:MU}}>✅ {p.successRate}% success rate</span>
-                        <span style={{fontSize:12,color:MU}}>⚖️ {p.hearingsHandled} hearings</span>
-                        <span style={{fontSize:12,color:MU}}>⏱️ {p.responseTime}</span>
+                        <span style={{fontSize:12,color:MU,display:"flex",alignItems:"center",gap:3}}><CheckCircle2 size={11}/> {p.successRate}% success rate</span>
+                        <span style={{fontSize:12,color:MU,display:"flex",alignItems:"center",gap:3}}><Scale size={11}/> {p.hearingsHandled} hearings</span>
+                        <span style={{fontSize:12,color:MU,display:"flex",alignItems:"center",gap:3}}><Clock size={11}/> {p.responseTime}</span>
                       </div>
                       <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
                         {p.specialties.slice(0,3).map(s=>(
@@ -204,12 +204,12 @@ export default function ParalegalMarketplace(){
                           <p style={{fontSize:13,color:TX,margin:"14px 0",lineHeight:1.6}}>{p.bio}</p>
                           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12,marginBottom:14}}>
                             {[
-                              {label:"Free Consultation",value:p.consultFee===0?"Free":`$${p.consultFee}`,icon:"📞"},
-                              {label:"Per LTB Hearing",value:`$${p.perHearingFee}`,icon:"⚖️"},
-                              {label:"Languages",value:p.languages.join(", "),icon:"🌐"},
+                              {label:"Free Consultation",value:p.consultFee===0?"Free":`$${p.consultFee}`,Icon:Phone},
+                              {label:"Per LTB Hearing",value:`$${p.perHearingFee}`,Icon:Scale},
+                              {label:"Languages",value:p.languages.join(", "),Icon:MessageSquare},
                             ].map(m=>(
                               <div key={m.label} style={{background:BG,borderRadius:9,padding:"12px 14px"}}>
-                                <div style={{fontSize:18,marginBottom:4}}>{m.icon}</div>
+                                <div style={{marginBottom:4}}><m.Icon size={18} color={MU}/></div>
                                 <div style={{fontSize:13,fontWeight:700,color:TX}}>{m.value}</div>
                                 <div style={{fontSize:11,color:MU}}>{m.label}</div>
                               </div>

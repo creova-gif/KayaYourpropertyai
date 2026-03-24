@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Award, CheckCircle2 } from "lucide-react";
+import { Award, CheckCircle2, Home, CreditCard, Car } from "lucide-react";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
@@ -86,12 +86,12 @@ export function RentCreditBuilding(){
 
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12,marginBottom:24}}>
           {[
-            {icon:"🏠",title:"Buy a home sooner",desc:"A higher score means better mortgage rates and faster approval"},
-            {icon:"💳",title:"Better credit cards",desc:"Qualify for premium cards with rewards, lower rates, and higher limits"},
-            {icon:"🚗",title:"Lower loan rates",desc:"Save thousands on car loans and other financing over your lifetime"},
+            {Icon:Home,title:"Buy a home sooner",desc:"A higher score means better mortgage rates and faster approval"},
+            {Icon:CreditCard,title:"Better credit cards",desc:"Qualify for premium cards with rewards, lower rates, and higher limits"},
+            {Icon:Car,title:"Lower loan rates",desc:"Save thousands on car loans and other financing over your lifetime"},
           ].map((b,i)=>(
             <KCard key={b.title} delay={.15+i*.07} style={{padding:"18px 20px"}}>
-              <div style={{fontSize:24,marginBottom:10}}>{b.icon}</div>
+              <div style={{marginBottom:10}}>{(()=>{const BI=b.Icon;return<BI size={24} color={G}/>;})()}</div>
               <p style={{fontSize:13,fontWeight:600,color:TX,marginBottom:4}}>{b.title}</p>
               <p style={{fontSize:12,color:MU,lineHeight:1.55}}>{b.desc}</p>
             </KCard>

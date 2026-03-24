@@ -237,7 +237,7 @@ export function DashboardIntegrated() {
                         {insight.description}
                       </p>
                       <p style={{ fontSize: 12, color: insight.severity === 'high' ? '#B45309' : G, fontWeight: 600 }}>
-                        💡 {insight.recommendation}
+                        {insight.recommendation}
                       </p>
                     </div>
                   </div>
