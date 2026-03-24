@@ -6,8 +6,18 @@ const BD="rgba(0,0,0,0.07)";
 const SERIF="'Instrument Serif',Georgia,serif",SANS="'DM Sans',system-ui,sans-serif";
 const cd:React.CSSProperties={background:"#fff",border:`1px solid ${BD}`,borderRadius:16};
 
-const PROPERTIES = ["123 King St W", "456 Queen St W", "789 Bloor St W"];
-const INSPECTION_TYPES = ["Move-In", "Move-Out", "Routine", "Annual"];
+const PROPERTIES = ["123 King St W", "456 Queen St W", "789 Bloor St W", "200 Bay St (Commercial)", "450 Front St W (Commercial)"];
+const INSPECTION_TYPES = ["Move-In", "Move-Out", "Routine", "Annual", "Commercial"];
+
+const COMMERCIAL_CHECKLIST_ROOMS: { room: string; items: string[] }[] = [
+  { room: "HVAC & Mechanical", items: ["Rooftop unit / AHU operation", "Thermostat calibration", "Ductwork condition", "Filter replacement", "Boiler / chiller inspection", "Exhaust fans", "Makeup air units"] },
+  { room: "Electrical Systems", items: ["Main electrical panel", "Sub-panel capacity", "Emergency lighting", "Exit signs", "Exterior lighting", "Dedicated circuits for tenant equipment", "Ground fault protection"] },
+  { room: "Fire Safety", items: ["Fire suppression (sprinkler heads)", "Smoke & heat detectors", "Pull stations tested", "Fire extinguisher tags current", "Emergency exits unobstructed", "Knox box / fire dept. access", "Annunciator panel"] },
+  { room: "Building Envelope", items: ["Roof membrane / drainage", "Exterior walls / cladding", "Windows & glazing seals", "Loading dock condition", "Parking lot / signage", "Foundation / drainage tile", "Signage compliance"] },
+  { room: "Plumbing & Utilities", items: ["Backflow preventer", "Floor drains / grease traps", "Water shutoff valves", "Gas shutoff (if applicable)", "Meter readings documented", "Water heater / boiler"] },
+  { room: "Accessibility (ADA/AODA)", items: ["Accessible parking spaces", "Ramp / curb cuts", "Accessible entrance", "Elevator / lift (if applicable)", "Accessible washroom", "Signage (Braille / tactile)"] },
+  { room: "Interior Common Areas", items: ["Lobby condition", "Corridor flooring", "Stairwell handrails", "Elevators maintained", "Common washrooms", "Mail / courier access"] },
+];
 
 const CHECKLIST_ROOMS: { room: string; items: string[] }[] = [
   { room: "Living Room", items: ["Walls & Ceiling", "Flooring", "Windows & Blinds", "Lighting & Switches", "Electrical Outlets", "Baseboards"] },
@@ -56,16 +66,26 @@ export function PropertyInspection() {
     CHECKLIST_ROOMS.forEach(r => { m[r.room] = {}; r.items.forEach(it => { m[r.room][it] = false; }); });
     return m;
   });
+  const [commChecks, setCommChecks] = useState<CheckMap>(() => {
+    const m: CheckMap = {};
+    COMMERCIAL_CHECKLIST_ROOMS.forEach(r => { m[r.room] = {}; r.items.forEach(it => { m[r.room][it] = false; }); });
+    return m;
+  });
   const [notes, setNotes] = useState("");
   const [activeTab, setActiveTab] = useState<"new" | "history">("new");
   const [expandedInspection, setExpandedInspection] = useState<string | null>(null);
 
-  const totalItems = CHECKLIST_ROOMS.reduce((s, r) => s + r.items.length, 0);
-  const checkedItems = Object.values(checks).reduce((s, room) => s + Object.values(room).filter(Boolean).length, 0);
+  const isCommercial = type === "Commercial";
+  const activeChecklist = isCommercial ? COMMERCIAL_CHECKLIST_ROOMS : CHECKLIST_ROOMS;
+  const activeChecks = isCommercial ? commChecks : checks;
+  const setActiveChecks = isCommercial ? setCommChecks : setChecks;
+
+  const totalItems = activeChecklist.reduce((s, r) => s + r.items.length, 0);
+  const checkedItems = Object.values(activeChecks).reduce((s, room) => s + Object.values(room).filter(Boolean).length, 0);
   const progress = Math.round((checkedItems / totalItems) * 100);
 
   function toggleCheck(room: string, item: string) {
-    setChecks(prev => ({ ...prev, [room]: { ...prev[room], [item]: !prev[room][item] } }));
+    setActiveChecks(prev => ({ ...prev, [room]: { ...prev[room], [item]: !prev[room][item] } }));
   }
 
   function handleSubmit() {
@@ -195,9 +215,16 @@ export function PropertyInspection() {
 
           {/* Checklist */}
           <div style={{ ...cd, padding: 22, maxHeight: 700, overflowY: "auto" }}>
-            <p style={{ fontSize: 13, fontWeight: 700, color: TX, marginBottom: 16 }}>Inspection Checklist</p>
-            {CHECKLIST_ROOMS.map(r => {
-              const roomChecked = Object.values(checks[r.room]).filter(Boolean).length;
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: TX, margin: 0 }}>
+                {isCommercial ? "Commercial Inspection Checklist" : "Residential Inspection Checklist"}
+              </p>
+              {isCommercial && (
+                <span style={{ fontSize: 10, fontWeight: 700, color: G, background: GL, padding: "3px 10px", borderRadius: 20 }}>Commercial Mode</span>
+              )}
+            </div>
+            {activeChecklist.map(r => {
+              const roomChecked = activeChecks[r.room] ? Object.values(activeChecks[r.room]).filter(Boolean).length : 0;
               const roomTotal = r.items.length;
               return (
                 <div key={r.room} style={{ marginBottom: 18 }}>
@@ -205,21 +232,24 @@ export function PropertyInspection() {
                     <p style={{ fontSize: 12, fontWeight: 700, color: TX }}>{r.room}</p>
                     <span style={{ fontSize: 10, color: roomChecked === roomTotal ? G : MU, fontWeight: 600 }}>{roomChecked}/{roomTotal}</span>
                   </div>
-                  {r.items.map(item => (
-                    <label
-                      key={item}
-                      style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 7, cursor: "pointer" }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checks[r.room][item]}
-                        onChange={() => toggleCheck(r.room, item)}
-                        style={{ width: 15, height: 15, accentColor: G }}
-                      />
-                      <span style={{ fontSize: 12, color: checks[r.room][item] ? MU : TX, textDecoration: checks[r.room][item] ? "line-through" : "none", transition: "all .15s" }}>{item}</span>
-                      {checks[r.room][item] && <span style={{ fontSize: 10, color: G, marginLeft: "auto" }}>✓</span>}
-                    </label>
-                  ))}
+                  {r.items.map(item => {
+                    const checked = activeChecks[r.room]?.[item] ?? false;
+                    return (
+                      <label
+                        key={item}
+                        style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 7, cursor: "pointer" }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => toggleCheck(r.room, item)}
+                          style={{ width: 15, height: 15, accentColor: G }}
+                        />
+                        <span style={{ fontSize: 12, color: checked ? MU : TX, textDecoration: checked ? "line-through" : "none", transition: "all .15s" }}>{item}</span>
+                        {checked && <span style={{ fontSize: 10, color: G, marginLeft: "auto" }}>✓</span>}
+                      </label>
+                    );
+                  })}
                 </div>
               );
             })}

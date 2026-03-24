@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ShieldCheck, CheckCircle2, AlertTriangle, XCircle, Info, Lock, Eye, FileText, Users, Bell, ChevronRight, Download } from "lucide-react";
+import { ShieldCheck, CheckCircle2, AlertTriangle, XCircle, Info, Lock, Eye, FileText, Users, Bell, ChevronRight, Download, Building2 } from "lucide-react";
 import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
@@ -23,6 +23,41 @@ const COMPLIANCE_ITEMS:ComplianceItem[]=[
     status:"action_required",category:"Privacy",
     actions:["Add a consent checkbox to your rental application form","Explain what data is collected and why","Provide option to withdraw consent at any time","Store consent records with timestamp"],
     law:"PIPEDA s.6–7 / Bill C-27",severity:"high"
+  },
+  {
+    id:"commercial_hst",title:"HST Registration — Commercial Landlord",
+    description:"Landlords who collect commercial rent exceeding $30,000/year must register for and collect HST (13%) on base rent, CAM charges, and parking. Residential rent is HST-exempt; mixed-use properties must apportion.",
+    status:"action_required",category:"Commercial",
+    actions:["Register for a GST/HST business number via CRA My Business Account","Charge 13% HST on all commercial rent invoices","File HST returns (monthly, quarterly, or annually based on revenue)","Apportion HST for mixed-use properties using square footage ratio","Issue annual HST reconciliation statements to commercial tenants"],
+    law:"Excise Tax Act (ETA) s.123 / CRA RC4022",severity:"high"
+  },
+  {
+    id:"commercial_lease_law",title:"Commercial Tenancies Act — Landlord Obligations",
+    description:"Commercial leases in Ontario are governed by the Commercial Tenancies Act, not the RTA. Landlords retain the right to distress (seizing goods for unpaid rent) and remedies differ significantly from residential.",
+    status:"review",category:"Commercial",
+    actions:["Ensure commercial leases include clear distress rights clause","Document all rent arrears with dated invoices","Understand that LTB has NO jurisdiction — commercial disputes go to Superior Court","Include dispute resolution clause in all commercial leases","Review right to re-enter and re-let provisions with a commercial real estate lawyer"],
+    law:"Commercial Tenancies Act, R.S.O. 1990, c. L.7",severity:"high"
+  },
+  {
+    id:"cam_disclosure",title:"CAM Charges — Disclosure & Reconciliation",
+    description:"Common Area Maintenance (CAM) charges must be clearly defined in the lease. Landlords must provide annual CAM reconciliation statements showing estimated vs. actual costs.",
+    status:"review",category:"Commercial",
+    actions:["Define all CAM components in the lease (insurance, taxes, maintenance, utilities)","Issue estimated CAM schedule at lease start and each year","Provide audited CAM reconciliation within 90–120 days of year-end","Cap CAM increases in lease (e.g., 5% per year controllable costs)","Allow tenant audit rights for CAM charges"],
+    law:"Commercial Tenancies Act + common law disclosure duties",severity:"medium"
+  },
+  {
+    id:"corporate_entity_screening",title:"Business Tenant Due Diligence (LOI to Lease)",
+    description:"Before executing a commercial lease, landlords must verify the tenant's corporate standing, creditworthiness, and obtain personal guarantees from principals where appropriate.",
+    status:"action_required",category:"Commercial",
+    actions:["Obtain a Certificate of Status from the Ontario Business Registry","Pull Dun & Bradstreet or Equifax Business credit report","Require financial statements for last 2 years (new businesses: 2-year projection)","Obtain personal guarantee from director(s) with >25% ownership","Verify HST registration number if tenant will be collecting HST"],
+    law:"REBBA / CRA Business Registry / Commercial Tenancies Act",severity:"high"
+  },
+  {
+    id:"superior_court_commercial",title:"Commercial Dispute Resolution — Superior Court",
+    description:"Unlike residential tenancies, commercial rent disputes, evictions, and lease breaches are NOT heard by the LTB. Landlords must pursue remedies through the Ontario Superior Court of Justice.",
+    status:"compliant",category:"Commercial",
+    actions:["Kaya generates commercial demand letters for Superior Court filing","Do not file N4 or LTB forms for commercial tenants — these are invalid","For unpaid rent, pursue Small Claims (under $35K) or Superior Court (over $35K)","Retain a commercial real estate litigation lawyer for lease terminations","Include arbitration clauses in leases to reduce litigation costs"],
+    law:"Courts of Justice Act / Commercial Tenancies Act s.19",severity:"medium"
   },
   {
     id:"ai_explainability",title:"AI Screening Decisions — Explainability",
@@ -86,14 +121,21 @@ const SEVERITY_COLOR:{[k:string]:string}={high:"#C0392B",medium:"#B45309",low:G}
 export default function ComplianceCenter(){
   const [activeItem,setActiveItem]=useState<string|null>(null);
   const [filterCat,setFilterCat]=useState("All");
+  const [mode,setMode]=useState<"residential"|"commercial">("residential");
 
-  const cats=["All",...Array.from(new Set(COMPLIANCE_ITEMS.map(i=>i.category)))];
-  const filtered=filterCat==="All"?COMPLIANCE_ITEMS:COMPLIANCE_ITEMS.filter(i=>i.category===filterCat);
+  const switchMode=(m:"residential"|"commercial")=>{setMode(m);setFilterCat("All");setActiveItem(null);};
 
-  const compliantCount=COMPLIANCE_ITEMS.filter(i=>i.status==="compliant").length;
-  const actionCount=COMPLIANCE_ITEMS.filter(i=>i.status==="action_required").length;
-  const reviewCount=COMPLIANCE_ITEMS.filter(i=>i.status==="review").length;
-  const score=Math.round((compliantCount/COMPLIANCE_ITEMS.length)*100);
+  const allItems = mode==="commercial"
+    ? COMPLIANCE_ITEMS.filter(i=>i.category==="Commercial"||i.category==="Privacy"||i.category==="Marketing")
+    : COMPLIANCE_ITEMS.filter(i=>i.category!=="Commercial");
+
+  const cats=["All",...Array.from(new Set(allItems.map(i=>i.category)))];
+  const filtered=filterCat==="All"?allItems:allItems.filter(i=>i.category===filterCat);
+
+  const compliantCount=allItems.filter(i=>i.status==="compliant").length;
+  const actionCount=allItems.filter(i=>i.status==="action_required").length;
+  const reviewCount=allItems.filter(i=>i.status==="review").length;
+  const score=Math.round((compliantCount/allItems.length)*100);
 
   return(
     <div style={{minHeight:"100vh",background:BG,fontFamily:SANS}}>
@@ -101,13 +143,28 @@ export default function ComplianceCenter(){
 
         {/* Header */}
         <motion.div initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} style={{marginBottom:32}}>
-          <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
-            <div style={{width:44,height:44,borderRadius:12,background:GL,display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <ShieldCheck size={22} color={G}/>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginBottom:16}}>
+            <div style={{display:"flex",alignItems:"center",gap:12}}>
+              <div style={{width:44,height:44,borderRadius:12,background:GL,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <ShieldCheck size={22} color={G}/>
+              </div>
+              <div>
+                <h1 style={{fontSize:26,fontWeight:700,color:TX,fontFamily:SERIF,margin:0}}>Compliance Centre</h1>
+                <p style={{fontSize:14,color:MU,margin:0}}>
+                  {mode==="residential"?"PIPEDA · Ontario Human Rights Code · CASL · LTB Requirements":"Commercial Tenancies Act · HST (ETA) · REBBA · Superior Court"}
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 style={{fontSize:26,fontWeight:700,color:TX,fontFamily:SERIF,margin:0}}>Compliance Centre</h1>
-              <p style={{fontSize:14,color:MU,margin:0}}>PIPEDA · Ontario Human Rights Code · CASL · LTB Requirements</p>
+            {/* Mode toggle */}
+            <div style={{display:"flex",background:"#fff",border:`1px solid ${BD}`,borderRadius:10,padding:4,gap:4,flexShrink:0}}>
+              {(["residential","commercial"] as const).map(m=>(
+                <button key={m} onClick={()=>switchMode(m)}
+                  style={{padding:"7px 16px",borderRadius:7,border:"none",fontSize:13,fontWeight:600,cursor:"pointer",
+                    background:mode===m?TX:"transparent",color:mode===m?"#fff":MU,transition:"all .2s",display:"flex",alignItems:"center",gap:6}}>
+                  {m==="commercial"&&<Building2 size={13}/>}
+                  {m.charAt(0).toUpperCase()+m.slice(1)}
+                </button>
+              ))}
             </div>
           </div>
         </motion.div>

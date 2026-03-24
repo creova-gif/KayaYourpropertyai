@@ -1,15 +1,27 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { toast } from "sonner";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TX="#0E0F0C",MU="#767570";
 const BD="rgba(0,0,0,0.07)";
 const SERIF="'Instrument Serif',Georgia,serif",SANS="'DM Sans',system-ui,sans-serif";
-const cd:React.CSSProperties={background:"#fff",border:`1px solid ${BD}`,borderRadius:16};
+const cd:CSSProperties={background:"#fff",border:`1px solid ${BD}`,borderRadius:16};
 
 const properties = [
-  { addr: "123 King St W", units: 4, occupied: 4, income: 9600 },
-  { addr: "456 Queen St W", units: 5, occupied: 4, income: 8740 },
-  { addr: "789 Bloor St W", units: 3, occupied: 3, income: 6600 },
+  { addr: "123 King St W", units: 4, occupied: 4, income: 9600, type: "residential" as const },
+  { addr: "456 Queen St W", units: 5, occupied: 4, income: 8740, type: "residential" as const },
+  { addr: "789 Bloor St W", units: 3, occupied: 3, income: 6600, type: "residential" as const },
+];
+
+const commercialProperties = [
+  {
+    addr: "200 Bay St",
+    suites: 2, occupiedSuites: 1,
+    baseRent: 14800,
+    camCollected: 3028,
+    camActual: 2612,
+    leaseTypes: ["NNN", "Gross"] as const,
+    type: "commercial" as const,
+  },
 ];
 
 const statements = [
@@ -167,6 +179,59 @@ export function OwnerPortal() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Commercial Properties — CAM/NNN Breakdown */}
+      <div style={{ ...cd, overflow: "hidden", marginBottom: 16 }}>
+        <div style={{ padding: "14px 18px", borderBottom: `1px solid ${BD}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <p style={{ fontSize: 13, fontWeight: 700, color: TX }}>Commercial Properties — CAM / NNN Breakdown</p>
+          <span style={{ fontSize: 10, fontWeight: 700, color: "#1E5FA8", background: "#EBF2FB", borderRadius: 20, padding: "3px 10px" }}>Commercial</span>
+        </div>
+        {commercialProperties.map(p => {
+          const camVariance = p.camCollected - p.camActual;
+          return (
+            <div key={p.addr} style={{ padding: "18px 18px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+                <div>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: TX, marginBottom: 2 }}>{p.addr}</p>
+                  <p style={{ fontSize: 11, color: MU }}>{p.occupiedSuites}/{p.suites} suites occupied · {p.leaseTypes.join(" + ")} leases</p>
+                </div>
+                <p style={{ fontFamily: SERIF, fontSize: 22, color: G }}>${(p.baseRent + p.camCollected).toLocaleString()}/mo</p>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginBottom: 14 }}>
+                {[
+                  { label: "Base Rent", val: `$${p.baseRent.toLocaleString()}/mo`, color: TX },
+                  { label: "CAM Collected", val: `$${p.camCollected.toLocaleString()}/mo`, color: TX },
+                  { label: "CAM Variance YTD", val: `${camVariance >= 0 ? "+" : ""}$${(camVariance * 12).toLocaleString()}`, color: camVariance >= 0 ? G : "#C0392B" },
+                ].map(s => (
+                  <div key={s.label} style={{ background: BG, borderRadius: 10, padding: "12px 14px" }}>
+                    <p style={{ fontSize: 9, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 6 }}>{s.label}</p>
+                    <p style={{ fontFamily: SERIF, fontSize: 20, color: s.color, lineHeight: 1 }}>{s.val}</p>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: BG, borderRadius: 10, padding: "12px 14px" }}>
+                <p style={{ fontSize: 9, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 8 }}>Annual CAM Reconciliation Summary</p>
+                {[
+                  ["CAM Collected from Tenants (est.)", `$${(p.camCollected * 12).toLocaleString()}`],
+                  ["Actual CAM Costs (operating)", `$${(p.camActual * 12).toLocaleString()}`],
+                  ["Net CAM Surplus (landlord retains)", `$${((p.camCollected - p.camActual) * 12).toLocaleString()}`],
+                ].map(([l, v]) => (
+                  <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: `1px solid ${BD}` }}>
+                    <span style={{ fontSize: 11, color: MU }}>{l}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: TX }}>{v}</span>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => toast.success("CAM reconciliation statement sent to commercial tenants")}
+                style={{ marginTop: 12, padding: "8px 18px", background: "#1E5FA8", color: "#fff", border: "none", borderRadius: 9, fontFamily: SANS, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+              >
+                Issue Annual CAM Statement →
+              </button>
+            </div>
+          );
+        })}
       </div>
 
       {/* Recent Activity */}

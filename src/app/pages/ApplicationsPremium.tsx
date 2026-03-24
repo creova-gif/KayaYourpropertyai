@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router";
-import { Search, Filter, CheckCircle2, AlertTriangle, XCircle, ChevronRight, Brain } from "lucide-react";
+import { Search, Filter, CheckCircle2, AlertTriangle, XCircle, ChevronRight, Brain, Building2, Briefcase } from "lucide-react";
 import { AIContextualHelper } from "../components/AIContextualHelper";
 
 const G = "#0A7A52";
@@ -32,6 +32,31 @@ const applications: Application[] = [
   { id: "3", name: "Jason Lee", unit: "Unit 1C — 3 Bedroom", rent: 2800, aiScore: 68, riskLevel: "medium", recommendation: "review", creditScore: 658, income: 7200, rentToIncomeRatio: 39, employmentYears: 1.8, appliedDate: "Mar 13" },
   { id: "4", name: "Emma Chen", unit: "Unit 3B — 1 Bedroom", rent: 1850, aiScore: 55, riskLevel: "high", recommendation: "reject", creditScore: 590, income: 4200, rentToIncomeRatio: 44, employmentYears: 0.8, appliedDate: "Mar 12" },
   { id: "5", name: "David Martinez", unit: "Unit 5A — 2 Bedroom", rent: 2200, aiScore: 89, riskLevel: "low", recommendation: "approve", creditScore: 728, income: 8200, rentToIncomeRatio: 27, employmentYears: 5.2, appliedDate: "Mar 15" },
+];
+
+interface BusinessApplication {
+  id: string;
+  companyName: string;
+  contactName: string;
+  unit: string;
+  baseRent: number;
+  aiScore: number;
+  riskLevel: "low" | "medium" | "high";
+  recommendation: "approve" | "review" | "reject";
+  businessCreditScore: number;
+  annualRevenue: number;
+  incorporationYear: number;
+  hasPersonalGuarantee: boolean;
+  leaseType: string;
+  appliedDate: string;
+  incorporationNo: string;
+}
+
+const businessApplications: BusinessApplication[] = [
+  { id: "b1", companyName: "Maple Leaf Café Inc.", contactName: "Priya Anand (Director)", unit: "Suite 101 — 1,200 sqft Retail", baseRent: 4800, aiScore: 88, riskLevel: "low", recommendation: "approve", businessCreditScore: 72, annualRevenue: 420000, incorporationYear: 2019, hasPersonalGuarantee: true, leaseType: "NNN", appliedDate: "Mar 12", incorporationNo: "ON-3847201" },
+  { id: "b2", companyName: "TechNest Solutions Ltd.", contactName: "Jordan Wu (CEO)", unit: "Suite 305 — 2,400 sqft Office", baseRent: 9200, aiScore: 94, riskLevel: "low", recommendation: "approve", businessCreditScore: 81, annualRevenue: 1850000, incorporationYear: 2017, hasPersonalGuarantee: true, leaseType: "Gross", appliedDate: "Mar 14", incorporationNo: "ON-2194830" },
+  { id: "b3", companyName: "Northview Fitness Co.", contactName: "Marcus Osei (Owner)", unit: "Suite 200 — 3,800 sqft", baseRent: 12400, aiScore: 61, riskLevel: "medium", recommendation: "review", businessCreditScore: 54, annualRevenue: 280000, incorporationYear: 2022, hasPersonalGuarantee: false, leaseType: "Modified Gross", appliedDate: "Mar 10", incorporationNo: "ON-4921047" },
+  { id: "b4", companyName: "GreenByte Digital Inc.", contactName: "Sophie Tremblay (COO)", unit: "Suite 410 — 1,600 sqft Office", baseRent: 5600, aiScore: 79, riskLevel: "low", recommendation: "approve", businessCreditScore: 68, annualRevenue: 740000, incorporationYear: 2020, hasPersonalGuarantee: true, leaseType: "NNN", appliedDate: "Mar 15", incorporationNo: "ON-3310482" },
 ];
 
 function ScoreRing({ score, risk }: { score: number; risk: string }) {
@@ -72,17 +97,28 @@ export function ApplicationsPremium() {
   const navigate = useNavigate();
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [tenantType, setTenantType] = useState<"residential" | "business">("residential");
 
   const filtered = applications.filter(a =>
     (filter === "all" || a.riskLevel === filter) &&
     (a.name.toLowerCase().includes(search.toLowerCase()) || a.unit.toLowerCase().includes(search.toLowerCase()))
   );
 
-  const stats = {
+  const filteredBusiness = businessApplications.filter(a =>
+    (filter === "all" || a.riskLevel === filter) &&
+    (a.companyName.toLowerCase().includes(search.toLowerCase()) || a.unit.toLowerCase().includes(search.toLowerCase()))
+  );
+
+  const stats = tenantType === "residential" ? {
     total: applications.length,
     pending: applications.length,
     highScore: applications.filter(a => a.aiScore >= 85).length,
     attention: applications.filter(a => a.riskLevel !== "low").length,
+  } : {
+    total: businessApplications.length,
+    pending: businessApplications.length,
+    highScore: businessApplications.filter(a => a.aiScore >= 85).length,
+    attention: businessApplications.filter(a => a.riskLevel !== "low").length,
   };
 
   return (
@@ -103,17 +139,34 @@ export function ApplicationsPremium() {
 
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: 40 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 8 }}>
-            <div style={{ width: 40, height: 40, borderRadius: 12, background: TEXT, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Brain size={20} color="#fff" />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, marginBottom: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: TEXT, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Brain size={20} color="#fff" />
+              </div>
+              <div>
+                <h1 style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 42, fontWeight: 400, color: TEXT, lineHeight: 1, letterSpacing: "-0.5px" }}>
+                  Smart Screening
+                </h1>
+              </div>
             </div>
-            <div>
-              <h1 style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 42, fontWeight: 400, color: TEXT, lineHeight: 1, letterSpacing: "-0.5px" }}>
-                Smart Screening
-              </h1>
+            {/* Tenant type toggle */}
+            <div style={{ display: "flex", background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 10, padding: 4, gap: 4 }}>
+              <button onClick={() => { setTenantType("residential"); setFilter("all"); }}
+                style={{ padding: "8px 16px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer",
+                  background: tenantType === "residential" ? TEXT : "transparent", color: tenantType === "residential" ? "#fff" : MUTED, transition: "all .2s", display: "flex", alignItems: "center", gap: 6 }}>
+                Residential
+              </button>
+              <button onClick={() => { setTenantType("business"); setFilter("all"); }}
+                style={{ padding: "8px 16px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer",
+                  background: tenantType === "business" ? TEXT : "transparent", color: tenantType === "business" ? "#fff" : MUTED, transition: "all .2s", display: "flex", alignItems: "center", gap: 6 }}>
+                <Building2 size={13} />Business Tenants
+              </button>
             </div>
           </div>
-          <p style={{ fontSize: 14, color: MUTED, marginLeft: 54 }}>AI-powered tenant analysis — {stats.total} applications</p>
+          <p style={{ fontSize: 14, color: MUTED, marginLeft: 54 }}>
+            {tenantType === "residential" ? "AI-powered tenant analysis" : "Corporate entity screening"} — {stats.total} applications
+          </p>
         </motion.div>
 
         {/* Stat row */}
@@ -168,73 +221,136 @@ export function ApplicationsPremium() {
           <p style={{ marginLeft: "auto", fontSize: 12, color: MUTED }}>{filtered.length} of {applications.length}</p>
         </div>
 
-        {/* List */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <AnimatePresence>
-            {filtered.map((app, i) => (
-              <motion.div
-                key={app.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ delay: i * 0.05 }}
-                onClick={() => navigate(`/applications/${app.id}`)}
-                whileHover={{ x: 4 }}
-                style={{
-                  background: "#fff",
-                  border: `1px solid ${BORDER}`,
-                  borderRadius: 16,
-                  padding: "20px 24px",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 20,
-                  borderLeft: `3px solid ${app.riskLevel === "low" ? G : app.riskLevel === "medium" ? "#B45309" : "#C0392B"}`,
-                }}
-              >
-                <ScoreRing score={app.aiScore} risk={app.riskLevel} />
-
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                    <p style={{ fontSize: 16, fontWeight: 600, color: TEXT }}>{app.name}</p>
-                    <RiskBadge rec={app.recommendation} risk={app.riskLevel} />
-                  </div>
-                  <p style={{ fontSize: 13, color: MUTED, marginBottom: 12 }}>{app.unit} · Applied {app.appliedDate}</p>
-
-                  <div style={{ display: "flex", gap: 32 }}>
-                    <StatPill label="Monthly income" value={`$${app.income.toLocaleString()}`} />
-                    <StatPill label="Rent / income" value={`${app.rentToIncomeRatio}%`} warn={app.rentToIncomeRatio > 35} />
-                    <StatPill label="Credit score" value={String(app.creditScore)} warn={app.creditScore < 650} />
-                    <StatPill label="Employment" value={`${app.employmentYears} yrs`} warn={app.employmentYears < 1} />
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
-                  {app.recommendation === "approve" && (
-                    <button
-                      onClick={e => { e.stopPropagation(); }}
-                      style={{ padding: "9px 20px", background: G, color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}
-                    >
-                      Approve
-                    </button>
-                  )}
-                  <button
-                    onClick={e => { e.stopPropagation(); navigate(`/applications/${app.id}`); }}
-                    style={{ padding: "9px 20px", background: BG, color: MUTED, border: `1px solid ${BORDER}`, borderRadius: 10, fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 4 }}
+        {/* Residential Application List */}
+        {tenantType === "residential" && (
+          <>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <AnimatePresence>
+                {filtered.map((app, i) => (
+                  <motion.div
+                    key={app.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ delay: i * 0.05 }}
+                    onClick={() => navigate(`/applications/${app.id}`)}
+                    whileHover={{ x: 4 }}
+                    style={{
+                      background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 16,
+                      padding: "20px 24px", cursor: "pointer", display: "flex", alignItems: "center", gap: 20,
+                      borderLeft: `3px solid ${app.riskLevel === "low" ? G : app.riskLevel === "medium" ? "#B45309" : "#C0392B"}`,
+                    }}
                   >
-                    View details <ChevronRight size={12} />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
+                    <ScoreRing score={app.aiScore} risk={app.riskLevel} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                        <p style={{ fontSize: 16, fontWeight: 600, color: TEXT }}>{app.name}</p>
+                        <RiskBadge rec={app.recommendation} risk={app.riskLevel} />
+                      </div>
+                      <p style={{ fontSize: 13, color: MUTED, marginBottom: 12 }}>{app.unit} · Applied {app.appliedDate}</p>
+                      <div style={{ display: "flex", gap: 32 }}>
+                        <StatPill label="Monthly income" value={`$${app.income.toLocaleString()}`} />
+                        <StatPill label="Rent / income" value={`${app.rentToIncomeRatio}%`} warn={app.rentToIncomeRatio > 35} />
+                        <StatPill label="Credit score" value={String(app.creditScore)} warn={app.creditScore < 650} />
+                        <StatPill label="Employment" value={`${app.employmentYears} yrs`} warn={app.employmentYears < 1} />
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+                      {app.recommendation === "approve" && (
+                        <button onClick={e => { e.stopPropagation(); }}
+                          style={{ padding: "9px 20px", background: G, color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                          Approve
+                        </button>
+                      )}
+                      <button onClick={e => { e.stopPropagation(); navigate(`/applications/${app.id}`); }}
+                        style={{ padding: "9px 20px", background: BG, color: MUTED, border: `1px solid ${BORDER}`, borderRadius: 10, fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 4 }}>
+                        View details <ChevronRight size={12} />
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+            {filtered.length === 0 && (
+              <div style={{ textAlign: "center", padding: "60px 0" }}>
+                <p style={{ fontSize: 16, color: MUTED }}>No applications match your filter.</p>
+              </div>
+            )}
+          </>
+        )}
 
-        {filtered.length === 0 && (
-          <div style={{ textAlign: "center", padding: "60px 0" }}>
-            <p style={{ fontSize: 16, color: MUTED }}>No applications match your filter.</p>
-          </div>
+        {/* Business Tenant Application List */}
+        {tenantType === "business" && (
+          <>
+            <div style={{ background: "#EBF2FB", border: "1px solid #BFDBFE", borderRadius: 12, padding: "12px 16px", marginBottom: 20, display: "flex", gap: 10, alignItems: "center" }}>
+              <Briefcase size={15} color="#1E5FA8" />
+              <span style={{ fontSize: 13, color: "#1E5FA8", fontWeight: 500 }}>Business tenant screening includes corporate credit, incorporation status, personal guarantee, and annual revenue verification.</span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <AnimatePresence>
+                {filteredBusiness.map((app, i) => {
+                  const rColor = app.riskLevel === "low" ? G : app.riskLevel === "medium" ? "#B45309" : "#C0392B";
+                  return (
+                    <motion.div
+                      key={app.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ delay: i * 0.05 }}
+                      whileHover={{ x: 4 }}
+                      style={{
+                        background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 16,
+                        padding: "20px 24px", cursor: "pointer", display: "flex", alignItems: "flex-start", gap: 20,
+                        borderLeft: `3px solid ${rColor}`,
+                      }}
+                    >
+                      {/* AI Score */}
+                      <ScoreRing score={app.aiScore} risk={app.riskLevel} />
+
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 2, flexWrap: "wrap" }}>
+                          <p style={{ fontSize: 16, fontWeight: 700, color: TEXT }}>{app.companyName}</p>
+                          <RiskBadge rec={app.recommendation} risk={app.riskLevel} />
+                          {app.hasPersonalGuarantee && (
+                            <span style={{ fontSize: 11, fontWeight: 600, background: GL, color: G, padding: "2px 9px", borderRadius: 20 }}>✓ Personal Guarantee</span>
+                          )}
+                          {!app.hasPersonalGuarantee && (
+                            <span style={{ fontSize: 11, fontWeight: 600, background: "#FEF3C7", color: "#B45309", padding: "2px 9px", borderRadius: 20 }}>⚠ No Guarantee</span>
+                          )}
+                        </div>
+                        <p style={{ fontSize: 13, color: MUTED, marginBottom: 14 }}>
+                          {app.contactName} · {app.unit} · {app.leaseType} Lease · Applied {app.appliedDate}
+                        </p>
+                        <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
+                          <StatPill label="Business Credit" value={`${app.businessCreditScore}/100`} warn={app.businessCreditScore < 60} />
+                          <StatPill label="Annual Revenue" value={`$${(app.annualRevenue/1000).toFixed(0)}K`} />
+                          <StatPill label="Inc. Year" value={String(app.incorporationYear)} warn={app.incorporationYear >= 2023} />
+                          <StatPill label="Base Rent" value={`$${app.baseRent.toLocaleString()}/mo`} />
+                        </div>
+                        <p style={{ fontSize: 11, color: MUTED, marginTop: 10 }}>Corp. No: {app.incorporationNo}</p>
+                      </div>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end", flexShrink: 0 }}>
+                        {app.recommendation === "approve" && (
+                          <button style={{ padding: "9px 20px", background: G, color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                            Approve
+                          </button>
+                        )}
+                        <button style={{ padding: "9px 20px", background: BG, color: MUTED, border: `1px solid ${BORDER}`, borderRadius: 10, fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 4 }}>
+                          View LOI <ChevronRight size={12} />
+                        </button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            </div>
+            {filteredBusiness.length === 0 && (
+              <div style={{ textAlign: "center", padding: "60px 0" }}>
+                <p style={{ fontSize: 16, color: MUTED }}>No business applications match your filter.</p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

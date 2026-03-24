@@ -74,6 +74,7 @@ export default function T776Report(){
     {key:"income",label:"Rental Income"},
     {key:"expenses",label:"Expenses"},
     {key:"cca",label:"CCA Claims"},
+    {key:"commercial",label:"Commercial HST"},
   ] as const;
 
   return(
@@ -311,6 +312,95 @@ export default function T776Report(){
               <Info size={16} color="#1E5FA8" style={{marginBottom:8}}/>
               <p style={{fontSize:13,color:"#1E5FA8",margin:0}}><strong>Half-Year Rule:</strong> In the year you acquire an asset, you can only claim half of the normal CCA deduction. Kaya automatically applies this rule to Year 1 claims.</p>
             </div>
+          </motion.div>
+        )}
+
+        {/* Commercial HST Tab */}
+        {activeTab==="commercial"&&(
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} style={{display:"flex",flexDirection:"column",gap:16}}>
+
+            {/* Info banner */}
+            <div style={{background:"#EBF2FB",border:"1px solid #BFDBFE",borderRadius:12,padding:"13px 18px",display:"flex",gap:10,alignItems:"flex-start"}}>
+              <Info size={16} color="#1E5FA8" style={{flexShrink:0,marginTop:1}}/>
+              <p style={{fontSize:13,color:"#1E5FA8",margin:0}}>Commercial landlords collecting over $30,000/year in rent must register for HST and remit 13% on base rent and CAM charges. Residential rent is <strong>HST-exempt</strong>. Mixed-use landlords must apportion by square footage.</p>
+            </div>
+
+            {/* HST Income */}
+            <div style={{...cd,padding:24}}>
+              <h3 style={{fontSize:16,fontWeight:700,color:TX,margin:"0 0 6px",fontFamily:SERIF}}>Commercial Rental Income — HST Collected</h3>
+              <p style={{fontSize:13,color:MU,margin:"0 0 18px"}}>Total HST invoiced to commercial tenants this year. This amount must be remitted to the CRA.</p>
+              {[
+                {label:"Suite 101 — Maple Leaf Café (Retail, NNN)", baseRent:57600, cam:4320},
+                {label:"Suite 305 — TechNest Solutions (Office, Gross)", baseRent:110400, cam:0},
+                {label:"Suite 410 — GreenByte Digital (Office, NNN)", baseRent:67200, cam:5040},
+              ].map((r,i)=>{
+                const hst=Math.round((r.baseRent+r.cam)*0.13);
+                return(
+                  <div key={i} style={{padding:"14px",background:BG,borderRadius:9,marginBottom:10}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12}}>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:14,fontWeight:600,color:TX}}>{r.label}</div>
+                        <div style={{fontSize:12,color:MU,marginTop:3}}>
+                          Base Rent: ${r.baseRent.toLocaleString()}/yr{r.cam>0?` · CAM: $${r.cam.toLocaleString()}/yr`:""}
+                        </div>
+                      </div>
+                      <div style={{textAlign:"right",flexShrink:0}}>
+                        <div style={{fontSize:14,fontWeight:700,color:"#7C3AED"}}>HST: ${hst.toLocaleString()}</div>
+                        <div style={{fontSize:11,color:MU}}>13% of ${(r.baseRent+r.cam).toLocaleString()}</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              <div style={{display:"flex",justifyContent:"space-between",padding:"14px 16px",background:"#F3E8FF",borderRadius:9,marginTop:4}}>
+                <span style={{fontSize:14,fontWeight:700,color:TX}}>Total HST to Remit ({taxYear})</span>
+                <span style={{fontSize:16,fontWeight:700,color:"#7C3AED"}}>$30,290</span>
+              </div>
+            </div>
+
+            {/* Commercial CCA Classes */}
+            <div style={{...cd,padding:24}}>
+              <h3 style={{fontSize:16,fontWeight:700,color:TX,margin:"0 0 6px",fontFamily:SERIF}}>Commercial CCA Classes</h3>
+              <p style={{fontSize:13,color:MU,margin:"0 0 18px"}}>Commercial properties use different CCA classes than residential. Class 1 applies to commercial buildings, Class 3 to older commercial structures.</p>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                {[
+                  {cls:"Class 1 (4%)",desc:"Commercial buildings acquired after 1987 (e.g., office, retail, industrial)",example:"Commercial plaza: $1.2M → CCA $48,000/yr"},
+                  {cls:"Class 3 (5%)",desc:"Commercial buildings acquired before 1988",example:"Legacy commercial building: 5% declining balance"},
+                  {cls:"Class 8 (20%)",desc:"Machinery, equipment, fixtures, signage",example:"HVAC: $25,000 → CCA $5,000/yr"},
+                  {cls:"Class 10 (30%)",desc:"Automotive / delivery vehicles",example:"Property management vehicle: 30% declining"},
+                  {cls:"Class 14 (SL)",desc:"Leasehold improvements — amortized over lease term",example:"Tenant improvement allowance over 5-yr lease"},
+                  {cls:"Class 52 (100%)",desc:"Computer equipment and systems (immediate write-off)",example:"Property management software hardware"},
+                ].map((c,i)=>(
+                  <div key={i} style={{padding:"14px",background:BG,borderRadius:10}}>
+                    <div style={{fontSize:13,fontWeight:700,color:"#7C3AED",marginBottom:4}}>{c.cls}</div>
+                    <div style={{fontSize:12,color:TX,marginBottom:4}}>{c.desc}</div>
+                    <div style={{fontSize:11,color:MU,fontStyle:"italic"}}>{c.example}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Filing Requirements */}
+            <div style={{...cd,padding:24}}>
+              <h3 style={{fontSize:16,fontWeight:700,color:TX,margin:"0 0 6px",fontFamily:SERIF}}>HST Filing Requirements</h3>
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {[
+                  {freq:"Monthly filer",threshold:"Over $6M in annual taxable supplies",due:"1 month after period end"},
+                  {freq:"Quarterly filer",threshold:"$1.5M–$6M in annual taxable supplies",due:"1 month after quarter end"},
+                  {freq:"Annual filer",threshold:"Under $1.5M in annual taxable supplies",due:"3 months after fiscal year end"},
+                  {freq:"Instalment filer",threshold:"Annual filer with over $3,000 HST owing last year",due:"Quarterly instalments + annual reconciliation"},
+                ].map((r,i)=>(
+                  <div key={i} style={{display:"flex",gap:14,padding:"12px 14px",background:BG,borderRadius:9,alignItems:"flex-start"}}>
+                    <div style={{flex:1}}>
+                      <div style={{fontSize:13,fontWeight:600,color:TX}}>{r.freq}</div>
+                      <div style={{fontSize:12,color:MU,marginTop:2}}>{r.threshold}</div>
+                    </div>
+                    <div style={{fontSize:12,fontWeight:600,color:G,flexShrink:0}}>Due: {r.due}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </motion.div>
         )}
       </div>

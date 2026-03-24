@@ -54,6 +54,18 @@ export function Properties() {
         { number: "Unit 2", bedrooms: 3, bathrooms: 2.5, rent: 3200, status: "occupied", tenant: "David Lee" },
       ]
     },
+    {
+      id: 4,
+      address: "200 Bay Street",
+      city: "Toronto",
+      province: "ON",
+      type: "Commercial — Mixed-Use",
+      units: [
+        { number: "Suite 101", bedrooms: 0, bathrooms: 0, rent: 5600, status: "occupied", tenant: "Maple Leaf Café Inc." },
+        { number: "Suite 305", bedrooms: 0, bathrooms: 0, rent: 9200, status: "occupied", tenant: "TechNest Solutions Ltd." },
+        { number: "Suite 410", bedrooms: 0, bathrooms: 0, rent: 5600, status: "available", tenant: null },
+      ]
+    },
   ]);
 
   const totalUnits = properties.reduce((sum, prop) => sum + prop.units.length, 0);
@@ -161,7 +173,11 @@ export function Properties() {
                       <MapPin className="size-4" />
                       <span>{property.city}, {property.province}</span>
                       <span className="mx-2">•</span>
-                      <span className="px-3 py-1 bg-[#E5F4EE] text-[#0A7A52] rounded-full text-[11px] font-semibold uppercase tracking-wide">
+                      <span className={`px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wide ${
+                        property.type.toLowerCase().includes("commercial")
+                          ? "bg-[#EBF2FB] text-[#1E5FA8]"
+                          : "bg-[#E5F4EE] text-[#0A7A52]"
+                      }`}>
                         {property.type}
                       </span>
                     </div>
@@ -208,14 +224,23 @@ export function Properties() {
                       </div>
                       
                       <div className="flex items-center gap-4 mb-3 text-[13px] text-[#767570]">
-                        <div className="flex items-center gap-1">
-                          <Bed className="size-4" />
-                          <span>{unit.bedrooms}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Bath className="size-4" />
-                          <span>{unit.bathrooms}</span>
-                        </div>
+                        {unit.bedrooms === 0 && unit.bathrooms === 0 ? (
+                          <div className="flex items-center gap-1">
+                            <Building2 className="size-4 text-[#1E5FA8]" />
+                            <span className="text-[#1E5FA8] font-semibold text-[11px] uppercase tracking-wide">Commercial Suite</span>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-1">
+                              <Bed className="size-4" />
+                              <span>{unit.bedrooms}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Bath className="size-4" />
+                              <span>{unit.bathrooms}</span>
+                            </div>
+                          </>
+                        )}
                       </div>
 
                       <div className="flex items-center justify-between">

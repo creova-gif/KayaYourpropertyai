@@ -1,30 +1,32 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import {
   Home, Building, Building2, Layers, ChevronRight, ChevronLeft,
   Check, MapPin, BedDouble, Bath, SquareStack, Car, DollarSign,
   Calendar, Camera, Shield, Zap, Star, Wifi, Dumbbell, PawPrint,
-  Wind, Flame, Tv, Package, Trees
+  Wind, Flame, Tv, Package, Trees, Briefcase, Factory, Store
 } from "lucide-react";
 
 const G = "#0A7A52", GL = "#E5F4EE", BG = "#F8F7F4", TX = "#0E0F0C", MU = "#767570";
 const BD = "rgba(0,0,0,0.07)";
 const SERIF = "'Instrument Serif', Georgia, serif", SANS = "'DM Sans', system-ui, sans-serif";
-const inp: React.CSSProperties = {
+const inp: CSSProperties = {
   width: "100%", padding: "11px 14px",
   border: `1px solid ${BD}`, borderRadius: 10,
   fontFamily: SANS, fontSize: 13, color: TX, outline: "none",
   background: "#fff", boxSizing: "border-box"
 };
-const label: React.CSSProperties = {
+const label: CSSProperties = {
   display: "block", fontSize: 11, fontWeight: 700, color: MU,
   textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 6
 };
-const card: React.CSSProperties = {
+const card: CSSProperties = {
   background: "#fff", border: `1px solid ${BD}`,
   borderRadius: 16, padding: 24
 };
+
+const COMMERCIAL_TYPES = ["office", "retail", "industrial", "mixed-use"];
 
 const PROPERTY_TYPES = [
   { id: "condo", label: "Condo", sub: "High-rise unit in a complex", icon: Building2 },
@@ -32,6 +34,10 @@ const PROPERTY_TYPES = [
   { id: "house", label: "House", sub: "Detached or semi-detached", icon: Home },
   { id: "townhouse", label: "Townhouse", sub: "Multi-level row house", icon: Layers },
   { id: "basement", label: "Basement Suite", sub: "Lower-level unit", icon: SquareStack },
+  { id: "office", label: "Office", sub: "Professional/commercial office space", icon: Briefcase },
+  { id: "retail", label: "Retail", sub: "Storefront or retail unit", icon: Store },
+  { id: "industrial", label: "Industrial", sub: "Warehouse or light industrial", icon: Factory },
+  { id: "mixed-use", label: "Mixed-Use", sub: "Residential + commercial", icon: Building2 },
 ];
 
 const AMENITIES = [
@@ -80,10 +86,12 @@ export function ListProperty() {
   const toggle = (arr: string[], val: string) =>
     arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val];
 
+  const isCommercial = COMMERCIAL_TYPES.includes(form.type);
+
   const canProceed = () => {
     if (step === 0) return !!form.type;
     if (step === 1) return !!(form.address && form.city && form.postalCode);
-    if (step === 2) return !!(form.beds && form.baths);
+    if (step === 2) return isCommercial ? !!(form.sqft && form.leaseType) : !!(form.beds && form.baths);
     if (step === 3) return true;
     if (step === 4) return !!(form.rent && form.available);
     return true;
@@ -228,45 +236,108 @@ export function ListProperty() {
         {step === 2 && (
           <div style={card}>
             <h2 style={{ fontFamily: SERIF, fontSize: 22, color: TX, margin: "0 0 4px" }}>Property details</h2>
-            <p style={{ fontSize: 13, color: MU, margin: "0 0 20px" }}>Accurate details attract more qualified applicants.</p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14, marginBottom: 14 }}>
-              {[
-                { l: "Bedrooms *", key: "beds" as const, min: 0, max: 6, labels: ["Studio","1","2","3","4","5","6+"] },
-                { l: "Bathrooms *", key: "baths" as const, min: 1, max: 4, labels: ["1","1.5","2","2.5","3","4"] },
-                { l: "Parking Spots", key: "parking" as const, min: 0, max: 4, labels: ["0","1","2","3","4"] },
-              ].map(({ l, key, min, max, labels }) => (
-                <div key={key}>
-                  <label style={label}>{l}</label>
-                  <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                    {Array.from({ length: max - min + 1 }).map((_, i) => {
-                      const val = min + i;
-                      const sel = (form as any)[key] === val;
-                      return (
-                        <button key={val} onClick={() => set(key, val)}
-                          style={{
-                            minWidth: 40, padding: "8px 10px", border: `1.5px solid ${sel ? G : BD}`,
-                            borderRadius: 8, background: sel ? G : "#fff",
-                            color: sel ? "#fff" : MU, fontSize: 12, fontWeight: 600,
-                            cursor: "pointer", fontFamily: SANS
-                          }}>
-                          {labels[i]}
-                        </button>
-                      );
-                    })}
+            <p style={{ fontSize: 13, color: MU, margin: "0 0 20px" }}>
+              {COMMERCIAL_TYPES.includes(form.type)
+                ? "Commercial unit details — sqft, lease structure, and CAM information."
+                : "Accurate details attract more qualified applicants."}
+            </p>
+
+            {COMMERCIAL_TYPES.includes(form.type) ? (
+              <div style={{ display: "grid", gap: 14 }}>
+                <div style={{ padding: "10px 14px", background: "#EBF2FB", border: "1px solid #BFDBFE", borderRadius: 10, fontSize: 12, color: "#1E5FA8" }}>
+                  💼 Commercial listing — HST applies at 13%. This unit will appear on the commercial listings section of Kaya.
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={label}>Total Square Footage *</label>
+                    <input value={form.sqft} onChange={e => set("sqft", e.target.value)} type="number" placeholder="e.g. 1400" style={inp} />
+                  </div>
+                  <div>
+                    <label style={label}>Lease Type *</label>
+                    <select value={form.leaseType} onChange={e => set("leaseType", e.target.value)} style={inp}>
+                      <option value="">Select lease type</option>
+                      <option value="NNN">NNN (Triple Net) — tenant pays CAM, taxes, insurance</option>
+                      <option value="Gross">Gross Lease — fixed rent, landlord covers all</option>
+                      <option value="Modified Gross">Modified Gross — negotiated split</option>
+                    </select>
                   </div>
                 </div>
-              ))}
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <div>
-                <label style={label}>Square Footage</label>
-                <input value={form.sqft} onChange={e => set("sqft", e.target.value)} type="number" placeholder="e.g. 850" style={inp} />
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={label}>Annual Base Rent ($/sqft/yr) *</label>
+                    <input value={form.rent} onChange={e => set("rent", e.target.value)} type="number" placeholder="e.g. 38" style={inp} />
+                  </div>
+                  <div>
+                    <label style={label}>CAM Estimate ($/sqft/yr)</label>
+                    <input value={form.deposit} onChange={e => set("deposit", e.target.value)} type="number" placeholder="e.g. 12 (for NNN)" style={inp} />
+                  </div>
+                  <div>
+                    <label style={label}>Available Date *</label>
+                    <input value={form.available} onChange={e => set("available", e.target.value)} type="date" style={inp} />
+                  </div>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={label}>Floor / Level</label>
+                    <input value={form.floor} onChange={e => set("floor", e.target.value)} placeholder="e.g. Ground, 3rd floor" style={inp} />
+                  </div>
+                  <div>
+                    <label style={label}>Dedicated Parking Stalls</label>
+                    <div style={{ display: "flex", gap: 6 }}>
+                      {[0,1,2,3,4].map(n => (
+                        <button key={n} onClick={() => set("parking", n)}
+                          style={{ minWidth: 40, padding: "8px 10px", border: `1.5px solid ${form.parking === n ? G : BD}`,
+                            borderRadius: 8, background: form.parking === n ? G : "#fff", color: form.parking === n ? "#fff" : MU,
+                            fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label style={label}>Floor / Level</label>
-                <input value={form.floor} onChange={e => set("floor", e.target.value)} placeholder="e.g. 12th floor" style={inp} />
-              </div>
-            </div>
+            ) : (
+              <>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14, marginBottom: 14 }}>
+                  {[
+                    { l: "Bedrooms *", key: "beds" as const, min: 0, max: 6, labels: ["Studio","1","2","3","4","5","6+"] },
+                    { l: "Bathrooms *", key: "baths" as const, min: 1, max: 4, labels: ["1","1.5","2","2.5","3","4"] },
+                    { l: "Parking Spots", key: "parking" as const, min: 0, max: 4, labels: ["0","1","2","3","4"] },
+                  ].map(({ l, key, min, max, labels }) => (
+                    <div key={key}>
+                      <label style={label}>{l}</label>
+                      <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                        {Array.from({ length: max - min + 1 }).map((_, i) => {
+                          const val = min + i;
+                          const sel = (form as any)[key] === val;
+                          return (
+                            <button key={val} onClick={() => set(key, val)}
+                              style={{
+                                minWidth: 40, padding: "8px 10px", border: `1.5px solid ${sel ? G : BD}`,
+                                borderRadius: 8, background: sel ? G : "#fff",
+                                color: sel ? "#fff" : MU, fontSize: 12, fontWeight: 600,
+                                cursor: "pointer", fontFamily: SANS
+                              }}>
+                              {labels[i]}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={label}>Square Footage</label>
+                    <input value={form.sqft} onChange={e => set("sqft", e.target.value)} type="number" placeholder="e.g. 850" style={inp} />
+                  </div>
+                  <div>
+                    <label style={label}>Floor / Level</label>
+                    <input value={form.floor} onChange={e => set("floor", e.target.value)} placeholder="e.g. 12th floor" style={inp} />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
 

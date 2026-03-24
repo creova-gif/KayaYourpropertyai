@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 import {
   DollarSign,
   CreditCard,
@@ -15,6 +16,8 @@ import {
   Calendar,
   Users,
   CheckCircle2,
+  Building2,
+  Info,
 } from "lucide-react";
 
 interface Payment {
@@ -32,6 +35,13 @@ export function RentCollection() {
   const [selectedMethod, setSelectedMethod] = useState<"interac" | "stripe" | "auto-pad">("interac");
   const [showInteracInstructions, setShowInteracInstructions] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [activeTab, setActiveTab] = useState<"residential" | "cam">("residential");
+
+  const camTenants = [
+    { tenant: "Maple Leaf Café Inc.", unit: "Suite 101", sqft: 1400, baseRent: 5600, estimatedCAM: 1400, actualCAM: 1628, leaseType: "NNN" as const },
+    { tenant: "TechNest Solutions Ltd.", unit: "Suite 305", sqft: 2400, baseRent: 9200, estimatedCAM: 0, actualCAM: 0, leaseType: "Gross" as const },
+    { tenant: "GreenByte Digital Inc.", unit: "Suite 410", sqft: 1600, baseRent: 5600, estimatedCAM: 1120, actualCAM: 984, leaseType: "NNN" as const },
+  ];
 
   const payments: Payment[] = [
     {
@@ -110,6 +120,21 @@ export function RentCollection() {
             Collect rent via Interac e-Transfer, Stripe, or Pre-Authorized Debit
           </p>
         </motion.div>
+
+        {/* Tab Bar */}
+        <div className="flex gap-1 mb-10" style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 12, padding: 5, width: "fit-content" }}>
+          {[{ key: "residential" as const, label: "Residential Rent" }, { key: "cam" as const, label: "CAM Reconciliation" }].map(t => (
+            <button key={t.key} onClick={() => setActiveTab(t.key)}
+              className="flex items-center gap-2"
+              style={{ padding: "9px 20px", borderRadius: 8, border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', system-ui, sans-serif",
+                background: activeTab === t.key ? "#0E0F0C" : "transparent", color: activeTab === t.key ? "#fff" : "#767570", transition: "all .2s" }}>
+              {t.key === "cam" && <Building2 size={13} />}
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {activeTab === "residential" && <>
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
@@ -531,6 +556,119 @@ export function RentCollection() {
             <p className="text-[13px] text-[#767570]">Share tenant payment link</p>
           </button>
         </div>
+
+        </>}
+
+        {/* CAM Reconciliation Tab */}
+        {activeTab === "cam" && (
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+
+            {/* Info */}
+            <div style={{ background: "#EBF2FB", border: "1px solid #BFDBFE", borderRadius: 14, padding: "14px 18px", display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 24 }}>
+              <Info size={16} color="#1E5FA8" style={{ flexShrink: 0, marginTop: 1 }} />
+              <p style={{ fontSize: 13, color: "#1E5FA8", margin: 0 }}>
+                CAM (Common Area Maintenance) reconciliation compares estimated CAM charges billed to tenants against actual operating costs for the year.
+                NNN tenants pay their proportionate share; Gross lease tenants pay fixed rent (CAM included). Issue annual reconciliation statements within 90–120 days of your fiscal year-end.
+              </p>
+            </div>
+
+            {/* CAM Summary Cards */}
+            <div className="grid grid-cols-3 gap-5 mb-8">
+              {[
+                { label: "Total Estimated CAM Billed", value: `$${(camTenants.reduce((s, t) => s + t.estimatedCAM, 0)).toLocaleString()}`, color: "#0E0F0C" },
+                { label: "Total Actual CAM Costs", value: `$${(camTenants.reduce((s, t) => s + t.actualCAM, 0)).toLocaleString()}`, color: "#0E0F0C" },
+                { label: "Net CAM Adjustment", value: (() => { const diff = camTenants.reduce((s, t) => s + (t.actualCAM - t.estimatedCAM), 0); return `${diff >= 0 ? "+" : ""}$${diff.toLocaleString()}`; })(), color: camTenants.reduce((s, t) => s + (t.actualCAM - t.estimatedCAM), 0) >= 0 ? "#C0392B" : "#0A7A52" },
+              ].map(s => (
+                <div key={s.label} style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 16, padding: "20px 24px" }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, color: "#767570", textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 10 }}>{s.label}</p>
+                  <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 36, color: s.color, lineHeight: 1 }}>{s.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* CAM Tenant Table */}
+            <div style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 16, overflow: "hidden" }}>
+              <div style={{ padding: "18px 24px", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+                <h3 style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 22, color: "#0E0F0C", margin: 0 }}>Commercial Tenant CAM Reconciliation — 2025</h3>
+              </div>
+              <div style={{ padding: "0 24px" }}>
+                {/* Header row */}
+                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr", gap: 12, padding: "12px 0", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+                  {["Tenant", "Lease Type", "Sq Ft", "Est. CAM/mo", "Actual CAM/mo", "Adjustment"].map(h => (
+                    <p key={h} style={{ fontSize: 10, fontWeight: 700, color: "#767570", textTransform: "uppercase", letterSpacing: "0.5px", margin: 0 }}>{h}</p>
+                  ))}
+                </div>
+                {camTenants.map((t, i) => {
+                  const diff = t.actualCAM - t.estimatedCAM;
+                  const isGross = t.leaseType === "Gross";
+                  return (
+                    <div key={i} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr", gap: 12, padding: "16px 0", borderBottom: i < camTenants.length - 1 ? "1px solid rgba(0,0,0,0.05)" : "none", alignItems: "center" }}>
+                      <div>
+                        <p style={{ fontSize: 14, fontWeight: 600, color: "#0E0F0C", margin: 0 }}>{t.tenant}</p>
+                        <p style={{ fontSize: 11, color: "#767570", margin: "2px 0 0" }}>{t.unit}</p>
+                      </div>
+                      <span style={{ fontSize: 11, fontWeight: 700, background: isGross ? "#EBF2FB" : "#E5F4EE", color: isGross ? "#1E5FA8" : "#0A7A52", padding: "3px 10px", borderRadius: 20 }}>{t.leaseType}</span>
+                      <p style={{ fontSize: 13, color: "#0E0F0C", margin: 0 }}>{t.sqft.toLocaleString()}</p>
+                      <p style={{ fontSize: 13, color: "#0E0F0C", margin: 0 }}>{isGross ? "Included" : `$${t.estimatedCAM.toLocaleString()}`}</p>
+                      <p style={{ fontSize: 13, color: "#0E0F0C", margin: 0 }}>{isGross ? "N/A" : `$${t.actualCAM.toLocaleString()}`}</p>
+                      <p style={{ fontSize: 13, fontWeight: 700, color: isGross ? "#767570" : diff > 0 ? "#C0392B" : diff < 0 ? "#0A7A52" : "#0E0F0C", margin: 0 }}>
+                        {isGross ? "—" : diff === 0 ? "$0" : `${diff > 0 ? "+" : ""}$${diff.toLocaleString()}`}
+                        {!isGross && diff !== 0 && <span style={{ fontSize: 10, fontWeight: 500, marginLeft: 4 }}>{diff > 0 ? "(owed by tenant)" : "(credit to tenant)"}</span>}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* CAM Components Breakdown */}
+            <div style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 16, padding: 24, marginTop: 16 }}>
+              <h3 style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 18, color: "#0E0F0C", margin: "0 0 16px" }}>Annual CAM Cost Components</h3>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+                {[
+                  { category: "Building Insurance", estimated: 28000, actual: 31200, icon: "🛡️" },
+                  { category: "Property Tax (common)", estimated: 42000, actual: 42000, icon: "🏛️" },
+                  { category: "Landscaping / Snow", estimated: 8400, actual: 9100, icon: "🌿" },
+                  { category: "Cleaning / Janitorial", estimated: 14400, actual: 13800, icon: "🧹" },
+                  { category: "HVAC Maintenance", estimated: 6000, actual: 8400, icon: "❄️" },
+                  { category: "Parking Lot Repairs", estimated: 3600, actual: 2200, icon: "🅿️" },
+                ].map((c, i) => {
+                  const diff = c.actual - c.estimated;
+                  return (
+                    <div key={i} style={{ padding: "14px", background: "#F8F7F4", borderRadius: 10 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                        <span style={{ fontSize: 18 }}>{c.icon}</span>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: "#0E0F0C" }}>{c.category}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                        <span style={{ fontSize: 11, color: "#767570" }}>Estimated</span>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: "#0E0F0C" }}>${c.estimated.toLocaleString()}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                        <span style={{ fontSize: 11, color: "#767570" }}>Actual</span>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: "#0E0F0C" }}>${c.actual.toLocaleString()}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 6, borderTop: "1px solid rgba(0,0,0,0.07)" }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: "#767570" }}>Variance</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: diff > 0 ? "#C0392B" : "#0A7A52" }}>{diff > 0 ? "+" : ""}${diff.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div style={{ marginTop: 16 }}>
+              <button
+                onClick={() => toast.success("CAM reconciliation statement generated", { description: "Annual CAM statement sent to all NNN tenants. Gross lease tenant excluded." })}
+                style={{ padding: "12px 28px", background: "#0A7A52", color: "#fff", border: "none", borderRadius: 10, fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
+              >
+                Issue CAM Reconciliation Statements →
+              </button>
+            </div>
+          </motion.div>
+        )}
+
       </div>
     </div>
   );

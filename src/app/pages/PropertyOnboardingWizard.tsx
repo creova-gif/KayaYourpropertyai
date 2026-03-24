@@ -444,110 +444,187 @@ export function PropertyOnboardingWizard() {
                 </div>
                 <h2 className="text-[32px] font-semibold text-[#0A0A0A] mb-2">Unit Details</h2>
                 <p className="text-[14px] text-[#9CA3AF]">
-                  Add details for each unit in your property.
+                  {formData.propertyType === "commercial"
+                    ? "Add commercial unit details — sqft, lease type, base rent, and CAM estimate."
+                    : "Add details for each unit in your property."}
                 </p>
+                {formData.propertyType === "commercial" && (
+                  <div className="mt-4 px-4 py-3 bg-[#EBF2FB] border border-[#BFDBFE] rounded-lg flex items-center gap-2">
+                    <Building2 className="size-4 text-[#1E5FA8]" />
+                    <span className="text-[13px] text-[#1E5FA8] font-medium">Commercial mode — HST will apply to all rents. Use NNN, Gross, or Modified Gross lease types.</span>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-6">
                 {formData.units.map((unit, idx) => (
                   <div key={idx} className="p-6 border border-black/[0.08] rounded-xl bg-[#F9FAFB]">
-                    <h3 className="font-semibold text-[18px] text-[#0A0A0A] mb-4">Unit #{idx + 1}</h3>
+                    <h3 className="font-semibold text-[18px] text-[#0A0A0A] mb-4">
+                      {formData.propertyType === "commercial" ? `Suite / Unit #${idx + 1}` : `Unit #${idx + 1}`}
+                    </h3>
                     
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
-                        <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">Unit Number</label>
+                        <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">
+                          {formData.propertyType === "commercial" ? "Suite / Unit Name" : "Unit Number"}
+                        </label>
                         <input
                           type="text"
                           value={unit.unitNumber}
                           onChange={(e) => updateUnit(idx, 'unitNumber', e.target.value)}
-                          placeholder="4A"
+                          placeholder={formData.propertyType === "commercial" ? "Suite 101" : "4A"}
                           className="w-full px-4 py-2.5 border border-black/[0.08] rounded-lg text-[14px]"
                         />
                       </div>
                       <div>
-                        <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">Monthly Rent</label>
+                        <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">
+                          {formData.propertyType === "commercial" ? "Monthly Base Rent ($)" : "Monthly Rent"}
+                        </label>
                         <input
                           type="number"
                           value={unit.rent}
                           onChange={(e) => updateUnit(idx, 'rent', e.target.value)}
-                          placeholder="2300"
+                          placeholder={formData.propertyType === "commercial" ? "5800" : "2300"}
                           className="w-full px-4 py-2.5 border border-black/[0.08] rounded-lg text-[14px]"
                         />
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-4 mb-4">
-                      <div>
-                        <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">Bedrooms</label>
-                        <select
-                          value={unit.bedrooms}
-                          onChange={(e) => updateUnit(idx, 'bedrooms', e.target.value)}
-                          className="w-full px-4 py-2.5 border border-black/[0.08] rounded-lg text-[14px]"
-                        >
-                          <option value="">Select</option>
-                          <option value="0">Studio</option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          <option value="4">4+</option>
-                        </select>
+                    {formData.propertyType === "commercial" ? (
+                      <div className="grid grid-cols-3 gap-4 mb-4">
+                        <div>
+                          <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">Total Sq Ft *</label>
+                          <input
+                            type="number"
+                            value={unit.squareFeet}
+                            onChange={(e) => updateUnit(idx, 'squareFeet', e.target.value)}
+                            placeholder="1400"
+                            className="w-full px-4 py-2.5 border border-black/[0.08] rounded-lg text-[14px]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">Lease Type</label>
+                          <select
+                            value={unit.bedrooms}
+                            onChange={(e) => updateUnit(idx, 'bedrooms', e.target.value)}
+                            className="w-full px-4 py-2.5 border border-black/[0.08] rounded-lg text-[14px]"
+                          >
+                            <option value="">Select</option>
+                            <option value="NNN">NNN (Triple Net)</option>
+                            <option value="Gross">Gross Lease</option>
+                            <option value="Modified Gross">Modified Gross</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">CAM Estimate ($/mo)</label>
+                          <input
+                            type="number"
+                            value={unit.bathrooms}
+                            onChange={(e) => updateUnit(idx, 'bathrooms', e.target.value)}
+                            placeholder="480"
+                            className="w-full px-4 py-2.5 border border-black/[0.08] rounded-lg text-[14px]"
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">Bathrooms</label>
-                        <select
-                          value={unit.bathrooms}
-                          onChange={(e) => updateUnit(idx, 'bathrooms', e.target.value)}
-                          className="w-full px-4 py-2.5 border border-black/[0.08] rounded-lg text-[14px]"
-                        >
-                          <option value="">Select</option>
-                          <option value="1">1</option>
-                          <option value="1.5">1.5</option>
-                          <option value="2">2</option>
-                          <option value="2.5">2.5</option>
-                          <option value="3">3+</option>
-                        </select>
+                    ) : (
+                      <div className="grid grid-cols-3 gap-4 mb-4">
+                        <div>
+                          <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">Bedrooms</label>
+                          <select
+                            value={unit.bedrooms}
+                            onChange={(e) => updateUnit(idx, 'bedrooms', e.target.value)}
+                            className="w-full px-4 py-2.5 border border-black/[0.08] rounded-lg text-[14px]"
+                          >
+                            <option value="">Select</option>
+                            <option value="0">Studio</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4+</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">Bathrooms</label>
+                          <select
+                            value={unit.bathrooms}
+                            onChange={(e) => updateUnit(idx, 'bathrooms', e.target.value)}
+                            className="w-full px-4 py-2.5 border border-black/[0.08] rounded-lg text-[14px]"
+                          >
+                            <option value="">Select</option>
+                            <option value="1">1</option>
+                            <option value="1.5">1.5</option>
+                            <option value="2">2</option>
+                            <option value="2.5">2.5</option>
+                            <option value="3">3+</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">Sq Ft</label>
+                          <input
+                            type="number"
+                            value={unit.squareFeet}
+                            onChange={(e) => updateUnit(idx, 'squareFeet', e.target.value)}
+                            placeholder="850"
+                            className="w-full px-4 py-2.5 border border-black/[0.08] rounded-lg text-[14px]"
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-[13px] font-medium text-[#0A0A0A] mb-2">Sq Ft</label>
-                        <input
-                          type="number"
-                          value={unit.squareFeet}
-                          onChange={(e) => updateUnit(idx, 'squareFeet', e.target.value)}
-                          placeholder="850"
-                          className="w-full px-4 py-2.5 border border-black/[0.08] rounded-lg text-[14px]"
-                        />
-                      </div>
-                    </div>
+                    )}
 
-                    <div className="flex items-center gap-6">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={unit.parking}
-                          onChange={(e) => updateUnit(idx, 'parking', e.target.checked)}
-                          className="size-5 rounded border-black/[0.08]"
-                        />
-                        <span className="text-[14px] text-[#0A0A0A]">Parking</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={unit.furnished}
-                          onChange={(e) => updateUnit(idx, 'furnished', e.target.checked)}
-                          className="size-5 rounded border-black/[0.08]"
-                        />
-                        <span className="text-[14px] text-[#0A0A0A]">Furnished</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={unit.petsAllowed}
-                          onChange={(e) => updateUnit(idx, 'petsAllowed', e.target.checked)}
-                          className="size-5 rounded border-black/[0.08]"
-                        />
-                        <span className="text-[14px] text-[#0A0A0A]">Pets Allowed</span>
-                      </label>
-                    </div>
+                    {formData.propertyType !== "commercial" && (
+                      <div className="flex items-center gap-6">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={unit.parking}
+                            onChange={(e) => updateUnit(idx, 'parking', e.target.checked)}
+                            className="size-5 rounded border-black/[0.08]"
+                          />
+                          <span className="text-[14px] text-[#0A0A0A]">Parking</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={unit.furnished}
+                            onChange={(e) => updateUnit(idx, 'furnished', e.target.checked)}
+                            className="size-5 rounded border-black/[0.08]"
+                          />
+                          <span className="text-[14px] text-[#0A0A0A]">Furnished</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={unit.petsAllowed}
+                            onChange={(e) => updateUnit(idx, 'petsAllowed', e.target.checked)}
+                            className="size-5 rounded border-black/[0.08]"
+                          />
+                          <span className="text-[14px] text-[#0A0A0A]">Pets Allowed</span>
+                        </label>
+                      </div>
+                    )}
+
+                    {formData.propertyType === "commercial" && (
+                      <div className="flex items-center gap-6">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={unit.parking}
+                            onChange={(e) => updateUnit(idx, 'parking', e.target.checked)}
+                            className="size-5 rounded border-black/[0.08]"
+                          />
+                          <span className="text-[14px] text-[#0A0A0A]">Dedicated Parking</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={unit.furnished}
+                            onChange={(e) => updateUnit(idx, 'furnished', e.target.checked)}
+                            className="size-5 rounded border-black/[0.08]"
+                          />
+                          <span className="text-[14px] text-[#0A0A0A]">Tenant Improvement Allowance (TIA)</span>
+                        </label>
+                      </div>
+                    )}
                   </div>
                 ))}
 
@@ -555,7 +632,7 @@ export function PropertyOnboardingWizard() {
                   onClick={addUnit}
                   className="w-full px-6 py-4 border-2 border-dashed border-black/[0.2] rounded-xl text-[#0A0A0A] font-medium hover:border-black/[0.4] transition-colors"
                 >
-                  + Add Unit
+                  + Add {formData.propertyType === "commercial" ? "Commercial Suite" : "Unit"}
                 </button>
               </div>
             </motion.div>
