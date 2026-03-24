@@ -77,11 +77,15 @@ export function AICommandPalette({ userId }: AICommandPaletteProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Focus input when opened
+  // Focus input + lock body scroll when opened
   useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus();
+    if (isOpen) {
+      if (inputRef.current) inputRef.current.focus();
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
     }
+    return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
   const commands: Command[] = [
@@ -276,11 +280,11 @@ export function AICommandPalette({ userId }: AICommandPaletteProps) {
           exit={{ scale: 0.95, opacity: 0, y: -20 }}
           transition={{ duration: 0.15 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-[rgba(0,0,0,0.08)]"
-          style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+          className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-[rgba(0,0,0,0.08)] flex flex-col"
+          style={{ fontFamily: "'DM Sans', system-ui, sans-serif", maxHeight: "calc(100vh - 10rem)" }}
         >
           {/* Search Input */}
-          <div className="flex items-center gap-3 px-5 py-4 border-b border-[rgba(0,0,0,0.08)]">
+          <div className="flex items-center gap-3 px-5 py-4 border-b border-[rgba(0,0,0,0.08)] flex-shrink-0">
             <Search className="size-5 text-[#767570]" strokeWidth={2} />
             <input
               ref={inputRef}
@@ -296,8 +300,8 @@ export function AICommandPalette({ userId }: AICommandPaletteProps) {
             </kbd>
           </div>
 
-          {/* Results */}
-          <div className="max-h-[400px] overflow-y-auto">
+          {/* Results — scrollable */}
+          <div className="overflow-y-auto flex-1 overscroll-contain">
             {/* AI Query Suggestion */}
             {isAIQuery && (
               <button
@@ -347,7 +351,7 @@ export function AICommandPalette({ userId }: AICommandPaletteProps) {
                     <div key={category}>
                       <div className="px-5 py-2 bg-[#F8F7F4] border-b border-[rgba(0,0,0,0.05)]">
                         <p className="text-xs font-medium text-[#767570] uppercase tracking-wide">
-                          {category === "navigation" ? "🧭 Navigation" : category === "ai" ? "✨ AI Actions" : "⚡ Quick Actions"}
+                          {category === "navigation" ? "Navigation" : category === "ai" ? "AI Actions" : "Quick Actions"}
                         </p>
                       </div>
                       {categoryCommands.map((cmd, idx) => {
@@ -399,7 +403,7 @@ export function AICommandPalette({ userId }: AICommandPaletteProps) {
           </div>
 
           {/* Footer */}
-          <div className="px-5 py-3 bg-[#F8F7F4] border-t border-[rgba(0,0,0,0.05)] flex items-center justify-between text-xs text-[#767570]">
+          <div className="px-5 py-3 bg-[#F8F7F4] border-t border-[rgba(0,0,0,0.05)] flex items-center justify-between text-xs text-[#767570] flex-shrink-0">
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1">
                 <kbd className="px-1.5 py-0.5 font-mono bg-white rounded border border-[rgba(0,0,0,0.08)]">↑</kbd>
