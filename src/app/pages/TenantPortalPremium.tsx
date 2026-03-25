@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
-import { DollarSign, FileText, Calendar, Download } from "lucide-react";
+import { DollarSign, FileText, Calendar, Download, Receipt, CheckSquare, Bell, RefreshCw, Scale, User, Sparkles, TrendingUp, Shield, Clock, Wrench } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { PaymentForm, PaymentData } from "../components/PaymentForm";
 
 const G = "#0A7A52";
@@ -11,6 +12,7 @@ const SANS = "'DM Sans', system-ui, sans-serif";
 const SERIF = "'Instrument Serif', Georgia, serif";
 
 export function TenantPortalPremium() {
+  const navigate = useNavigate();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
 
@@ -94,11 +96,139 @@ export function TenantPortalPremium() {
           ))}
         </motion.div>
 
+        {/* ── Enhanced Metrics ── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} style={{ marginBottom: 28 }}>
+          <h2 style={{ fontFamily: SERIF, fontSize: 22, fontWeight: 400, color: TX, marginBottom: 16, letterSpacing: "-0.5px" }}>Your Tenant Metrics</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+
+            {/* Payment streak */}
+            <div style={{ background: "#fff", borderRadius: 16, padding: "18px 20px", border: "1px solid rgba(0,0,0,0.07)", gridColumn: "span 2" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                <div style={{ width: 30, height: 30, borderRadius: 8, background: GL, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <TrendingUp size={14} color={G} strokeWidth={2.5} />
+                </div>
+                <span style={{ fontSize: 12, fontWeight: 700, color: MU }}>Payment Streak</span>
+              </div>
+              <p style={{ fontFamily: SERIF, fontSize: 36, fontWeight: 400, color: G, lineHeight: 1, marginBottom: 6 }}>6 months</p>
+              <p style={{ fontSize: 12, color: MU, marginBottom: 14 }}>100% on-time payments since lease start</p>
+              <div style={{ display: "flex", gap: 5 }}>
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} style={{ flex: 1 }}>
+                    <div style={{ height: 28, background: G, borderRadius: 5, opacity: 0.15 + (i + 1) * 0.14 }} />
+                    <p style={{ fontSize: 9, color: MU, textAlign: "center", marginTop: 4 }}>{["J","F","M","A","M","J"][i]}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Lease health */}
+            <div style={{ background: "#fff", borderRadius: 16, padding: "18px 20px", border: "1px solid rgba(0,0,0,0.07)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                <div style={{ width: 30, height: 30, borderRadius: 8, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Shield size={14} color="#1D4ED8" strokeWidth={2.5} />
+                </div>
+                <span style={{ fontSize: 12, fontWeight: 700, color: MU }}>Lease Health</span>
+              </div>
+              <p style={{ fontFamily: SERIF, fontSize: 36, fontWeight: 400, color: "#1D4ED8", lineHeight: 1, marginBottom: 6 }}>98/100</p>
+              <p style={{ fontSize: 12, color: MU }}>Excellent standing</p>
+              <div style={{ marginTop: 12, height: 6, background: "#EFF6FF", borderRadius: 3, overflow: "hidden" }}>
+                <div style={{ width: "98%", height: "100%", background: "#1D4ED8", borderRadius: 3 }} />
+              </div>
+            </div>
+
+            {/* Days to renewal */}
+            <div style={{ background: "#fff", borderRadius: 16, padding: "18px 20px", border: "1px solid rgba(0,0,0,0.07)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                <div style={{ width: 30, height: 30, borderRadius: 8, background: "#FEF3C7", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Clock size={14} color="#B45309" strokeWidth={2.5} />
+                </div>
+                <span style={{ fontSize: 12, fontWeight: 700, color: MU }}>Renewal Window</span>
+              </div>
+              <p style={{ fontFamily: SERIF, fontSize: 36, fontWeight: 400, color: "#B45309", lineHeight: 1, marginBottom: 6 }}>63 days</p>
+              <p style={{ fontSize: 12, color: MU }}>Deadline: Feb 1, 2027</p>
+              <button onClick={() => navigate("/tenant/renewal")} style={{ marginTop: 12, display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 700, color: "#B45309", background: "#FEF3C7", border: "none", borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontFamily: SANS }}>
+                View renewal →
+              </button>
+            </div>
+
+          </div>
+        </motion.div>
+
+        {/* ── Quick Actions ── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} style={{ marginBottom: 32 }}>
+          <h2 style={{ fontFamily: SERIF, fontSize: 22, fontWeight: 400, color: TX, marginBottom: 16, letterSpacing: "-0.5px" }}>Quick Access</h2>
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+            {[
+              { label: "Receipts", icon: Receipt, href: "/tenant/receipts", color: G, bg: GL },
+              { label: "Checklist", icon: CheckSquare, href: "/tenant/checklist", color: "#1D4ED8", bg: "#EFF6FF" },
+              { label: "Notices", icon: Bell, href: "/tenant/notices", color: "#DC2626", bg: "#FEF2F2", badge: 2 },
+              { label: "Renewal", icon: RefreshCw, href: "/tenant/renewal", color: "#B45309", bg: "#FEF3C7" },
+              { label: "Dispute", icon: Scale, href: "/tenant/dispute", color: "#7C3AED", bg: "#F5F3FF" },
+              { label: "Profile", icon: User, href: "/tenant/profile", color: TX, bg: "#F8F7F4" },
+            ].map(item => {
+              const Icon = item.icon;
+              return (
+                <button key={item.label} onClick={() => navigate(item.href)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "16px 8px", background: "#fff", borderRadius: 14, border: "1px solid rgba(0,0,0,0.07)", cursor: "pointer", fontFamily: SANS, position: "relative" }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 10, background: item.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Icon size={17} color={item.color} strokeWidth={2.5} />
+                  </div>
+                  {"badge" in item && item.badge && (
+                    <div style={{ position: "absolute", top: 10, right: 18, width: 16, height: 16, borderRadius: "50%", background: "#DC2626", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <span style={{ fontSize: 9, fontWeight: 800, color: "#fff" }}>{item.badge}</span>
+                    </div>
+                  )}
+                  <span style={{ fontSize: 11, fontWeight: 700, color: TX }}>{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* ── Maintenance snapshot ── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28 }} style={{ background: "#fff", borderRadius: 16, border: "1px solid rgba(0,0,0,0.07)", padding: "20px 22px", marginBottom: 28 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 34, height: 34, borderRadius: 9, background: "#FEF3C7", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Wrench size={16} color="#B45309" strokeWidth={2.5} />
+              </div>
+              <div>
+                <h3 style={{ fontFamily: SERIF, fontSize: 17, fontWeight: 400, color: TX, margin: 0 }}>Maintenance</h3>
+                <p style={{ fontSize: 11, color: MU, margin: 0 }}>1 open request · Avg. 1.2 day response</p>
+              </div>
+            </div>
+            <button onClick={() => navigate("/tenant/maintenance")} style={{ fontSize: 12, fontWeight: 700, color: G, background: GL, border: "none", borderRadius: 9, padding: "6px 14px", cursor: "pointer", fontFamily: SANS }}>View all</button>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", background: "#FFFBEB", borderRadius: 12, border: "1px solid rgba(180,83,9,0.1)" }}>
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 700, color: TX, margin: "0 0 2px" }}>Bathroom faucet dripping</p>
+              <p style={{ fontSize: 11, color: MU, margin: 0 }}>Submitted Mar 20 · In Progress</p>
+            </div>
+            <span style={{ fontSize: 9, fontWeight: 800, color: "#B45309", background: "#FEF3C7", border: "1px solid rgba(180,83,9,0.15)", borderRadius: 99, padding: "3px 10px" }}>IN PROGRESS</span>
+          </div>
+        </motion.div>
+
+        {/* ── AI Kaya nudge ── */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} style={{ background: GL, borderRadius: 16, padding: "20px 22px", border: `1px solid ${G}20`, cursor: "pointer", marginBottom: 28 }} onClick={() => window.dispatchEvent(new CustomEvent("openAIWithQuery", { detail: { query: "What should I know about my lease renewal coming up?" } }))}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+            <div style={{ width: 38, height: 38, borderRadius: 11, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+              <Sparkles size={18} color={G} strokeWidth={2.5} />
+            </div>
+            <div>
+              <p style={{ fontSize: 14, fontWeight: 700, color: TX, margin: "0 0 4px" }}>Your lease renews in 63 days</p>
+              <p style={{ fontSize: 13, color: "#3D6B55", margin: "0 0 10px", lineHeight: 1.5 }}>Ontario allows a max 2.5% rent increase this year. Your landlord has proposed 2.95% — ask Kaya AI to explain your options before the deadline.</p>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 12px", background: "#fff", borderRadius: 99, border: `1px solid ${G}20` }}>
+                <Sparkles size={11} color={G} strokeWidth={2.5} />
+                <span style={{ fontSize: 11, fontWeight: 700, color: G }}>Ask Kaya AI →</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Lease Info */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.35 }}
           className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6 sm:p-8 mb-8 shadow-sm"
         >
           <h3 style={{ fontFamily: SERIF, fontSize: 20, fontWeight: 400, color: TX, marginBottom: 4 }}>Lease Agreement</h3>

@@ -30,6 +30,13 @@ import { TenantDocuments } from "./pages/tenant-portal/TenantDocuments";
 import { TenantMaintenance } from "./pages/tenant-portal/TenantMaintenance";
 import { TenantApplications } from "./pages/tenant-portal/TenantApplications";
 import { TenantLeaseSigning } from "./pages/tenant-portal/TenantLeaseSigning";
+import { TenantReceipts } from "./pages/tenant-portal/TenantReceipts";
+import { TenantChecklist } from "./pages/tenant-portal/TenantChecklist";
+import { TenantNotices } from "./pages/tenant-portal/TenantNotices";
+import { TenantLeaseRenewal } from "./pages/tenant-portal/TenantLeaseRenewal";
+import { TenantDispute } from "./pages/tenant-portal/TenantDispute";
+import { TenantProfile } from "./pages/tenant-portal/TenantProfile";
+import { TenantOnboarding } from "./pages/tenant-portal/TenantOnboarding";
 import { PropertyListingsRedesign } from "./pages/PropertyListingsRedesign";
 import { LandingPage } from "./pages/LandingPage";
 import { LTBForms } from "./pages/LTBForms";
@@ -219,6 +226,11 @@ export const router = createBrowserRouter([
       { path: "inspection", Component: PropertyInspection },
     ],
   },
+  // Tenant Onboarding (Public — invite flow, no auth required)
+  {
+    path: "/tenant-setup",
+    Component: TenantOnboarding,
+  },
   // Premium Tenant Portal (Protected) — nested under TenantLayout
   {
     path: "/tenant",
@@ -230,6 +242,12 @@ export const router = createBrowserRouter([
       { path: "maintenance", Component: TenantMaintenance },
       { path: "applications", Component: TenantApplications },
       { path: "lease-signing", Component: TenantLeaseSigning },
+      { path: "receipts", Component: TenantReceipts },
+      { path: "checklist", Component: TenantChecklist },
+      { path: "notices", Component: TenantNotices },
+      { path: "renewal", Component: TenantLeaseRenewal },
+      { path: "dispute", Component: TenantDispute },
+      { path: "profile", Component: TenantProfile },
     ],
   },
   // AI Features Demo
