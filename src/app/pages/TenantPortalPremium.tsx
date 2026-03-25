@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { DollarSign, FileText, Calendar, Download, Receipt, CheckSquare, Bell, RefreshCw, Scale, User, Sparkles, TrendingUp, Shield, Clock, Wrench } from "lucide-react";
+import { DollarSign, FileText, Download, Receipt, CheckSquare, Bell, RefreshCw, Scale, User, Sparkles, TrendingUp, Shield, Clock, Wrench, MessageSquare, Star } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { PaymentForm, PaymentData } from "../components/PaymentForm";
@@ -11,22 +11,19 @@ const MU = "#767570";
 const SANS = "'DM Sans', system-ui, sans-serif";
 const SERIF = "'Instrument Serif', Georgia, serif";
 
+function getGreeting() {
+  const h = new Date().getHours();
+  return h < 12 ? "morning" : h < 17 ? "afternoon" : "evening";
+}
+
 export function TenantPortalPremium() {
   const navigate = useNavigate();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
 
-  const documents = [
-    { name: "Lease Agreement", date: "Jan 1, 2026", type: "PDF" },
-    { name: "March Receipt", date: "Mar 1, 2026", type: "PDF" },
-    { name: "February Receipt", date: "Feb 1, 2026", type: "PDF" },
-  ];
-
-  const paymentHistory = [
-    { month: "March 2026", amount: "$2,300", status: "Paid", date: "Mar 1" },
-    { month: "February 2026", amount: "$2,300", status: "Paid", date: "Feb 1" },
-    { month: "January 2026", amount: "$2,300", status: "Paid", date: "Jan 1" },
-  ];
+  const daysToRenewal = 63;
+  const passportScore = 87;
+  const streakMonths = 14;
 
   const handlePaymentSubmit = (paymentData: PaymentData) => {
     console.log("Payment submitted:", paymentData);
@@ -37,9 +34,9 @@ export function TenantPortalPremium() {
     <div style={{ fontFamily: SANS }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
 
-        {/* Tenant greeting */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 4 }}>Welcome back</p>
+        {/* Greeting */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+          <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 4 }}>Good {getGreeting()}</p>
           <h1 style={{ fontFamily: SERIF, fontSize: 38, fontWeight: 400, color: TX, letterSpacing: "-1px", lineHeight: 1, marginBottom: 6 }}>Sarah Kim</h1>
           <p style={{ fontSize: 14, color: MU }}>Unit 4A · 123 King St, Toronto · Lease active until May 2027</p>
         </motion.div>
@@ -49,113 +46,151 @@ export function TenantPortalPremium() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-8 rounded-2xl p-7 sm:p-9"
-          style={{ background: `linear-gradient(135deg, ${G} 0%, #065E3C 100%)`, boxShadow: `0 20px 60px ${G}40` }}
+          className="mb-6 rounded-2xl p-7 sm:p-9"
+          style={{ background: `linear-gradient(135deg, #0D5C3A 0%, ${G} 60%, #12A06E 100%)`, boxShadow: `0 20px 60px ${G}40` }}
         >
-          <div className="flex items-start justify-between">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
             <div>
-              <p style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 8 }}>Next Payment Due</p>
-              <h2 style={{ fontFamily: SERIF, fontSize: 52, fontWeight: 400, color: "#fff", lineHeight: 1, marginBottom: 4 }}>$2,300</h2>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.7)" }}>Due July 1, 2026 · 7 days remaining</p>
+              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 4 }}>Next Rent Payment</p>
+              <h2 style={{ fontFamily: SERIF, fontSize: 48, fontWeight: 400, color: "#fff", lineHeight: 1, marginBottom: 4 }}>$2,300</h2>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>Due July 1, 2026 · <span style={{ color: "#7AE8B8", fontWeight: 600 }}>7 days away</span></p>
             </div>
-            <DollarSign className="size-12 text-white/20 hidden sm:block" strokeWidth={2} />
+            <div style={{ textAlign: "right" }}>
+              <p style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 3 }}>Passport Score</p>
+              <p style={{ fontFamily: SERIF, fontSize: 32, color: "#fff", lineHeight: 1 }}>{passportScore}</p>
+              <p style={{ fontSize: 9, color: "rgba(255,255,255,0.45)" }}>/ 100</p>
+            </div>
           </div>
-
-          <div className="mt-7 flex flex-col sm:flex-row gap-3">
-            <button
-              onClick={() => setShowPaymentModal(true)}
-              className="flex-1 px-6 py-3.5 bg-white text-[#0A7A52] text-[14px] font-semibold rounded-xl hover:bg-white/95 transition-all shadow-md"
-            >
-              Pay Now
-            </button>
-            <button
-              onClick={() => setShowScheduleModal(true)}
-              className="flex-1 sm:flex-initial px-6 py-3.5 border-2 border-white/30 text-white text-[14px] font-semibold rounded-xl hover:bg-white/10 transition-all"
-            >
-              Schedule Payment
-            </button>
-          </div>
-        </motion.div>
-
-        {/* Quick stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="grid grid-cols-3 gap-4 mb-8"
-        >
-          {[
-            { label: "On-time payments", value: "100%", color: G },
-            { label: "Lease remaining", value: "14 mo", color: TX },
-            { label: "Open requests", value: "1", color: "#B45309" },
-          ].map(s => (
-            <div key={s.label} style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1px solid rgba(0,0,0,0.07)", textAlign: "center" }}>
-              <p style={{ fontFamily: SERIF, fontSize: 26, fontWeight: 400, color: s.color, margin: "0 0 4px" }}>{s.value}</p>
-              <p style={{ fontSize: 11, color: MU, fontWeight: 600 }}>{s.label}</p>
-            </div>
-          ))}
-        </motion.div>
-
-        {/* ── Enhanced Metrics ── */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} style={{ marginBottom: 28 }}>
-          <h2 style={{ fontFamily: SERIF, fontSize: 22, fontWeight: 400, color: TX, marginBottom: 16, letterSpacing: "-0.5px" }}>Your Tenant Metrics</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-
-            {/* Payment streak */}
-            <div style={{ background: "#fff", borderRadius: 16, padding: "18px 20px", border: "1px solid rgba(0,0,0,0.07)", gridColumn: "span 2" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                <div style={{ width: 30, height: 30, borderRadius: 8, background: GL, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <TrendingUp size={14} color={G} strokeWidth={2.5} />
-                </div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: MU }}>Payment Streak</span>
-              </div>
-              <p style={{ fontFamily: SERIF, fontSize: 36, fontWeight: 400, color: G, lineHeight: 1, marginBottom: 6 }}>6 months</p>
-              <p style={{ fontSize: 12, color: MU, marginBottom: 14 }}>100% on-time payments since lease start</p>
-              <div style={{ display: "flex", gap: 5 }}>
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} style={{ flex: 1 }}>
-                    <div style={{ height: 28, background: G, borderRadius: 5, opacity: 0.15 + (i + 1) * 0.14 }} />
-                    <p style={{ fontSize: 9, color: MU, textAlign: "center", marginTop: 4 }}>{["J","F","M","A","M","J"][i]}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Lease health */}
-            <div style={{ background: "#fff", borderRadius: 16, padding: "18px 20px", border: "1px solid rgba(0,0,0,0.07)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                <div style={{ width: 30, height: 30, borderRadius: 8, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Shield size={14} color="#1D4ED8" strokeWidth={2.5} />
-                </div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: MU }}>Lease Health</span>
-              </div>
-              <p style={{ fontFamily: SERIF, fontSize: 36, fontWeight: 400, color: "#1D4ED8", lineHeight: 1, marginBottom: 6 }}>98/100</p>
-              <p style={{ fontSize: 12, color: MU }}>Excellent standing</p>
-              <div style={{ marginTop: 12, height: 6, background: "#EFF6FF", borderRadius: 3, overflow: "hidden" }}>
-                <div style={{ width: "98%", height: "100%", background: "#1D4ED8", borderRadius: 3 }} />
-              </div>
-            </div>
-
-            {/* Days to renewal */}
-            <div style={{ background: "#fff", borderRadius: 16, padding: "18px 20px", border: "1px solid rgba(0,0,0,0.07)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                <div style={{ width: 30, height: 30, borderRadius: 8, background: "#FEF3C7", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Clock size={14} color="#B45309" strokeWidth={2.5} />
-                </div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: MU }}>Renewal Window</span>
-              </div>
-              <p style={{ fontFamily: SERIF, fontSize: 36, fontWeight: 400, color: "#B45309", lineHeight: 1, marginBottom: 6 }}>63 days</p>
-              <p style={{ fontSize: 12, color: MU }}>Deadline: Feb 1, 2027</p>
-              <button onClick={() => navigate("/tenant/renewal")} style={{ marginTop: 12, display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 700, color: "#B45309", background: "#FEF3C7", border: "none", borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontFamily: SANS }}>
-                View renewal →
+          <div style={{ background: "rgba(0,0,0,0.2)", borderRadius: 16, padding: "14px 18px" }}>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                onClick={() => setShowPaymentModal(true)}
+                style={{ flex: 1, padding: "11px", background: "#fff", color: "#085040", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer" }}
+              >
+                Pay Now →
+              </button>
+              <button
+                onClick={() => setShowScheduleModal(true)}
+                style={{ padding: "11px 15px", background: "rgba(255,255,255,0.1)", color: "#fff", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 10, fontSize: 11, cursor: "pointer" }}
+              >
+                ✓ Auto-pay
               </button>
             </div>
-
           </div>
         </motion.div>
 
-        {/* ── Quick Actions ── */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} style={{ marginBottom: 32 }}>
+        {/* ── Story Cards — What would you like to do? ── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} style={{ marginBottom: 28 }}>
+          <h2 style={{ fontFamily: SERIF, fontSize: 22, fontWeight: 400, color: TX, marginBottom: 14, letterSpacing: "-0.5px" }}>What would you like to do?</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
+            <StoryCard
+              gradient="linear-gradient(135deg,#0D5C3A,#12A06E)"
+              tag="Services"
+              title="Report an issue"
+              desc="Leak, appliance, or anything that needs fixing"
+              emoji="🔧"
+              onClick={() => navigate("/tenant/maintenance")}
+            />
+            <StoryCard
+              gradient="linear-gradient(135deg,#1E5FA8,#2E7DD4)"
+              tag="Payments"
+              title="View rent history"
+              desc="All receipts and payment records"
+              emoji="🧾"
+              onClick={() => navigate("/tenant/payments")}
+            />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
+            <StoryCard
+              gradient="linear-gradient(135deg,#7C3AED,#9F5AFF)"
+              tag="Tenant Passport"
+              title="Your rental score"
+              desc="See what landlords see about you"
+              emoji="⭐"
+              onClick={() => navigate("/tenant/profile")}
+            />
+            <StoryCard
+              gradient="linear-gradient(135deg,#B45309,#D97706)"
+              tag="Documents"
+              title="My lease & docs"
+              desc="Download receipts, lease, inspection"
+              emoji="📄"
+              onClick={() => navigate("/tenant/documents")}
+            />
+          </div>
+          <StoryCard
+            gradient="linear-gradient(135deg,#0E0F0C,#2D2D2D)"
+            tag="Communication"
+            title="Message your landlord"
+            desc="All conversations logged and timestamped"
+            emoji="💬"
+            wide
+            onClick={() => window.dispatchEvent(new CustomEvent("openAIWithQuery", { detail: { query: "I need to send a message to my landlord about" } }))}
+          />
+        </motion.div>
+
+        {/* ── Metrics Dashboard ── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} style={{ marginBottom: 28 }}>
+          <h2 style={{ fontFamily: SERIF, fontSize: 22, fontWeight: 400, color: TX, marginBottom: 16, letterSpacing: "-0.5px" }}>Your Dashboard</h2>
+
+          {/* 3-metric row */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 11, marginBottom: 11 }}>
+            <MetricCard label="On-time" value="100%" sub="All 14 payments" valueColor={G} sparkline>
+              <svg viewBox="0 0 100 40" style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 40, opacity: 0.15 }} >
+                <polyline points="0,30 15,28 30,25 45,26 60,20 75,18 90,10 100,8" fill="none" stroke={G} strokeWidth="2" />
+              </svg>
+            </MetricCard>
+            <MetricCard label="Passport" value={String(passportScore)} sub="↑ +4 this month" valueColor="#7C3AED" sparkline>
+              <svg viewBox="0 0 100 40" style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 40, opacity: 0.15 }}>
+                <polyline points="0,35 20,30 40,28 60,22 80,16 100,12" fill="none" stroke="#7C3AED" strokeWidth="2" />
+              </svg>
+            </MetricCard>
+            <MetricCard label="Streak" value={`🔥${streakMonths}`} sub="Months perfect" valueColor="#B45309" />
+          </div>
+
+          {/* 2-metric row */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 11, marginBottom: 11 }}>
+            <div
+              style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 14, padding: "16px 18px", cursor: "pointer" }}
+              onClick={() => navigate("/tenant/renewal")}
+            >
+              <p style={{ fontSize: 9, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 6 }}>Lease Remaining</p>
+              <p style={{ fontFamily: SERIF, fontSize: 26, color: TX, lineHeight: 1, marginBottom: 3 }}>{daysToRenewal}</p>
+              <p style={{ fontSize: 11, color: MU, marginBottom: 8 }}>Days until renewal</p>
+              <div style={{ height: 6, background: "rgba(0,0,0,0.06)", borderRadius: 3, overflow: "hidden" }}>
+                <div style={{ width: "65%", height: "100%", background: G, borderRadius: 3 }} />
+              </div>
+            </div>
+            <div style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 14, padding: "16px 18px" }}>
+              <p style={{ fontSize: 9, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 6 }}>Credit Built</p>
+              <p style={{ fontFamily: SERIF, fontSize: 26, color: "#1E5FA8", lineHeight: 1, marginBottom: 3 }}>+340</p>
+              <p style={{ fontSize: 11, color: MU }}>Points via Kaya</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── Payment Streak extended ── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }} style={{ background: "#fff", borderRadius: 16, border: "1px solid rgba(0,0,0,0.07)", padding: "20px 22px", marginBottom: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+            <div style={{ width: 30, height: 30, borderRadius: 8, background: GL, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <TrendingUp size={14} color={G} strokeWidth={2.5} />
+            </div>
+            <span style={{ fontSize: 12, fontWeight: 700, color: MU }}>Payment Streak</span>
+          </div>
+          <p style={{ fontFamily: SERIF, fontSize: 36, fontWeight: 400, color: G, lineHeight: 1, marginBottom: 6 }}>{streakMonths} months</p>
+          <p style={{ fontSize: 12, color: MU, marginBottom: 14 }}>100% on-time payments since lease start</p>
+          <div style={{ display: "flex", gap: 5 }}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} style={{ flex: 1 }}>
+                <div style={{ height: 28, background: G, borderRadius: 5, opacity: 0.15 + (i + 1) * 0.14 }} />
+                <p style={{ fontSize: 9, color: MU, textAlign: "center", marginTop: 4 }}>{["J", "F", "M", "A", "M", "J"][i]}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ── Quick Access ── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} style={{ marginBottom: 28 }}>
           <h2 style={{ fontFamily: SERIF, fontSize: 22, fontWeight: 400, color: TX, marginBottom: 16, letterSpacing: "-0.5px" }}>Quick Access</h2>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
             {[
@@ -184,37 +219,51 @@ export function TenantPortalPremium() {
           </div>
         </motion.div>
 
-        {/* ── Maintenance snapshot ── */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28 }} style={{ background: "#fff", borderRadius: 16, border: "1px solid rgba(0,0,0,0.07)", padding: "20px 22px", marginBottom: 28 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+        {/* ── Active Service Requests ── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28 }} style={{ background: "#fff", borderRadius: 16, border: "1px solid rgba(0,0,0,0.07)", padding: "20px 22px", marginBottom: 20 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 34, height: 34, borderRadius: 9, background: "#FEF3C7", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <Wrench size={16} color="#B45309" strokeWidth={2.5} />
               </div>
+              <p style={{ fontSize: 13, fontWeight: 600, color: TX }}>Active Service Requests</p>
+            </div>
+            <span onClick={() => navigate("/tenant/maintenance")} style={{ fontSize: 11, color: G, cursor: "pointer", fontWeight: 600 }}>View all →</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 12px", background: "#EFF6FF", borderRadius: 9, cursor: "pointer" }} onClick={() => navigate("/tenant/maintenance")}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 14 }}>🚿</span>
               <div>
-                <h3 style={{ fontFamily: SERIF, fontSize: 17, fontWeight: 400, color: TX, margin: 0 }}>Maintenance</h3>
-                <p style={{ fontSize: 11, color: MU, margin: 0 }}>1 open request · Avg. 1.2 day response</p>
+                <p style={{ fontSize: 12, fontWeight: 600, color: TX }}>Bathroom faucet dripping</p>
+                <p style={{ fontSize: 10, color: MU }}>Submitted Mar 12 · Plumber scheduled Mar 15</p>
               </div>
             </div>
-            <button onClick={() => navigate("/tenant/maintenance")} style={{ fontSize: 12, fontWeight: 700, color: G, background: GL, border: "none", borderRadius: 9, padding: "6px 14px", cursor: "pointer", fontFamily: SANS }}>View all</button>
+            <span style={{ fontSize: 9, fontWeight: 700, color: "#1D4ED8", background: "#DBEAFE", borderRadius: 99, padding: "3px 10px" }}>In Progress</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", background: "#FFFBEB", borderRadius: 12, border: "1px solid rgba(180,83,9,0.1)" }}>
-            <div>
-              <p style={{ fontSize: 13, fontWeight: 700, color: TX, margin: "0 0 2px" }}>Bathroom faucet dripping</p>
-              <p style={{ fontSize: 11, color: MU, margin: 0 }}>Submitted Mar 20 · In Progress</p>
+        </motion.div>
+
+        {/* ── Security status ── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} style={{ background: "#fff", borderRadius: 16, border: `1px solid rgba(0,0,0,0.07)`, borderLeft: `3px solid ${G}`, padding: "16px 22px", marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 34, height: 34, borderRadius: 9, background: GL, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Shield size={16} color={G} strokeWidth={2.5} />
             </div>
-            <span style={{ fontSize: 9, fontWeight: 800, color: "#B45309", background: "#FEF3C7", border: "1px solid rgba(180,83,9,0.15)", borderRadius: 99, padding: "3px 10px" }}>IN PROGRESS</span>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 12, fontWeight: 600, color: TX }}>Account Security</p>
+              <p style={{ fontSize: 10, color: MU }}>OTP enabled · Last login today 9:02 AM</p>
+            </div>
+            <span style={{ fontSize: 9, fontWeight: 700, color: G, background: GL, borderRadius: 99, padding: "3px 10px" }}>Secured</span>
           </div>
         </motion.div>
 
         {/* ── AI Kaya nudge ── */}
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} style={{ background: GL, borderRadius: 16, padding: "20px 22px", border: `1px solid ${G}20`, cursor: "pointer", marginBottom: 28 }} onClick={() => window.dispatchEvent(new CustomEvent("openAIWithQuery", { detail: { query: "What should I know about my lease renewal coming up?" } }))}>
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32 }} style={{ background: GL, borderRadius: 16, padding: "20px 22px", border: `1px solid ${G}20`, cursor: "pointer", marginBottom: 28 }} onClick={() => window.dispatchEvent(new CustomEvent("openAIWithQuery", { detail: { query: "What should I know about my lease renewal coming up?" } }))}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
             <div style={{ width: 38, height: 38, borderRadius: 11, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
               <Sparkles size={18} color={G} strokeWidth={2.5} />
             </div>
             <div>
-              <p style={{ fontSize: 14, fontWeight: 700, color: TX, margin: "0 0 4px" }}>Your lease renews in 63 days</p>
+              <p style={{ fontSize: 14, fontWeight: 700, color: TX, margin: "0 0 4px" }}>Your lease renews in {daysToRenewal} days</p>
               <p style={{ fontSize: 13, color: "#3D6B55", margin: "0 0 10px", lineHeight: 1.5 }}>Ontario allows a max 2.5% rent increase this year. Your landlord has proposed 2.95% — ask Kaya AI to explain your options before the deadline.</p>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 12px", background: "#fff", borderRadius: 99, border: `1px solid ${G}20` }}>
                 <Sparkles size={11} color={G} strokeWidth={2.5} />
@@ -225,21 +274,11 @@ export function TenantPortalPremium() {
         </motion.div>
 
         {/* Lease Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6 sm:p-8 mb-8 shadow-sm"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-6 sm:p-8 mb-8 shadow-sm">
           <h3 style={{ fontFamily: SERIF, fontSize: 20, fontWeight: 400, color: TX, marginBottom: 4 }}>Lease Agreement</h3>
           <p style={{ fontSize: 13, color: MU, marginBottom: 20 }}>Active until May 2027</p>
-
           <div className="grid grid-cols-2 gap-4 sm:gap-6 pt-5 border-t border-[rgba(0,0,0,0.05)]">
-            {[
-              ["Unit", "4A"], ["Address", "123 King St"],
-              ["Start Date", "May 1, 2026"], ["End Date", "May 1, 2027"],
-              ["Monthly Rent", "$2,300"], ["Deposit", "$2,300"],
-            ].map(([label, val]) => (
+            {[["Unit", "4A"], ["Address", "123 King St"], ["Start Date", "May 1, 2026"], ["End Date", "May 1, 2027"], ["Monthly Rent", "$2,300"], ["Deposit", "$2,300"]].map(([label, val]) => (
               <div key={label}>
                 <p style={{ fontSize: 10, color: MU, textTransform: "uppercase", letterSpacing: "0.7px", fontWeight: 700, marginBottom: 4 }}>{label}</p>
                 <p style={{ fontSize: 15, fontWeight: 600, color: TX }}>{val}</p>
@@ -248,69 +287,6 @@ export function TenantPortalPremium() {
           </div>
         </motion.div>
 
-        {/* Documents */}
-        <div className="mb-8">
-          <h2 style={{ fontFamily: SERIF, fontSize: 26, fontWeight: 400, color: TX, marginBottom: 16, letterSpacing: "-0.5px" }}>Recent Documents</h2>
-          <div className="space-y-3">
-            {documents.map((doc, idx) => (
-              <motion.div
-                key={doc.name}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + idx * 0.05 }}
-                className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl p-4 sm:p-5 hover:shadow-lg transition-all duration-200 group cursor-pointer"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="size-10 sm:size-12 rounded-xl bg-[#F8F7F4] flex items-center justify-center group-hover:bg-[#0A7A52] transition-colors">
-                      <FileText className="size-5 sm:size-6 text-[#767570] group-hover:text-white transition-colors" strokeWidth={2.5} />
-                    </div>
-                    <div>
-                      <h3 className="text-[14px] sm:text-[15px] font-semibold text-[#0E0F0C]">{doc.name}</h3>
-                      <p className="text-[11px] sm:text-[12px] text-[#767570] mt-1">{doc.date} · {doc.type}</p>
-                    </div>
-                  </div>
-                  <Download className="size-4 sm:size-5 text-[#767570] group-hover:text-[#0A7A52] transition-colors" strokeWidth={2.5} />
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Payment History */}
-        <div className="mb-12">
-          <h2 style={{ fontFamily: SERIF, fontSize: 26, fontWeight: 400, color: TX, marginBottom: 16, letterSpacing: "-0.5px" }}>Payment History</h2>
-          <div className="bg-white border border-[rgba(0,0,0,0.07)] rounded-xl overflow-hidden shadow-sm">
-            {paymentHistory.map((payment, idx) => (
-              <motion.div
-                key={payment.month}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 + idx * 0.05 }}
-                className={`flex items-center justify-between p-5 sm:p-6 ${
-                  idx !== paymentHistory.length - 1 ? "border-b border-[rgba(0,0,0,0.05)]" : ""
-                } hover:bg-[#F8F7F4] transition-colors`}
-              >
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="size-10 sm:size-12 rounded-full bg-[#E5F4EE] flex items-center justify-center">
-                    <Calendar className="size-5 sm:size-6 text-[#0A7A52]" strokeWidth={2.5} />
-                  </div>
-                  <div>
-                    <h3 className="text-[14px] sm:text-[15px] font-semibold text-[#0E0F0C]">{payment.month}</h3>
-                    <p className="text-[11px] sm:text-[12px] text-[#767570] mt-1">Paid on {payment.date}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-[16px] sm:text-[18px] font-normal text-[#0E0F0C]" style={{ fontFamily: SERIF }}>{payment.amount}</p>
-                  <div className="inline-flex items-center gap-2 mt-1.5 px-2.5 sm:px-3 py-1 bg-[#E5F4EE] rounded-full">
-                    <div className="size-1.5 sm:size-2 rounded-full bg-[#0A7A52]" />
-                    <span className="text-[10px] sm:text-[11px] font-semibold text-[#0A7A52] uppercase tracking-wide">{payment.status}</span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Payment Modal */}
@@ -328,28 +304,56 @@ export function TenantPortalPremium() {
       {/* Schedule Payment Modal */}
       {showScheduleModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowScheduleModal(false)}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl p-6 sm:p-8 max-w-lg w-full"
-          >
-            <h3 style={{ fontFamily: SERIF, fontSize: 24, fontWeight: 400, color: TX, marginBottom: 12 }}>Schedule Automatic Payment</h3>
-            <p style={{ fontSize: 14, color: MU, marginBottom: 24 }}>Set up automatic monthly rent payments to never miss a due date.</p>
-            <div style={{ marginBottom: 24 }}>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: TX, marginBottom: 8 }}>Payment Date</label>
-              <select style={{ width: "100%", padding: "12px 16px", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 12, fontSize: 14, fontFamily: SANS, outline: "none" }}>
-                <option>1st of every month</option>
-                <option>15th of every month</option>
-                <option>Last day of month</option>
-              </select>
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} onClick={(e) => e.stopPropagation()} className="bg-white rounded-2xl p-6 sm:p-8 max-w-lg w-full">
+            <h3 style={{ fontFamily: SERIF, fontSize: 24, fontWeight: 400, color: TX, marginBottom: 12 }}>Auto-Pay Settings</h3>
+            <div style={{ background: GL, borderRadius: 12, padding: 14, marginBottom: 16 }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: "#085040", marginBottom: 3 }}>✓ Auto-Pay is Active</p>
+              <p style={{ fontSize: 11, color: G }}>Rent is automatically charged on the 1st of each month</p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button onClick={() => setShowScheduleModal(false)} style={{ flex: 1, padding: "12px 24px", border: "1px solid rgba(0,0,0,0.08)", color: MU, fontSize: 14, fontWeight: 600, borderRadius: 12, cursor: "pointer", background: "#fff", fontFamily: SANS }}>Cancel</button>
-              <button style={{ flex: 1, padding: "12px 24px", background: G, color: "#fff", fontSize: 14, fontWeight: 600, borderRadius: 12, cursor: "pointer", border: "none", fontFamily: SANS }}>Enable Auto-Pay</button>
+            {[["Payment card", "Visa ending 4242"], ["Charge date", "1st of every month"], ["Next charge", "July 1, 2026 · $2,300"], ["Notification", "24 hrs before charge"]].map(r => (
+              <div key={r[0]} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
+                <span style={{ fontSize: 12, color: MU }}>{r[0]}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: TX }}>{r[1]}</span>
+              </div>
+            ))}
+            <div className="flex gap-3 mt-4">
+              <button onClick={() => setShowScheduleModal(false)} style={{ flex: 1, padding: "12px 0", border: "1px solid rgba(0,0,0,0.08)", color: MU, borderRadius: 12, cursor: "pointer", background: "#fff", fontSize: 14, fontFamily: SANS }}>Close</button>
+              <button onClick={() => setShowScheduleModal(false)} style={{ flex: 1, padding: "12px 0", background: "#FEF3C7", color: "#B45309", border: "1px solid rgba(180,83,9,0.2)", borderRadius: 12, cursor: "pointer", fontSize: 14, fontWeight: 600, fontFamily: SANS }}>Pause Auto-Pay</button>
             </div>
           </motion.div>
         </div>
       )}
+    </div>
+  );
+}
+
+function StoryCard({ gradient, tag, title, desc, emoji, wide, onClick }: {
+  gradient: string; tag: string; title: string; desc: string; emoji: string; wide?: boolean; onClick: () => void;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      style={{ background: gradient, borderRadius: 16, padding: 20, position: "relative", overflow: "hidden", cursor: "pointer", minHeight: 120, transition: "transform 0.2s, box-shadow 0.2s", gridColumn: wide ? "span 2" : undefined }}
+      onMouseOver={e => { (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 28px rgba(0,0,0,0.12)"; }}
+      onMouseOut={e => { (e.currentTarget as HTMLDivElement).style.transform = ""; (e.currentTarget as HTMLDivElement).style.boxShadow = ""; }}
+    >
+      <p style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, opacity: 0.7, color: "rgba(255,255,255,0.7)" }}>{tag}</p>
+      <p style={{ fontFamily: SERIF, fontSize: 19, color: "#fff", lineHeight: 1.2, marginBottom: 6 }}>{title}</p>
+      <p style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", lineHeight: 1.5 }}>{desc}</p>
+      <span style={{ position: "absolute", bottom: 14, right: 16, fontSize: 32, opacity: 0.6 }}>{emoji}</span>
+    </div>
+  );
+}
+
+function MetricCard({ label, value, sub, valueColor, sparkline, children }: {
+  label: string; value: string; sub: string; valueColor: string; sparkline?: boolean; children?: React.ReactNode;
+}) {
+  return (
+    <div style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 14, padding: "16px 18px", position: "relative", overflow: "hidden" }}>
+      <p style={{ fontSize: 9, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 6 }}>{label}</p>
+      <p style={{ fontFamily: SERIF, fontSize: 26, color: valueColor, lineHeight: 1, marginBottom: 3 }}>{value}</p>
+      <p style={{ fontSize: 11, color: valueColor === MU ? MU : valueColor, fontWeight: 600 }}>{sub}</p>
+      {children}
     </div>
   );
 }

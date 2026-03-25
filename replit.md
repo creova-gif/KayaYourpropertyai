@@ -1,7 +1,7 @@
 # Kaya Housing
 
 ## Overview
-KAYA is an AI-powered, bilingual property management platform for Ontario landlords. It provides tenant screening, rent collection, LTB-compliant form generation, and a full renter-facing community portal. Supports 5 languages (English, French, Spanish, Mandarin, Punjabi).
+KAYA is an AI-powered, bilingual property management platform for Ontario landlords and tenants. It provides tenant screening, rent collection, LTB-compliant form generation, and a full renter-facing tenant portal with Tenant Passport, credit builder, maintenance requests, and document management. Supports 5 languages (English, French, Spanish, Mandarin, Punjabi).
 
 ## Tech Stack
 - **Framework:** React 18 + TypeScript

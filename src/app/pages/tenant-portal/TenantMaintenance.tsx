@@ -1,6 +1,7 @@
-import { Wrench, Plus, Clock, CheckCircle2, AlertCircle, Droplets, Zap, Thermometer, Home, Sparkles, Camera } from "lucide-react";
 import { useState } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
+import { X } from "lucide-react";
+import { toast } from "sonner";
 
 const G = "#0A7A52";
 const GL = "#E5F4EE";
@@ -9,260 +10,350 @@ const MU = "#767570";
 const SANS = "'DM Sans', system-ui, sans-serif";
 const SERIF = "'Instrument Serif', Georgia, serif";
 
-type LIcon = React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
+type TicketStatus = "open" | "progress" | "resolved" | "closed";
+interface Ticket {
+  id: string;
+  title: string;
+  cat: string;
+  priority: "low" | "medium" | "high";
+  status: TicketStatus;
+  date: string;
+  landlordNote?: string;
+}
 
-const categoryIcon: Record<string, LIcon> = {
-  Plumbing: Droplets,
-  Electrical: Zap,
-  Appliance: Wrench,
-  HVAC: Thermometer,
-  Other: Home,
+const STATUS_COLORS: Record<TicketStatus, { bg: string; text: string; border: string; label: string }> = {
+  open: { bg: "#FEF3C7", text: "#B45309", border: "rgba(180,83,9,0.15)", label: "Open" },
+  progress: { bg: "#EFF6FF", text: "#1D4ED8", border: "rgba(29,78,216,0.15)", label: "In Progress" },
+  resolved: { bg: GL, text: G, border: "rgba(10,122,82,0.15)", label: "✓ Resolved" },
+  closed: { bg: "#F8F7F4", text: MU, border: "rgba(0,0,0,0.07)", label: "Closed" },
 };
 
+const LEFT_COLORS: Record<TicketStatus, string> = {
+  open: "#B45309",
+  progress: "#1D4ED8",
+  resolved: G,
+  closed: "#AEADA8",
+};
+
+const CATEGORIES = [
+  { id: "plumbing", icon: "🚿", label: "Plumbing", desc: "Leaks, drains, toilet" },
+  { id: "electrical", icon: "💡", label: "Electrical", desc: "Outlets, switches, lights" },
+  { id: "hvac", icon: "❄️", label: "HVAC", desc: "Heating, cooling, vents" },
+  { id: "appliance", icon: "🧺", label: "Appliances", desc: "Washer, dryer, fridge" },
+  { id: "locksmith", icon: "🔑", label: "Locks & Keys", desc: "Lockouts, replacements" },
+  { id: "cleaning", icon: "🧹", label: "Cleaning", desc: "Common areas, carpets" },
+  { id: "pest", icon: "🐛", label: "Pest Control", desc: "Mice, insects, bugs" },
+  { id: "other", icon: "🔧", label: "Other", desc: "Anything else" },
+];
+
+const SERVICE_CATALOGUE = [
+  { icon: "🚿", title: "Emergency Plumbing", desc: "Burst pipes, major leaks, no water", sla: "Same day" },
+  { icon: "💡", title: "Electrical Repair", desc: "Outages, faulty outlets, panel issues", sla: "24 hrs" },
+  { icon: "❄️", title: "HVAC Service", desc: "No heat/cooling, thermostat, vents", sla: "24 hrs" },
+  { icon: "🧺", title: "Appliance Repair", desc: "Washer, dryer, dishwasher, fridge", sla: "48 hrs" },
+  { icon: "🔑", title: "Lockout / Lock Change", desc: "Emergency lockout, re-key, new locks", sla: "4 hrs" },
+  { icon: "🧹", title: "Cleaning Request", desc: "Unit cleaning, carpet, common areas", sla: "48 hrs" },
+  { icon: "🐛", title: "Pest Control", desc: "Mice, cockroaches, bedbugs, ants", sla: "48 hrs" },
+  { icon: "🎨", title: "Minor Repairs", desc: "Painting, patching, shelves, doors", sla: "1 week" },
+];
+
+const CAT_ICON: Record<string, string> = { Plumbing: "🚿", Appliance: "🧺", Electrical: "💡", HVAC: "❄️", Locksmith: "🔑", Cleaning: "🧹", Pest: "🐛", Other: "🔧" };
+
 export function TenantMaintenance() {
-  const [showNewRequest, setShowNewRequest] = useState(false);
-  const [newIssue, setNewIssue] = useState("");
-  const [newCategory, setNewCategory] = useState("Plumbing");
+  const [activeTab, setActiveTab] = useState<"open" | "new" | "catalogue">("open");
+  const [step, setStep] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
+  const [detail, setDetail] = useState<Ticket | null>(null);
 
-  const requests = [
-    {
-      id: 1,
-      issue: "Dishwasher making noise",
-      category: "Appliance",
-      status: "completed" as const,
-      priority: "Low",
-      submittedDate: "Mar 8, 2026",
-      completedDate: "Mar 10, 2026",
-      description: "Dishwasher is making loud grinding noise during wash cycle.",
-      response: "Issue resolved. Pump was replaced by our technician.",
-      hasPhoto: false,
-    },
-    {
-      id: 2,
-      issue: "Bathroom faucet dripping",
-      category: "Plumbing",
-      status: "in-progress" as const,
-      priority: "Medium",
-      submittedDate: "Mar 12, 2026",
-      description: "Bathroom sink faucet has a slow drip that won't stop.",
-      response: "Plumber scheduled for March 15th between 2–4 PM.",
-      hasPhoto: true,
-    },
-  ];
+  const [form, setForm] = useState({ category: "", title: "", desc: "", priority: "medium" as "low" | "medium" | "high", photos: 0, access: "Morning (8 AM – 12 PM)" });
 
-  const statusStyle = {
-    "in-progress": { bg: "#EFF6FF", border: "rgba(29,78,216,0.15)", text: "#1D4ED8", label: "In Progress", Icon: Clock },
-    completed: { bg: GL, border: `rgba(10,122,82,0.15)`, text: G, label: "Completed", Icon: CheckCircle2 },
-    pending: { bg: "#FEF3C7", border: "rgba(180,83,9,0.15)", text: "#B45309", label: "Pending", Icon: AlertCircle },
+  const [tickets, setTickets] = useState<Ticket[]>([
+    { id: "KY-1042", title: "Bathroom faucet dripping", cat: "Plumbing", priority: "high", status: "progress", date: "Mar 12", landlordNote: "Plumber scheduled March 15, 2–4 PM. They will contact you." },
+    { id: "KY-1039", title: "Dishwasher making noise", cat: "Appliance", priority: "medium", status: "resolved", date: "Mar 8", landlordNote: "Replaced pump motor. Issue resolved." },
+    { id: "KY-1027", title: "Hallway light bulb replacement", cat: "Electrical", priority: "low", status: "closed", date: "Feb 28", landlordNote: "Completed." },
+  ]);
+
+  function submitRequest() {
+    const id = "KY-10" + Math.floor(Math.random() * 90 + 10);
+    const catLabel = CATEGORIES.find(c => c.id === form.category)?.label || "Other";
+    setTickets(t => [{ id, title: form.title || "New request", cat: catLabel, priority: form.priority, status: "open", date: "Today" }, ...t]);
+    toast.success(`Request ${id} submitted to your landlord`);
+    setSubmitted(true);
+  }
+
+  function resetNew() {
+    setForm({ category: "", title: "", desc: "", priority: "medium", photos: 0, access: "Morning (8 AM – 12 PM)" });
+    setStep(0);
+    setSubmitted(false);
+    setActiveTab("new");
+  }
+
+  const PRIORITY_COLORS = {
+    low: { border: "#22C55E", bg: "#DCFCE7", text: "#166534", label: "🟢 Low" },
+    medium: { border: "#B45309", bg: "#FEF3C7", text: "#B45309", label: "🟡 Medium" },
+    high: { border: "#C0392B", bg: "#FDECEA", text: "#C0392B", label: "🔴 High" },
   };
 
   return (
     <div style={{ fontFamily: SANS }}>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
 
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-            <div>
-              <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 4 }}>Maintenance</p>
-              <h1 style={{ fontFamily: SERIF, fontSize: 36, fontWeight: 400, color: TX, letterSpacing: "-1px", lineHeight: 1 }}>Maintenance Requests</h1>
-            </div>
-            <button
-              onClick={() => setShowNewRequest(true)}
-              style={{ display: "flex", alignItems: "center", gap: 8, padding: "11px 20px", background: G, color: "#fff", borderRadius: 12, border: "none", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: SANS, boxShadow: `0 4px 14px ${G}40` }}
-            >
-              <Plus size={16} strokeWidth={2.5} />
-              New Request
-            </button>
-          </div>
-        </motion.div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {[
-            { label: "In Progress", value: requests.filter(r => r.status === "in-progress").length, color: "#1D4ED8", bg: "#EFF6FF", Icon: Clock },
-            { label: "Completed", value: requests.filter(r => r.status === "completed").length, color: G, bg: GL, Icon: CheckCircle2 },
-            { label: "Total Requests", value: requests.length, color: TX, bg: "#F8F7F4", Icon: Wrench },
-          ].map(s => (
-            <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-              style={{ background: "#fff", borderRadius: 14, padding: "18px 20px", border: "1px solid rgba(0,0,0,0.07)" }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                <div style={{ width: 30, height: 30, borderRadius: 8, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <s.Icon size={14} color={s.color} strokeWidth={2.5} />
-                </div>
-                <span style={{ fontSize: 11, color: MU, fontWeight: 500 }}>{s.label}</span>
-              </div>
-              <p style={{ fontFamily: SERIF, fontSize: 32, fontWeight: 400, color: TX, margin: 0 }}>{s.value}</p>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Submit card */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="rounded-2xl p-7 sm:p-8 mb-7"
-          style={{ background: `linear-gradient(135deg, ${G} 0%, #065E3C 100%)`, boxShadow: `0 16px 48px ${G}35` }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
-            <div style={{ width: 46, height: 46, borderRadius: 12, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Plus size={22} color="#fff" strokeWidth={2.5} />
-            </div>
-            <div>
-              <h2 style={{ fontSize: 18, fontWeight: 600, color: "#fff", margin: 0 }}>Submit a New Request</h2>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", margin: "3px 0 0" }}>AI will prioritize and route automatically</p>
-            </div>
-          </div>
-          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.8)", marginBottom: 20, lineHeight: 1.6 }}>
-            Describe your issue and our AI will analyze it, assign a priority, and notify your landlord. You'll receive updates via email and in the portal.
-          </p>
-          <button
-            onClick={() => setShowNewRequest(true)}
-            style={{ padding: "12px 24px", background: "#fff", color: G, borderRadius: 12, border: "none", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}
-          >
-            Create Maintenance Request
+      {/* Tab bar */}
+      <div style={{ display: "flex", borderBottom: "1px solid rgba(0,0,0,0.07)", background: "#fff", overflowX: "auto" }}>
+        {[
+          { id: "open" as const, label: "My Requests" },
+          { id: "new" as const, label: "New Request" },
+          { id: "catalogue" as const, label: "Service Menu" },
+        ].map(t => (
+          <button key={t.id} onClick={() => { setActiveTab(t.id); if (t.id === "new") { setSubmitted(false); setStep(0); } }} style={{ padding: "12px 18px", border: "none", borderBottom: `2px solid ${activeTab === t.id ? G : "transparent"}`, fontFamily: SANS, fontSize: 12, fontWeight: 600, cursor: "pointer", color: activeTab === t.id ? G : MU, whiteSpace: "nowrap", background: "transparent", transition: "all 0.15s" }}>
+            {t.label}
           </button>
-        </motion.div>
+        ))}
+      </div>
 
-        {/* Requests list */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 24 }}>
-          {requests.map((request, idx) => {
-            const ss = statusStyle[request.status];
-            const StatusIcon = ss.Icon;
-            const CatIcon = categoryIcon[request.category] || Home;
-            return (
-              <motion.div
-                key={request.id}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 + idx * 0.05 }}
-                style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1px solid rgba(0,0,0,0.07)", boxShadow: "0 2px 8px rgba(0,0,0,0.03)" }}
-              >
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 16, gap: 12 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                    <div style={{ width: 46, height: 46, borderRadius: 12, background: "#F8F7F4", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <CatIcon size={20} color={MU} strokeWidth={2} />
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        {/* ── MY REQUESTS TAB ── */}
+        {activeTab === "open" && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <h1 style={{ fontFamily: SERIF, fontSize: 26, fontWeight: 400, color: TX }}>My Requests</h1>
+              <button onClick={() => { setActiveTab("new"); setStep(0); setSubmitted(false); }} style={{ padding: "8px 14px", background: G, color: "#fff", border: "none", borderRadius: 9, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>+ New</button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {tickets.map(t => {
+                const sc = STATUS_COLORS[t.status];
+                return (
+                  <div key={t.id} style={{ background: "#fff", borderRadius: 14, padding: 16, border: "1px solid rgba(0,0,0,0.07)", borderLeft: `4px solid ${LEFT_COLORS[t.status]}`, cursor: "pointer" }} onClick={() => setDetail(t)}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                      <div style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
+                        <span style={{ fontSize: 18, flexShrink: 0 }}>{CAT_ICON[t.cat] || "🔧"}</span>
+                        <div>
+                          <p style={{ fontSize: 13, fontWeight: 600, color: TX, margin: 0 }}>{t.title}</p>
+                          <p style={{ fontSize: 10, color: MU }}>{t.cat} · {t.date} · {t.id}</p>
+                        </div>
+                      </div>
+                      <span style={{ fontSize: 9, fontWeight: 700, color: sc.text, background: sc.bg, borderRadius: 99, padding: "3px 10px", flexShrink: 0 }}>{sc.label}</span>
                     </div>
-                    <div>
-                      <h3 style={{ fontSize: 16, fontWeight: 600, color: TX, margin: 0 }}>{request.issue}</h3>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 3 }}>
-                        <span style={{ fontSize: 12, color: MU }}>{request.category}</span>
-                        <span style={{ fontSize: 10, color: "rgba(0,0,0,0.2)" }}>•</span>
-                        <span style={{ fontSize: 12, color: MU }}>Submitted {request.submittedDate}</span>
+                    {t.landlordNote && (
+                      <div style={{ background: "#F8F7F4", borderRadius: 8, padding: 9, fontSize: 11, color: MU, borderLeft: `2px solid ${t.status === "resolved" ? G : "#1D4ED8"}` }}>
+                        <strong style={{ color: TX }}>Landlord: </strong>{t.landlordNote}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* ── NEW REQUEST TAB ── */}
+        {activeTab === "new" && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            {submitted ? (
+              <div style={{ textAlign: "center", padding: "40px 20px" }}>
+                <div style={{ width: 80, height: 80, borderRadius: "50%", background: GL, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 36 }}>✅</div>
+                <p style={{ fontFamily: SERIF, fontSize: 24, color: TX, marginBottom: 8 }}>Request Submitted</p>
+                <p style={{ fontSize: 13, color: MU, marginBottom: 24, lineHeight: 1.6 }}>Your ticket has been sent to your landlord. You'll be notified when they respond.</p>
+                <button onClick={() => setActiveTab("open")} style={{ width: "100%", padding: 13, background: G, color: "#fff", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: SANS, marginBottom: 10 }}>View My Requests</button>
+                <button onClick={resetNew} style={{ width: "100%", padding: 13, background: "#F8F7F4", color: TX, border: "1.5px solid rgba(0,0,0,0.07)", borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>Submit Another</button>
+              </div>
+            ) : (
+              <>
+                <h1 style={{ fontFamily: SERIF, fontSize: 26, fontWeight: 400, color: TX, marginBottom: 16 }}>New Service Request</h1>
+
+                {/* Step progress */}
+                <div style={{ display: "flex", gap: 6, marginBottom: 20 }}>
+                  {["Category", "Describe", "Review"].map((s, i) => (
+                    <div key={s} style={{ flex: 1, height: 4, borderRadius: 2, background: i <= step ? G : "rgba(0,0,0,0.07)", transition: "background 0.3s" }} />
+                  ))}
+                </div>
+                <p style={{ fontSize: 9, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 14 }}>Step {step + 1} of 3 — {["What needs attention?", "Describe the issue", "Review & submit"][step]}</p>
+
+                {/* Step 1: Category */}
+                {step === 0 && (
+                  <>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
+                      {CATEGORIES.map(c => (
+                        <div key={c.id} onClick={() => setForm(f => ({ ...f, category: c.id }))} style={{ padding: 14, border: `1.5px solid ${form.category === c.id ? G : "rgba(0,0,0,0.07)"}`, background: form.category === c.id ? GL : "#fff", borderRadius: 12, cursor: "pointer", textAlign: "center", transition: "all 0.2s" }}>
+                          <div style={{ fontSize: 22, marginBottom: 4 }}>{c.icon}</div>
+                          <div style={{ fontSize: 12, fontWeight: 600, color: TX }}>{c.label}</div>
+                          <div style={{ fontSize: 10, color: MU, marginTop: 2 }}>{c.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <button disabled={!form.category} onClick={() => setStep(1)} style={{ width: "100%", padding: 13, background: form.category ? G : "rgba(0,0,0,0.15)", color: "#fff", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: form.category ? "pointer" : "not-allowed", fontFamily: SANS }}>Next →</button>
+                  </>
+                )}
+
+                {/* Step 2: Describe */}
+                {step === 1 && (
+                  <>
+                    <div style={{ marginBottom: 14 }}>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 5 }}>Issue title</p>
+                      <input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Kitchen faucet dripping constantly" style={{ width: "100%", padding: "11px 13px", border: "1.5px solid rgba(0,0,0,0.07)", borderRadius: 10, fontFamily: SANS, fontSize: 13, color: TX, outline: "none", boxSizing: "border-box" }} />
+                    </div>
+                    <div style={{ marginBottom: 14 }}>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 5 }}>Description</p>
+                      <textarea value={form.desc} onChange={e => setForm(f => ({ ...f, desc: e.target.value }))} rows={4} placeholder="Describe the issue in detail. When did it start? How bad is it? Any safety concern?" style={{ width: "100%", padding: "11px 13px", border: "1.5px solid rgba(0,0,0,0.07)", borderRadius: 10, fontFamily: SANS, fontSize: 13, color: TX, outline: "none", resize: "vertical", boxSizing: "border-box" }} />
+                    </div>
+                    <div style={{ marginBottom: 14 }}>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 8 }}>Priority</p>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        {(["low", "medium", "high"] as const).map(p => {
+                          const pc = PRIORITY_COLORS[p];
+                          const sel = form.priority === p;
+                          return (
+                            <button key={p} onClick={() => setForm(f => ({ ...f, priority: p }))} style={{ padding: "8px 14px", border: `1.5px solid ${sel ? pc.border : "rgba(0,0,0,0.07)"}`, borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: "pointer", background: sel ? pc.bg : "#fff", color: sel ? pc.text : MU, fontFamily: SANS }}>
+                              {pc.label}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
+                    <div style={{ marginBottom: 14 }}>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 8 }}>Add photos <span style={{ color: MU, fontWeight: 400, textTransform: "none" }}>(optional but helps)</span></p>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        {[0, 1, 2].map(i => (
+                          <div key={i} onClick={() => { if (form.photos <= i) { setForm(f => ({ ...f, photos: i + 1 })); toast.success(`Photo ${i + 1} added`); } }} style={{ width: 64, height: 64, borderRadius: 8, background: form.photos > i ? GL : "#F8F7F4", border: `1.5px ${form.photos > i ? "solid" : "dashed"} ${form.photos > i ? G : "rgba(0,0,0,0.12)"}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: form.photos > i ? 20 : 18, transition: "all 0.2s" }}>
+                            {form.photos > i ? "📷" : "+"}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div style={{ marginBottom: 16 }}>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 5 }}>Preferred access time</p>
+                      <select value={form.access} onChange={e => setForm(f => ({ ...f, access: e.target.value }))} style={{ width: "100%", padding: "11px 13px", border: "1.5px solid rgba(0,0,0,0.07)", borderRadius: 10, fontFamily: SANS, fontSize: 13, color: TX, outline: "none", background: "#fff", appearance: "none" }}>
+                        <option>Morning (8 AM – 12 PM)</option>
+                        <option>Afternoon (12 PM – 5 PM)</option>
+                        <option>Evening (5 PM – 8 PM)</option>
+                        <option>I will contact you to arrange</option>
+                      </select>
+                    </div>
+                    <div style={{ display: "flex", gap: 9 }}>
+                      <button onClick={() => setStep(0)} style={{ flex: "0 0 80px", padding: 13, background: "#F8F7F4", color: TX, border: "1.5px solid rgba(0,0,0,0.07)", borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>← Back</button>
+                      <button onClick={() => setStep(2)} style={{ flex: 1, padding: 13, background: G, color: "#fff", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}>Review →</button>
+                    </div>
+                  </>
+                )}
+
+                {/* Step 3: Review */}
+                {step === 2 && (() => {
+                  const catData = CATEGORIES.find(c => c.id === form.category);
+                  const pc = PRIORITY_COLORS[form.priority];
+                  return (
+                    <>
+                      <div style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 14, padding: 16, marginBottom: 16 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+                          <div>
+                            <p style={{ fontSize: 13, fontWeight: 700, color: TX, margin: 0 }}>{form.title || "Untitled request"}</p>
+                            <p style={{ fontSize: 11, color: MU, marginTop: 2 }}>{catData?.label || "Other"} · Unit 4A, 123 King Street</p>
+                          </div>
+                          <span style={{ fontSize: 9, fontWeight: 700, color: pc.text, background: pc.bg, borderRadius: 99, padding: "3px 10px" }}>{form.priority} priority</span>
+                        </div>
+                        <p style={{ fontSize: 12, color: MU, lineHeight: 1.5, marginBottom: 12 }}>{form.desc || "No description provided."}</p>
+                        {[["Tenant", "Sarah Kim — Unit 4A"], ["Category", catData?.label || "Other"], ["Priority", form.priority], ["Photos", `${form.photos} attached`], ["Access time", form.access]].map(r => (
+                          <div key={r[0]} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderTop: "1px solid rgba(0,0,0,0.05)" }}>
+                            <span style={{ fontSize: 11, color: MU }}>{r[0]}</span>
+                            <span style={{ fontSize: 11, fontWeight: 600, color: TX }}>{r[1]}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ padding: "11px 14px", background: GL, borderRadius: 10, marginBottom: 16, fontSize: 11, color: "#085040" }}>
+                        🔒 Your request is logged, timestamped, and delivered to your landlord instantly. You'll be notified when they respond.
+                      </div>
+                      <div style={{ display: "flex", gap: 9 }}>
+                        <button onClick={() => setStep(1)} style={{ flex: "0 0 80px", padding: 13, background: "#F8F7F4", color: TX, border: "1.5px solid rgba(0,0,0,0.07)", borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>← Back</button>
+                        <button onClick={submitRequest} style={{ flex: 1, padding: 13, background: G, color: "#fff", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}>Submit Request →</button>
+                      </div>
+                    </>
+                  );
+                })()}
+              </>
+            )}
+          </motion.div>
+        )}
+
+        {/* ── SERVICE CATALOGUE TAB ── */}
+        {activeTab === "catalogue" && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <h1 style={{ fontFamily: SERIF, fontSize: 26, fontWeight: 400, color: TX, marginBottom: 4 }}>Service Menu</h1>
+            <p style={{ fontSize: 12, color: MU, marginBottom: 16 }}>All requests go to your landlord · Response times shown are targets</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {SERVICE_CATALOGUE.map(s => (
+                <div key={s.title} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "13px 16px", background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 13, cursor: "pointer" }} onClick={() => { setActiveTab("new"); setStep(0); setSubmitted(false); }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{ width: 34, height: 34, borderRadius: 9, background: GL, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>{s.icon}</div>
+                    <div>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: TX, margin: 0 }}>{s.title}</p>
+                      <p style={{ fontSize: 11, color: MU }}>{s.desc}</p>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 9, background: ss.bg, border: `1px solid ${ss.border}`, flexShrink: 0 }}>
-                    <StatusIcon size={13} color={ss.text} strokeWidth={2.5} />
-                    <span style={{ fontSize: 12, fontWeight: 700, color: ss.text }}>{ss.label}</span>
+                  <div style={{ textAlign: "right" }}>
+                    <p style={{ fontSize: 10, fontWeight: 600, color: G }}>{s.sla}</p>
+                    <p style={{ fontSize: 9, color: MU }}>Response target</p>
                   </div>
                 </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  <div>
-                    <p style={{ fontSize: 11, color: MU, fontWeight: 600, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.5px" }}>Your Description</p>
-                    <p style={{ fontSize: 14, color: TX, margin: 0, lineHeight: 1.6 }}>{request.description}</p>
-                  </div>
-
-                  {request.hasPhoto && (
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      <Camera size={13} color={G} strokeWidth={2.5} />
-                      <span style={{ fontSize: 12, color: G, fontWeight: 600 }}>Photo attached</span>
-                    </div>
-                  )}
-
-                  {request.response && (
-                    <div style={{ padding: "12px 16px", borderRadius: 10, background: ss.bg, border: `1px solid ${ss.border}` }}>
-                      <p style={{ fontSize: 11, fontWeight: 700, color: TX, margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Landlord Response</p>
-                      <p style={{ fontSize: 13, color: ss.text, margin: 0, lineHeight: 1.5 }}>{request.response}</p>
-                    </div>
-                  )}
-
-                  {"completedDate" in request && request.completedDate && (
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      <CheckCircle2 size={13} color={G} strokeWidth={2.5} />
-                      <span style={{ fontSize: 12, color: G, fontWeight: 600 }}>Completed on {request.completedDate}</span>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* AI tips */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          style={{ background: GL, borderRadius: 14, padding: "18px 22px", border: `1px solid ${G}20`, cursor: "pointer" }}
-          onClick={() => window.dispatchEvent(new CustomEvent("openAIWithQuery", { detail: { query: "What are tips for faster maintenance resolution?" } }))}
-        >
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-            <div style={{ width: 34, height: 34, borderRadius: 9, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 6px rgba(0,0,0,0.06)" }}>
-              <Sparkles size={16} color={G} strokeWidth={2.5} />
+              ))}
             </div>
-            <div>
-              <p style={{ fontSize: 13, fontWeight: 700, color: TX, margin: "0 0 6px" }}>Tips for Faster Resolution</p>
-              <ul style={{ fontSize: 13, color: "#3D6B55", margin: 0, paddingLeft: 16, lineHeight: 1.7 }}>
-                <li>Include photos whenever possible</li>
-                <li>Describe when it started and how often it occurs</li>
-                <li>Mention if it's an emergency or safety concern</li>
-              </ul>
-            </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
 
       </div>
 
-      {/* New Request Modal */}
-      {showNewRequest && (
-        <div
-          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
-          onClick={() => setShowNewRequest(false)}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-            onClick={(e) => e.stopPropagation()}
-            style={{ background: "#fff", borderRadius: 20, padding: "28px 32px", maxWidth: 520, width: "100%" }}
-          >
-            <h3 style={{ fontFamily: SERIF, fontSize: 24, fontWeight: 400, color: TX, marginBottom: 20 }}>New Maintenance Request</h3>
+      {/* ── Ticket Detail Modal ── */}
+      <AnimatePresence>
+        {detail && (
+          <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", backdropFilter: "blur(4px)", zIndex: 900, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }} onClick={() => setDetail(null)}>
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} onClick={e => e.stopPropagation()} style={{ background: "#fff", borderRadius: 22, padding: 28, width: "100%", maxWidth: 440, maxHeight: "90vh", overflowY: "auto" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 22 }}>
+                <div>
+                  <h3 style={{ fontFamily: SERIF, fontSize: 22, color: TX, margin: 0 }}>{detail.title}</h3>
+                  <p style={{ fontSize: 11, color: MU, marginTop: 3 }}>{detail.id} · {detail.cat} · {detail.date}</p>
+                </div>
+                <button onClick={() => setDetail(null)} style={{ background: "none", border: "none", cursor: "pointer", color: MU, display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%", flexShrink: 0 }}><X size={18} /></button>
+              </div>
 
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: TX, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.5px" }}>Category</label>
-              <select
-                value={newCategory}
-                onChange={e => setNewCategory(e.target.value)}
-                style={{ width: "100%", padding: "11px 14px", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 10, fontSize: 14, fontFamily: SANS, outline: "none" }}
-              >
-                {Object.keys(categoryIcon).map(c => <option key={c}>{c}</option>)}
-              </select>
-            </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+                <span style={{ fontSize: 9, fontWeight: 700, color: STATUS_COLORS[detail.status].text, background: STATUS_COLORS[detail.status].bg, borderRadius: 99, padding: "3px 10px" }}>{STATUS_COLORS[detail.status].label}</span>
+                <span style={{ fontSize: 9, fontWeight: 700, color: MU, background: "#F8F7F4", borderRadius: 99, padding: "3px 10px" }}>{detail.priority} priority</span>
+              </div>
 
-            <div style={{ marginBottom: 20 }}>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: TX, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.5px" }}>Describe the issue</label>
-              <textarea
-                value={newIssue}
-                onChange={e => setNewIssue(e.target.value)}
-                placeholder="What's the issue? The more detail you provide, the faster we can resolve it..."
-                rows={4}
-                style={{ width: "100%", padding: "11px 14px", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 10, fontSize: 14, fontFamily: SANS, outline: "none", resize: "vertical", boxSizing: "border-box" }}
-              />
-            </div>
+              {/* Timeline */}
+              <div style={{ position: "relative", paddingLeft: 24, marginBottom: 16 }}>
+                <div style={{ position: "absolute", left: 7, top: 6, bottom: 6, width: 2, background: "rgba(0,0,0,0.07)" }} />
+                {[
+                  { done: true, label: "Request submitted", sub: detail.date },
+                  { done: true, label: "Received by landlord", sub: detail.date + " (same day)" },
+                  { done: detail.status !== "open", label: "Vendor assigned", sub: detail.status !== "open" ? "Confirmed" : "Pending" },
+                  { done: detail.status === "resolved" || detail.status === "closed", label: "Work completed", sub: detail.status === "resolved" ? "Confirmed" : "Pending" },
+                ].map((tl, i) => (
+                  <div key={i} style={{ position: "relative", marginBottom: 16 }}>
+                    <div style={{ position: "absolute", left: -21, top: 3, width: 14, height: 14, borderRadius: "50%", border: `2px solid ${tl.done ? G : "rgba(0,0,0,0.12)"}`, background: tl.done ? G : "#fff", boxShadow: tl.done ? undefined : `0 0 0 3px rgba(10,122,82,0.1)` }} />
+                    <p style={{ fontSize: 13, fontWeight: 600, color: tl.done ? TX : "#AEADA8", margin: 0 }}>{tl.label}</p>
+                    <p style={{ fontSize: 11, color: MU }}>{tl.sub}</p>
+                  </div>
+                ))}
+              </div>
 
-            <div style={{ display: "flex", gap: 10 }}>
-              <button onClick={() => setShowNewRequest(false)} style={{ flex: 1, padding: "12px 0", border: "1px solid rgba(0,0,0,0.08)", color: MU, borderRadius: 12, cursor: "pointer", background: "#fff", fontSize: 14, fontWeight: 600, fontFamily: SANS }}>
-                Cancel
-              </button>
-              <button onClick={() => setShowNewRequest(false)} style={{ flex: 2, padding: "12px 0", background: G, color: "#fff", borderRadius: 12, border: "none", cursor: "pointer", fontSize: 14, fontWeight: 700, fontFamily: SANS }}>
-                Submit Request
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
+              {detail.landlordNote && (
+                <div style={{ background: GL, borderRadius: 11, padding: 13, marginBottom: 16 }}>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: "#085040", marginBottom: 4 }}>Landlord update</p>
+                  <p style={{ fontSize: 12, color: "#085040", lineHeight: 1.5, margin: 0 }}>{detail.landlordNote}</p>
+                </div>
+              )}
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                <button onClick={() => { setDetail(null); toast.success("Message sent to landlord"); }} style={{ padding: 12, background: "#F8F7F4", color: TX, border: "1.5px solid rgba(0,0,0,0.07)", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>Message Landlord</button>
+                {detail.status !== "resolved" && detail.status !== "closed" ? (
+                  <button onClick={() => { setDetail(null); toast.success("Marked as resolved"); }} style={{ padding: 12, background: G, color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}>Mark Resolved</button>
+                ) : (
+                  <button onClick={() => { setDetail(null); resetNew(); }} style={{ padding: 12, background: "#F8F7F4", color: TX, border: "1.5px solid rgba(0,0,0,0.07)", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>Report Again</button>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

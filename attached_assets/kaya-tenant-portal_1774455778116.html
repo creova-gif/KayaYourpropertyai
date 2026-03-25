@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaya — Tenant Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#0A7A52;--gl:#E5F4EE;--gm:#12A06E;--gd:#085040;
+  --bg:#F8F7F4;--s:#fff;
+  --tx:#0E0F0C;--mu:#767570;--li:#AEADA8;
+  --br:rgba(0,0,0,0.07);--brm:rgba(0,0,0,0.13);
+  --am:#B45309;--aml:#FEF3C7;
+  --rd:#C0392B;--rdl:#FDECEA;
+  --bl:#1E5FA8;--bll:#EBF2FB;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  --r:14px;--rl:18px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--tx);overflow-x:hidden;font-size:14px}
+button,input,select,textarea{font-family:var(--sans)}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--br);border-radius:2px}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes bounceIn{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.05)}70%{transform:scale(.95)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes checkmark{0%{stroke-dashoffset:50}100%{stroke-dashoffset:0}}
+@keyframes ringPulse{0%{box-shadow:0 0 0 0 rgba(10,122,82,.4)}70%{box-shadow:0 0 0 12px rgba(10,122,82,0)}100%{box-shadow:0 0 0 0 rgba(10,122,82,0)}}
+
+/* ── TOAST ── */
+#toast-container{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:500;color:#fff;min-width:260px;max-width:340px;box-shadow:0 4px 20px rgba(0,0,0,.18);pointer-events:all;cursor:pointer;animation:slideIn .3s ease}
+.toast.success{background:#0A7A52}.toast.error{background:#C0392B}.toast.warning{background:#B45309}.toast.info{background:#1E5FA8}
+.toast-icon{font-size:15px;flex-shrink:0}.toast-msg{flex:1}.toast-x{opacity:.65;font-size:14px;flex-shrink:0}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:900;padding:20px;animation:fadeIn .2s ease;backdrop-filter:blur(4px)}
+.modal-box{background:#fff;border-radius:22px;padding:28px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;animation:slideUp .25s ease;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.modal-title{font-family:var(--serif);font-size:26px;color:var(--tx)}
+.close-btn{background:none;border:none;cursor:pointer;padding:4px;color:var(--mu);font-size:20px;line-height:1;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.close-btn:hover{background:var(--bg)}
+
+/* ── SCREENS (auth flow) ── */
+.screen{display:none;min-height:100vh;background:var(--bg);animation:fadeIn .3s ease}
+.screen.active{display:block}
+
+/* ── AUTH SCREENS ── */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#0D5C3A 0%,#0A7A52 50%,#12A06E 100%)}
+.auth-card{background:#fff;border-radius:24px;padding:36px;width:100%;max-width:400px;box-shadow:0 24px 80px rgba(0,0,0,.2);animation:slideUp .4s ease}
+.auth-logo{font-family:var(--serif);font-size:28px;color:var(--tx);margin-bottom:6px}
+.auth-logo span{color:var(--g)}
+.auth-sub{font-size:13px;color:var(--mu);margin-bottom:28px}
+.auth-label{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.auth-inp{width:100%;padding:13px 15px;border:1.5px solid var(--br);border-radius:11px;font-family:var(--sans);font-size:14px;color:var(--tx);outline:none;transition:border-color .2s;background:#fff}
+.auth-inp:focus{border-color:var(--g)}
+.auth-inp.error{border-color:var(--rd);animation:shake .4s ease}
+.auth-btn{width:100%;padding:14px;border:none;border-radius:11px;background:var(--g);color:#fff;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:6px}
+.auth-btn:hover{background:var(--gd);transform:translateY(-1px)}
+.auth-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.auth-link{font-size:12px;color:var(--g);cursor:pointer;text-decoration:underline;font-weight:500}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--li);font-size:11px}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--br)}
+
+/* OTP input */
+.otp-wrap{display:flex;gap:8px;justify-content:center;margin:20px 0}
+.otp-inp{width:48px;height:56px;border:2px solid var(--br);border-radius:12px;font-size:24px;font-weight:700;text-align:center;color:var(--tx);outline:none;transition:all .2s;background:#fff}
+.otp-inp:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(10,122,82,.12)}
+.otp-inp.filled{border-color:var(--g);background:var(--gl);color:var(--g)}
+.otp-inp.error{border-color:var(--rd);background:var(--rdl);animation:shake .4s ease}
+.otp-timer{font-size:12px;color:var(--mu);text-align:center;margin-bottom:12px}
+.otp-timer span{color:var(--g);font-weight:600}
+
+/* Strength meter */
+.strength-wrap{margin-top:8px}
+.strength-bars{display:flex;gap:4px;margin-bottom:4px}
+.strength-bar{flex:1;height:3px;border-radius:2px;background:var(--br);transition:background .3s}
+.strength-bar.weak{background:var(--rd)}
+.strength-bar.fair{background:var(--am)}
+.strength-bar.good{background:#22C55E}
+.strength-label{font-size:10px;font-weight:600;color:var(--mu)}
+
+/* Progress steps */
+.progress-steps{display:flex;align-items:center;gap:0;margin-bottom:28px}
+.ps-step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+.ps-step:not(:last-child)::after{content:'';position:absolute;top:16px;left:calc(50% + 16px);right:calc(-50% + 16px);height:2px;background:var(--br);transition:background .3s}
+.ps-step.done:not(:last-child)::after{background:var(--g)}
+.ps-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--br);background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--li);transition:all .3s;z-index:1}
+.ps-step.active .ps-dot{border-color:var(--g);background:var(--g);color:#fff}
+.ps-step.done .ps-dot{border-color:var(--g);background:var(--g);color:#fff}
+.ps-lbl{font-size:9px;font-weight:600;color:var(--li);margin-top:5px;text-align:center;text-transform:uppercase;letter-spacing:.5px}
+.ps-step.active .ps-lbl{color:var(--g)}
+.ps-step.done .ps-lbl{color:var(--gd)}
+
+/* ID verification */
+.id-upload{border:2px dashed var(--br);border-radius:14px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:#fff}
+.id-upload:hover,.id-upload.dragover{border-color:var(--g);background:var(--gl)}
+.id-upload.uploaded{border-color:var(--g);background:var(--gl);border-style:solid}
+
+/* ── MAIN APP ── */
+#app{min-height:100vh;background:var(--bg)}
+
+/* Bottom nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--br);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;cursor:pointer;transition:all .2s;border-top:2px solid transparent;gap:3px}
+.bnav-item.active{border-top-color:var(--g)}
+.bnav-ico{font-size:18px;transition:transform .2s}
+.bnav-lbl{font-size:9px;font-weight:600;color:var(--li);text-transform:uppercase;letter-spacing:.4px}
+.bnav-item.active .bnav-lbl{color:var(--g)}
+.bnav-item.active .bnav-ico{transform:scale(1.15)}
+.bnav-badge{position:absolute;top:6px;right:calc(50% - 18px);background:var(--rd);color:#fff;font-size:8px;font-weight:700;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* App header */
+.app-header{background:#fff;border-bottom:1px solid var(--br);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.app-logo{font-family:var(--serif);font-size:18px;color:var(--tx)}
+.app-logo span{color:var(--g)}
+.header-avatar{width:34px;height:34px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--g);cursor:pointer}
+.notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
+.notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--rd);border:2px solid #fff}
+
+/* Page content */
+.page-content{padding:20px 20px 100px}
+.page-content.no-pad{padding:0 0 100px}
+
+/* Card styles */
+.kcard{background:#fff;border:1px solid var(--br);border-radius:var(--r);transition:box-shadow .2s}
+.kcard:hover{box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.mc{background:#fff;border:1px solid var(--br);border-radius:var(--r);padding:16px 18px}
+.mc-lbl{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px}
+.mc-val{font-family:var(--serif);font-size:28px;color:var(--tx);line-height:1;margin-bottom:3px}
+.mc-sub{font-size:11px;color:var(--mu)}
+.mc-trend{font-size:11px;font-weight:600;color:var(--g)}
+
+/* Badge */
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;gap:3px}
+.bg{background:var(--gl);color:var(--g)}
+.bam{background:var(--aml);color:var(--am)}
+.brd{background:var(--rdl);color:var(--rd)}
+.bbl{background:var(--bll);color:var(--bl)}
+.bgr{background:var(--bg);color:var(--mu)}
+
+/* Row items */
+.row-item{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--br);cursor:pointer;transition:background .15s}
+.row-item:hover{background:var(--bg)}
+.row-item:last-child{border-bottom:none}
+.ri-l{display:flex;align-items:center;gap:10px}
+.ri-ico{width:34px;height:34px;border-radius:9px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ri-name{font-size:13px;font-weight:600;color:var(--tx)}
+.ri-sub{font-size:11px;color:var(--mu);margin-top:1px}
+
+/* Input */
+.inp{width:100%;padding:11px 13px;border:1.5px solid var(--br);border-radius:10px;font-family:var(--sans);font-size:13px;color:var(--tx);outline:none;background:#fff;transition:border-color .2s}
+.inp:focus{border-color:var(--g)}
+.inp-label{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.select-inp{width:100%;padding:11px 13px;border:1.5px solid var(--br);border-radius:10px;font-family:var(--sans);font-size:13px;color:var(--tx);outline:none;background:#fff;transition:border-color .2s;appearance:none}
+.select-inp:focus{border-color:var(--g)}
+
+/* Buttons */
+.btn-g{padding:11px 22px;border:none;border-radius:40px;background:var(--g);font-size:13px;font-weight:600;cursor:pointer;color:#fff;transition:all .2s}
+.btn-g:hover{background:var(--gd)}
+.btn-o{padding:10px 18px;border:1.5px solid var(--br);border-radius:40px;background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--tx);transition:all .15s}
+.btn-o:hover{background:var(--bg)}
+.btn-full{width:100%;padding:13px;border:none;border-radius:12px;background:var(--g);color:#fff;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-full:hover{background:var(--gd)}
+.btn-full.secondary{background:var(--bg);color:var(--tx);border:1.5px solid var(--br)}
+.btn-full.secondary:hover{background:#eee}
+.btn-full:disabled{opacity:.5;cursor:not-allowed}
+
+/* Section title */
+.section-title{font-family:var(--serif);font-size:22px;color:var(--tx);margin-bottom:4px}
+.section-sub{font-size:12px;color:var(--mu)}
+.eyebrow{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px}
+
+/* Metric ring */
+.ring-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center}
+.ring-label{position:absolute;text-align:center}
+.ring-val{font-family:var(--serif);font-size:22px;color:var(--tx);line-height:1}
+.ring-sub{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase}
+
+/* Story card */
+.story-card{border-radius:16px;padding:20px;position:relative;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s;min-height:120px}
+.story-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.12)}
+.story-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;opacity:.7}
+.story-title{font-family:var(--serif);font-size:19px;color:#fff;line-height:1.2;margin-bottom:6px}
+.story-desc{font-size:11px;color:rgba(255,255,255,.7);line-height:1.5}
+.story-icon{position:absolute;bottom:14px;right:16px;font-size:32px;opacity:.6}
+.story-arrow{position:absolute;top:16px;right:16px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff}
+
+/* Timeline */
+.timeline{position:relative;padding-left:24px}
+.timeline::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--br)}
+.tl-item{position:relative;margin-bottom:18px}
+.tl-dot{position:absolute;left:-21px;top:3px;width:14px;height:14px;border-radius:50%;border:2px solid var(--br);background:#fff;transition:all .2s}
+.tl-dot.done{background:var(--g);border-color:var(--g)}
+.tl-dot.active{background:#fff;border-color:var(--g);box-shadow:0 0 0 3px rgba(10,122,82,.2)}
+.tl-title{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px}
+.tl-sub{font-size:11px;color:var(--mu)}
+.tl-date{font-size:10px;color:var(--li)}
+
+/* Notification panel */
+.notif-panel{position:fixed;top:0;right:0;bottom:0;width:min(360px,100vw);background:#fff;z-index:800;box-shadow:-4px 0 30px rgba(0,0,0,.12);transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column}
+.notif-panel.open{transform:translateX(0)}
+.notif-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:799;display:none;animation:fadeIn .2s ease}
+.notif-overlay.open{display:block}
+.notif-head{padding:20px;border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center}
+.notif-list{flex:1;overflow-y:auto;padding:12px}
+.notif-item{padding:12px;border-radius:12px;margin-bottom:8px;cursor:pointer;transition:background .15s;position:relative}
+.notif-item:hover{background:var(--bg)}
+.notif-item.unread{background:var(--gl)}
+.notif-item.unread::before{content:'';position:absolute;left:12px;top:50%;transform:translateY(-50%);width:7px;height:7px;border-radius:50%;background:var(--g)}
+.notif-item.unread .notif-msg{padding-left:14px}
+.notif-type{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--mu);margin-bottom:3px}
+.notif-msg{font-size:12px;color:var(--tx);line-height:1.4}
+.notif-time{font-size:10px;color:var(--li);margin-top:3px}
+
+/* Service request form */
+.service-category{padding:14px;border:1.5px solid var(--br);border-radius:12px;cursor:pointer;transition:all .2s;text-align:center}
+.service-category.selected{border-color:var(--g);background:var(--gl)}
+.service-category:hover:not(.selected){border-color:var(--gm);background:var(--gl)}
+.priority-btn{padding:8px 14px;border:1.5px solid var(--br);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;background:#fff}
+.priority-btn.sel-low{border-color:#22C55E;background:#DCFCE7;color:#166534}
+.priority-btn.sel-medium{border-color:var(--am);background:var(--aml);color:var(--am)}
+.priority-btn.sel-high{border-color:var(--rd);background:var(--rdl);color:var(--rd)}
+
+/* Photo upload strip */
+.photo-strip{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.photo-thumb{width:64px;height:64px;border-radius:8px;background:var(--bg);border:1.5px dashed var(--br);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;transition:all .2s;overflow:hidden;flex-shrink:0}
+.photo-thumb:hover{border-color:var(--g);background:var(--gl)}
+.photo-thumb.filled{border-style:solid;border-color:var(--g)}
+
+/* Metric cards with sparkline */
+.metric-card{background:#fff;border:1px solid var(--br);border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.metric-sparkline{position:absolute;bottom:0;left:0;right:0;height:40px;opacity:.15}
+
+/* Tab bar */
+.tab-bar{display:flex;border-bottom:1px solid var(--br);background:#fff;overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:12px 18px;border:none;border-bottom:2px solid transparent;font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;color:var(--mu);transition:all .15s;white-space:nowrap;background:transparent}
+.tab-btn.active{color:var(--g);border-bottom-color:var(--g)}
+
+/* Credit score ring */
+.credit-ring{width:110px;height:110px;border-radius:50%;background:conic-gradient(var(--g) 0% 65%,var(--bg) 65%);display:flex;align-items:center;justify-content:center;margin:0 auto}
+.credit-inner{width:84px;height:84px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+/* Ticket status */
+.ticket-card{background:#fff;border:1px solid var(--br);border-radius:14px;padding:16px;border-left:4px solid var(--br);transition:box-shadow .2s}
+.ticket-card.open{border-left-color:var(--bl)}
+.ticket-card.progress{border-left-color:var(--am)}
+.ticket-card.resolved{border-left-color:var(--g)}
+.ticket-card.closed{border-left-color:var(--li)}
+
+/* Profile verified badge */
+.verified-chip{display:inline-flex;align-items:center;gap:5px;background:var(--gl);border:1px solid rgba(10,122,82,.2);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--g)}
+
+/* Floating action button */
+.fab{position:fixed;bottom:80px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--g);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 6px 24px rgba(10,122,82,.35);transition:all .2s;z-index:90}
+.fab:hover{transform:scale(1.08);background:var(--gd)}
+
+/* Profile section */
+.profile-hero{background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%);padding:28px 20px 24px;display:flex;gap:16px;align-items:flex-start}
+.avatar-lg{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;border:2px solid rgba(255,255,255,.3);flex-shrink:0}
+.profile-name{font-family:var(--serif);font-size:22px;color:#fff;margin-bottom:2px}
+.profile-unit{font-size:12px;color:rgba(255,255,255,.65)}
+
+/* Settings row */
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--br);cursor:pointer;transition:background .15s}
+.settings-row:hover{background:var(--bg)}
+.settings-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-right:12px;flex-shrink:0}
+.toggle-wrap{width:38px;height:22px;border-radius:20px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.toggle-thumb{width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:3px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+
+/* Progress bar */
+.progress-bar{height:6px;background:var(--br);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width .5s ease}
+
+/* G3/G2 grids */
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.g2s{display:grid;grid-template-columns:2fr 1fr;gap:11px}
+
+/* Success screen */
+.success-circle{width:80px;height:80px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:36px;animation:bounceIn .5s ease}
+
+@media(max-width:480px){
+  .g3{grid-template-columns:1fr 1fr}
+  .g2{grid-template-columns:1fr}
+  .auth-card{padding:26px 22px}
+  .page-content{padding:16px 16px 90px}
+}
+</style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 1 — LANDING / CHOOSE PATH
+═══════════════════════════════════════════════════════ -->
+<div class="screen active" id="scr-landing">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">Kaya<span>.</span></div>
+      <div class="auth-sub">Your home, simplified.</div>
+      <button class="btn-full" onclick="goTo('scr-login')" style="margin-bottom:10px">Sign in to your account</button>
+      <button class="btn-full secondary" onclick="goTo('scr-signup-1')">Create new tenant account</button>
+      <div class="auth-divider">or</div>
+      <p style="font-size:11px;color:var(--mu);text-align:center">Looking for a place? <span class="auth-link" onclick="showToast('Listing search coming soon!','info')">Search rentals →</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 2 — LOGIN (email + password)
+═══════════════════════════════════════════════════════ -->
+<div class="screen" id="scr-login">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div style="margin-bottom:24px"><button onclick="goTo('scr-landing')" style="background:none;border:none;cursor:pointer;color:var(--mu);font-size:13px;padding:0">← Back</button></div>
+      <div class="auth-logo">Sign in<span>.</span></div>
+      <div class="auth-sub">Welcome back to your tenant portal</div>
+      <div style="margin-bottom:14px">
+        <div class="auth-label">Email address</div>
+        <input class="auth-inp" id="login-email" type="email" placeholder="you@email.com" value="john.doe@email.com"/>
+      </div>
+      <div style="margin-bottom:6px">
+        <div class="auth-label">Password</div>
+        <div style="position:relative">
+          <input class="auth-inp" id="login-pass" type="password" placeholder="Your password" value="password123" style="padding-right:44px"/>
+          <button onclick="togglePassVis('login-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--mu)">👁</button>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:18px"><span class="auth-link" onclick="goTo('scr-forgot')">Forgot password?</span></div>
+      <button class="auth-btn" onclick="doLogin()" id="loginBtn">Sign In</button>
+      <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--mu)">
+        Don't have an account? <span class="auth-link" onclick="goTo('scr-signup-1')">Create one →</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 3 — OTP VERIFICATION (2-factor login)
+═══════════════════════════════════════════════════════ -->
+<div class="screen" id="scr-otp">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div style="text-align:center;margin-bottom:8px">
+        <div style="width:60px;height:60px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px">🔐</div>
+        <div class="auth-logo" style="justify-content:center;display:block">Verify it's you<span>.</span></div>
+        <div class="auth-sub" style="text-align:center">We sent a 6-digit code to<br><strong id="otp-target" style="color:var(--tx)">j***@email.com</strong></div>
+      </div>
+      <div class="otp-wrap" id="otpWrap">
+        <input class="otp-inp" maxlength="1" id="o0" type="tel" oninput="otpInput(0)"/>
+        <input class="otp-inp" maxlength="1" id="o1" type="tel" oninput="otpInput(1)"/>
+        <input class="otp-inp" maxlength="1" id="o2" type="tel" oninput="otpInput(2)"/>
+        <input class="otp-inp" maxlength="1" id="o3" type="tel" oninput="otpInput(3)"/>
+        <input class="otp-inp" maxlength="1" id="o4" type="tel" oninput="otpInput(4)"/>
+        <input class="otp-inp" maxlength="1" id="o5" type="tel" oninput="otpInput(5)"/>
+      </div>
+      <div class="otp-timer">Code expires in <span id="otpTimer">04:59</span></div>
+      <button class="auth-btn" id="otpBtn" onclick="verifyOTP()">Verify Code</button>
+      <div style="text-align:center;margin-top:14px">
+        <span class="auth-link" id="resendLink" onclick="resendOTP()" style="display:none">Resend code</span>
+        <span id="resendWait" style="font-size:12px;color:var(--mu)">Resend available after timer expires</span>
+      </div>
+      <div style="margin-top:16px;text-align:center;font-size:11px;color:var(--mu)">
+        📱 Can also send via SMS · 📧 Check spam folder
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 4 — FORGOT PASSWORD
+═══════════════════════════════════════════════════════ -->
+<div class="screen" id="scr-forgot">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div style="margin-bottom:20px"><button onclick="goTo('scr-login')" style="background:none;border:none;cursor:pointer;color:var(--mu);font-size:13px;padding:0">← Back</button></div>
+      <div class="auth-logo">Reset password<span>.</span></div>
+      <div class="auth-sub">Enter your email and we'll send a reset link</div>
+      <div style="margin-bottom:18px">
+        <div class="auth-label">Email address</div>
+        <input class="auth-inp" id="forgot-email" type="email" placeholder="you@email.com"/>
+      </div>
+      <button class="auth-btn" onclick="doForgot()">Send Reset Link</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 5 — SIGN UP STEP 1: Account basics
+═══════════════════════════════════════════════════════ -->
+<div class="screen" id="scr-signup-1">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div style="margin-bottom:20px"><button onclick="goTo('scr-landing')" style="background:none;border:none;cursor:pointer;color:var(--mu);font-size:13px;padding:0">← Back</button></div>
+      <div class="progress-steps" id="signupProgress">
+        <div class="ps-step active" id="step-1"><div class="ps-dot">1</div><div class="ps-lbl">Account</div></div>
+        <div class="ps-step" id="step-2"><div class="ps-dot">2</div><div class="ps-lbl">Profile</div></div>
+        <div class="ps-step" id="step-3"><div class="ps-dot">3</div><div class="ps-lbl">Verify ID</div></div>
+        <div class="ps-step" id="step-4"><div class="ps-dot">4</div><div class="ps-lbl">Confirm</div></div>
+      </div>
+      <div class="auth-logo" style="font-size:22px">Create account<span>.</span></div>
+      <div class="auth-sub">Step 1 of 4 — Your basic info</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div><div class="auth-label">First name</div><input class="auth-inp" id="su-fname" placeholder="John"/></div>
+        <div><div class="auth-label">Last name</div><input class="auth-inp" id="su-lname" placeholder="Doe"/></div>
+      </div>
+      <div style="margin-bottom:12px"><div class="auth-label">Email</div><input class="auth-inp" id="su-email" type="email" placeholder="you@email.com"/></div>
+      <div style="margin-bottom:12px"><div class="auth-label">Phone number</div><input class="auth-inp" id="su-phone" type="tel" placeholder="+1 (416) 555-0100"/></div>
+      <div style="margin-bottom:6px">
+        <div class="auth-label">Password</div>
+        <div style="position:relative">
+          <input class="auth-inp" id="su-pass" type="password" placeholder="Create a strong password" oninput="checkStrength(this.value)" style="padding-right:44px"/>
+          <button onclick="togglePassVis('su-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--mu)">👁</button>
+        </div>
+        <div class="strength-wrap" id="strengthWrap" style="display:none">
+          <div class="strength-bars"><div class="strength-bar" id="sb1"/><div class="strength-bar" id="sb2"/><div class="strength-bar" id="sb3"/><div class="strength-bar" id="sb4"/></div>
+          <div class="strength-label" id="strengthLabel">Weak</div>
+        </div>
+      </div>
+      <div style="margin-bottom:18px"><div class="auth-label">Confirm password</div><input class="auth-inp" id="su-pass2" type="password" placeholder="Repeat your password"/></div>
+      <div style="margin-bottom:16px;padding:12px;background:var(--bg);border-radius:10px">
+        <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer">
+          <input type="checkbox" id="su-terms" style="margin-top:2px;accent-color:var(--g)"/>
+          <span style="font-size:11px;color:var(--mu)">I agree to Kaya's <span class="auth-link">Terms of Service</span> and <span class="auth-link">Privacy Policy</span>. My data is protected under PIPEDA.</span>
+        </label>
+      </div>
+      <button class="auth-btn" onclick="signupStep1()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 6 — SIGN UP STEP 2: Tenant profile details
+═══════════════════════════════════════════════════════ -->
+<div class="screen" id="scr-signup-2">
+  <div class="auth-wrap" style="padding:20px 20px 40px">
+    <div class="auth-card" style="max-width:460px">
+      <div style="margin-bottom:20px"><button onclick="goTo('scr-signup-1')" style="background:none;border:none;cursor:pointer;color:var(--mu);font-size:13px;padding:0">← Back</button></div>
+      <div class="progress-steps">
+        <div class="ps-step done"><div class="ps-dot">✓</div><div class="ps-lbl">Account</div></div>
+        <div class="ps-step active"><div class="ps-dot">2</div><div class="ps-lbl">Profile</div></div>
+        <div class="ps-step"><div class="ps-dot">3</div><div class="ps-lbl">Verify ID</div></div>
+        <div class="ps-step"><div class="ps-dot">4</div><div class="ps-lbl">Confirm</div></div>
+      </div>
+      <div class="auth-logo" style="font-size:22px">About you<span>.</span></div>
+      <div class="auth-sub">Step 2 of 4 — Rental profile (helps landlords know you)</div>
+
+      <div style="margin-bottom:12px">
+        <div class="auth-label">Date of birth</div>
+        <input class="auth-inp" type="date" id="su-dob"/>
+      </div>
+      <div style="margin-bottom:12px">
+        <div class="auth-label">Current employment status</div>
+        <select class="select-inp" id="su-employ">
+          <option value="">Select status</option>
+          <option>Full-time employed</option>
+          <option>Part-time employed</option>
+          <option>Self-employed / Freelance</option>
+          <option>Student</option>
+          <option>Retired</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div style="margin-bottom:12px">
+        <div class="auth-label">Annual income (CAD)</div>
+        <select class="select-inp" id="su-income">
+          <option value="">Prefer not to say</option>
+          <option>Under $30,000</option>
+          <option>$30,000 – $50,000</option>
+          <option>$50,000 – $75,000</option>
+          <option>$75,000 – $100,000</option>
+          <option>$100,000+</option>
+        </select>
+      </div>
+      <div style="margin-bottom:12px">
+        <div class="auth-label">Have pets?</div>
+        <div style="display:flex;gap:8px">
+          <button id="pets-no" class="priority-btn sel-low" onclick="setPets(false)">No pets</button>
+          <button id="pets-yes" class="priority-btn" onclick="setPets(true)">Yes, I have pets</button>
+        </div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div class="auth-label">How many people will live in the unit?</div>
+        <input class="auth-inp" type="number" id="su-occupants" placeholder="e.g. 2" min="1" max="10"/>
+      </div>
+      <div style="margin-bottom:18px">
+        <div class="auth-label">Emergency contact name</div>
+        <input class="auth-inp" id="su-ec-name" placeholder="Full name"/>
+        <div class="auth-label" style="margin-top:10px">Emergency contact phone</div>
+        <input class="auth-inp" id="su-ec-phone" type="tel" placeholder="+1 (416) 000-0000"/>
+      </div>
+      <div style="padding:12px;background:var(--bll);border-radius:10px;margin-bottom:16px">
+        <p style="font-size:11px;color:var(--bl);font-weight:600">🔒 Your data is encrypted and never shared without your consent</p>
+        <p style="font-size:10px;color:var(--bl);margin-top:3px">Income info is only visible to landlords if you choose to apply through Kaya</p>
+      </div>
+      <button class="auth-btn" onclick="signupStep2()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 7 — SIGN UP STEP 3: ID Verification
+═══════════════════════════════════════════════════════ -->
+<div class="screen" id="scr-signup-3">
+  <div class="auth-wrap" style="padding:20px 20px 40px">
+    <div class="auth-card" style="max-width:460px">
+      <div style="margin-bottom:20px"><button onclick="goTo('scr-signup-2')" style="background:none;border:none;cursor:pointer;color:var(--mu);font-size:13px;padding:0">← Back</button></div>
+      <div class="progress-steps">
+        <div class="ps-step done"><div class="ps-dot">✓</div><div class="ps-lbl">Account</div></div>
+        <div class="ps-step done"><div class="ps-dot">✓</div><div class="ps-lbl">Profile</div></div>
+        <div class="ps-step active"><div class="ps-dot">3</div><div class="ps-lbl">Verify ID</div></div>
+        <div class="ps-step"><div class="ps-dot">4</div><div class="ps-lbl">Confirm</div></div>
+      </div>
+      <div class="auth-logo" style="font-size:22px">Verify your identity<span>.</span></div>
+      <div class="auth-sub">Step 3 of 4 — Secure ID check builds landlord trust</div>
+
+      <div style="background:var(--gl);border-radius:12px;padding:14px;margin-bottom:18px">
+        <p style="font-size:12px;font-weight:600;color:var(--gd);margin-bottom:4px">Why do we verify?</p>
+        <p style="font-size:11px;color:var(--gd);line-height:1.55">Verified tenants get faster approvals and higher Tenant Passport scores. Your ID is processed by our encrypted partner (never stored as-is) and we only confirm your name matches your account.</p>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <div class="auth-label">Select ID type</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="idTypeGrid">
+          ${["🪪 Driver's Licence","🛂 Passport","🆔 Government ID","📋 PR Card"].map((t,i)=>`
+          <div class="service-category" onclick="selectIdType(this,'${t}')" ${i===0?'style="border-color:var(--g);background:var(--gl)"':''}>
+            <div style="font-size:18px;margin-bottom:4px">${t.split(' ')[0]}</div>
+            <div style="font-size:11px;font-weight:600;color:var(--tx)">${t.split(' ').slice(1).join(' ')}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <div class="auth-label">Upload front of ID</div>
+        <div class="id-upload" id="idFront" onclick="simulateUpload('idFront','idFrontStatus')">
+          <div style="font-size:28px;margin-bottom:8px">📸</div>
+          <p style="font-size:13px;font-weight:600;color:var(--tx)">Click or drag to upload</p>
+          <p style="font-size:11px;color:var(--mu);margin-top:3px">JPG, PNG, PDF — Max 5MB</p>
+        </div>
+        <p id="idFrontStatus" style="font-size:11px;color:var(--g);margin-top:5px;display:none">✓ Front uploaded successfully</p>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <div class="auth-label">Upload back of ID <span style="color:var(--mu);font-weight:400;text-transform:none">(if applicable)</span></div>
+        <div class="id-upload" id="idBack" onclick="simulateUpload('idBack','idBackStatus')">
+          <div style="font-size:28px;margin-bottom:8px">📸</div>
+          <p style="font-size:13px;font-weight:600;color:var(--tx)">Click or drag to upload</p>
+          <p style="font-size:11px;color:var(--mu);margin-top:3px">Back side of ID (optional)</p>
+        </div>
+        <p id="idBackStatus" style="font-size:11px;color:var(--g);margin-top:5px;display:none">✓ Back uploaded successfully</p>
+      </div>
+
+      <div style="padding:12px;background:var(--rdl);border-radius:10px;margin-bottom:16px">
+        <p style="font-size:11px;color:var(--rd);font-weight:600">🛡 Privacy guarantee</p>
+        <p style="font-size:10px;color:var(--rd);margin-top:3px">Your ID document is encrypted in transit, processed for identity matching only, and immediately deleted from our servers. We never sell your data.</p>
+      </div>
+      <button class="auth-btn" onclick="signupStep3()">Continue →</button>
+      <div style="text-align:center;margin-top:12px">
+        <span class="auth-link" onclick="signupStep3(true)" style="font-size:11px">Skip for now (verify later)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 8 — SIGN UP STEP 4: Email OTP confirmation
+═══════════════════════════════════════════════════════ -->
+<div class="screen" id="scr-signup-4">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="progress-steps">
+        <div class="ps-step done"><div class="ps-dot">✓</div><div class="ps-lbl">Account</div></div>
+        <div class="ps-step done"><div class="ps-dot">✓</div><div class="ps-lbl">Profile</div></div>
+        <div class="ps-step done"><div class="ps-dot">✓</div><div class="ps-lbl">Verify ID</div></div>
+        <div class="ps-step active"><div class="ps-dot">4</div><div class="ps-lbl">Confirm</div></div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:60px;height:60px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px">✉️</div>
+        <div class="auth-logo" style="justify-content:center;display:block">Check your email<span>.</span></div>
+        <div class="auth-sub" style="text-align:center">We've sent a 6-digit verification code to confirm your account.<br>Enter it below to complete registration.</div>
+      </div>
+      <div class="otp-wrap" id="signupOtpWrap">
+        <input class="otp-inp" maxlength="1" id="so0" type="tel" oninput="signupOtpInput(0)"/>
+        <input class="otp-inp" maxlength="1" id="so1" type="tel" oninput="signupOtpInput(1)"/>
+        <input class="otp-inp" maxlength="1" id="so2" type="tel" oninput="signupOtpInput(2)"/>
+        <input class="otp-inp" maxlength="1" id="so3" type="tel" oninput="signupOtpInput(3)"/>
+        <input class="otp-inp" maxlength="1" id="so4" type="tel" oninput="signupOtpInput(4)"/>
+        <input class="otp-inp" maxlength="1" id="so5" type="tel" oninput="signupOtpInput(5)"/>
+      </div>
+      <button class="auth-btn" onclick="completeSignup()">Verify & Create Account</button>
+      <p style="font-size:11px;color:var(--mu);text-align:center;margin-top:12px">Demo: enter any 6 digits</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════════════════════ -->
+<div class="screen" id="scr-app">
+  <!-- App Header -->
+  <div class="app-header">
+    <div class="app-logo">Kaya<span>.</span></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="notif-btn" onclick="openNotifs()">🔔<div class="notif-dot"></div></button>
+      <div class="header-avatar" onclick="showTab('profile')">JD</div>
+    </div>
+  </div>
+
+  <!-- Tab pages -->
+  <div id="tab-home" class="page-content" style="display:block"></div>
+  <div id="tab-payments" class="page-content" style="display:none"></div>
+  <div id="tab-services" class="page-content" style="display:none"></div>
+  <div id="tab-docs" class="page-content" style="display:none"></div>
+  <div id="tab-profile" class="page-content" style="display:none;padding:0 0 100px"></div>
+
+  <!-- Bottom Nav -->
+  <div class="bnav">
+    <div class="bnav-item active" id="bnav-home" onclick="showTab('home')">
+      <div class="bnav-ico">🏠</div><div class="bnav-lbl">Home</div>
+    </div>
+    <div class="bnav-item" id="bnav-payments" onclick="showTab('payments')">
+      <div style="position:relative"><div class="bnav-ico">💳</div></div><div class="bnav-lbl">Payments</div>
+    </div>
+    <div class="bnav-item" id="bnav-services" onclick="showTab('services')">
+      <div class="bnav-ico">🔧</div><div class="bnav-lbl">Services</div>
+    </div>
+    <div class="bnav-item" id="bnav-docs" onclick="showTab('docs')">
+      <div class="bnav-ico">📄</div><div class="bnav-lbl">Docs</div>
+    </div>
+    <div class="bnav-item" id="bnav-profile" onclick="showTab('profile')">
+      <div class="bnav-ico">👤</div><div class="bnav-lbl">Profile</div>
+    </div>
+  </div>
+</div>
+
+<!-- Notification Panel -->
+<div class="notif-overlay" id="notifOverlay" onclick="closeNotifs()"></div>
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-head">
+    <div>
+      <p style="font-family:var(--serif);font-size:20px;color:var(--tx)">Notifications</p>
+      <p style="font-size:11px;color:var(--mu)">4 unread</p>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button onclick="markAllRead()" style="background:none;border:none;font-size:11px;color:var(--g);cursor:pointer;font-weight:600">Mark all read</button>
+      <button onclick="closeNotifs()" style="background:var(--bg);border:none;cursor:pointer;width:30px;height:30px;border-radius:50%;font-size:16px">✕</button>
+    </div>
+  </div>
+  <div class="notif-list" id="notifList"></div>
+</div>
+
+<!-- Global Modal -->
+<div id="modal" style="display:none"></div>
+
+<script>
+// ── State ────────────────────────────────────────────────────────────────────
+let currentUser = null;
+let otpTimeout  = null;
+let otpSeconds  = 299;
+let activeTab   = 'home';
+
+const DEMO_OTP  = '123456';
+const DEMO_USER = {
+  name: 'John Doe', email: 'john.doe@email.com', phone: '+1 (416) 555-0123',
+  unit: '4A', address: '123 King Street', landlord: 'Justin Mafie',
+  rent: 2300, leaseEnd: '2026-12-31', leaseStart: '2025-01-01',
+  passportScore: 87, creditBuilt: 340, streakMonths: 14,
+  verified: true, initials: 'JD', avatarBg: '#E5F4EE', avatarColor: '#0A7A52',
+};
+
+// ── Utilities ────────────────────────────────────────────────────────────────
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function showToast(msg, type='success'){
+  const icons={success:'✓',error:'✕',warning:'⚠',info:'ℹ'};
+  const c=document.getElementById('toast-container');
+  const t=document.createElement('div');
+  t.className='toast '+type;
+  t.innerHTML=`<span class="toast-icon">${icons[type]}</span><span class="toast-msg">${msg}</span><span class="toast-x" onclick="this.parentElement.remove()">✕</span>`;
+  t.onclick=()=>t.remove();
+  c.appendChild(t);
+  setTimeout(()=>t&&t.remove&&t.remove(),3500);
+}
+
+function openModal(html){
+  const m=document.getElementById('modal');
+  m.style.display='flex';
+  m.className='modal-overlay';
+  m.innerHTML=`<div class="modal-box">${html}</div>`;
+}
+function closeModal(){document.getElementById('modal').style.display='none';}
+document.addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
+
+function togglePassVis(id, btn){
+  const inp=document.getElementById(id);
+  inp.type = inp.type==='password'?'text':'password';
+  btn.textContent = inp.type==='password'?'👁':'🙈';
+}
+
+function daysUntil(d){
+  return Math.max(0,Math.ceil((new Date(d)-new Date())/(86400000)));
+}
+
+function fmt$(n){return '$'+n.toLocaleString();}
+
+// ── Password strength ────────────────────────────────────────────────────────
+function checkStrength(v){
+  const w=document.getElementById('strengthWrap');
+  w.style.display='block';
+  const bars=[1,2,3,4].map(i=>document.getElementById('sb'+i));
+  const label=document.getElementById('strengthLabel');
+  const score=
+    (v.length>=8?1:0)+
+    (/[A-Z]/.test(v)?1:0)+
+    (/[0-9]/.test(v)?1:0)+
+    (/[^A-Za-z0-9]/.test(v)?1:0);
+  const levels=['','weak','fair','good','good'];
+  const labels=['','Weak — add uppercase & numbers','Fair — try adding symbols','Good','Strong ✓'];
+  const colors=['','var(--rd)','var(--am)','#22C55E','#16A34A'];
+  bars.forEach((b,i)=>{
+    b.className='strength-bar';
+    if(i<score) b.classList.add(levels[score]);
+  });
+  label.textContent=labels[score];
+  label.style.color=colors[score];
+}
+
+// ── OTP Logic ────────────────────────────────────────────────────────────────
+function otpInput(idx){
+  const inp=document.getElementById('o'+idx);
+  inp.classList.add('filled');
+  if(inp.value && idx<5) document.getElementById('o'+(idx+1)).focus();
+  if(idx===5 && inp.value) autoVerifyOTP();
+}
+
+function signupOtpInput(idx){
+  const inp=document.getElementById('so'+idx);
+  inp.classList.add('filled');
+  if(inp.value && idx<5) document.getElementById('so'+(idx+1)).focus();
+  if(idx===5 && inp.value) autoVerifySignupOTP();
+}
+
+function getOTPValue(prefix){
+  return [0,1,2,3,4,5].map(i=>document.getElementById(prefix+i).value).join('');
+}
+
+function startOTPTimer(){
+  otpSeconds=299;
+  clearInterval(otpTimeout);
+  updateOTPDisplay();
+  otpTimeout=setInterval(()=>{
+    otpSeconds--;
+    updateOTPDisplay();
+    if(otpSeconds<=0){
+      clearInterval(otpTimeout);
+      document.getElementById('resendLink').style.display='inline';
+      document.getElementById('resendWait').style.display='none';
+    }
+  },1000);
+}
+
+function updateOTPDisplay(){
+  const m=Math.floor(otpSeconds/60).toString().padStart(2,'0');
+  const s=(otpSeconds%60).toString().padStart(2,'0');
+  const el=document.getElementById('otpTimer');
+  if(el) el.textContent=m+':'+s;
+}
+
+function autoVerifyOTP(){
+  const code=getOTPValue('o');
+  if(code.length===6) setTimeout(()=>verifyOTP(),300);
+}
+
+function verifyOTP(){
+  const code=getOTPValue('o');
+  if(code.length<6){showToast('Please enter all 6 digits','warning');return;}
+  // In demo, any 6 digits work
+  clearInterval(otpTimeout);
+  [0,1,2,3,4,5].forEach(i=>document.getElementById('o'+i).classList.add('filled'));
+  showToast('Identity verified successfully!','success');
+  setTimeout(()=>{
+    currentUser=DEMO_USER;
+    initApp();
+    goTo('scr-app');
+  },600);
+}
+
+function autoVerifySignupOTP(){
+  const code=getOTPValue('so');
+  if(code.length===6) setTimeout(()=>completeSignup(),300);
+}
+
+function resendOTP(){
+  otpSeconds=299;
+  startOTPTimer();
+  document.getElementById('resendLink').style.display='none';
+  document.getElementById('resendWait').style.display='inline';
+  [0,1,2,3,4,5].forEach(i=>{const el=document.getElementById('o'+i);el.value='';el.classList.remove('filled','error');});
+  showToast('New code sent to your email','success');
+}
+
+// ── Auth flows ───────────────────────────────────────────────────────────────
+function doLogin(){
+  const email=document.getElementById('login-email').value;
+  const pass=document.getElementById('login-pass').value;
+  if(!email||!pass){showToast('Enter your email and password','warning');return;}
+  const btn=document.getElementById('loginBtn');
+  btn.disabled=true; btn.textContent='Verifying…';
+  setTimeout(()=>{
+    btn.disabled=false; btn.textContent='Sign In';
+    document.getElementById('otp-target').textContent=email.replace(/(.{2}).*(@.*)/, '$1***$2');
+    goTo('scr-otp');
+    startOTPTimer();
+    document.getElementById('o0').focus();
+  },900);
+}
+
+function doForgot(){
+  const email=document.getElementById('forgot-email').value;
+  if(!email||!email.includes('@')){showToast('Enter a valid email address','warning');return;}
+  showToast('Reset link sent to '+email,'success');
+  setTimeout(()=>goTo('scr-login'),1200);
+}
+
+function signupStep1(){
+  const fname=document.getElementById('su-fname').value;
+  const lname=document.getElementById('su-lname').value;
+  const email=document.getElementById('su-email').value;
+  const pass=document.getElementById('su-pass').value;
+  const pass2=document.getElementById('su-pass2').value;
+  const terms=document.getElementById('su-terms').checked;
+  if(!fname||!lname){showToast('Enter your full name','warning');return;}
+  if(!email||!email.includes('@')){showToast('Enter a valid email','warning');return;}
+  if(pass.length<8){showToast('Password must be 8+ characters','warning');return;}
+  if(pass!==pass2){showToast('Passwords do not match','error');return;}
+  if(!terms){showToast('Please agree to the Terms of Service','warning');return;}
+  goTo('scr-signup-2');
+}
+
+function signupStep2(){
+  goTo('scr-signup-3');
+}
+
+function signupStep3(skip=false){
+  goTo('scr-signup-4');
+  document.getElementById('so0').focus();
+  if(!skip) showToast('ID documents received — verifying…','info');
+}
+
+function completeSignup(){
+  const code=getOTPValue('so');
+  if(code.length<6){showToast('Enter the 6-digit code','warning');return;}
+  [0,1,2,3,4,5].forEach(i=>document.getElementById('so'+i).classList.add('filled'));
+  showToast('Account created! Welcome to Kaya 🎉','success');
+  setTimeout(()=>{
+    currentUser=DEMO_USER;
+    initApp();
+    goTo('scr-app');
+    showNewUserWelcome();
+  },700);
+}
+
+function setPets(hasPets){
+  document.getElementById('pets-no').className='priority-btn '+(hasPets?'':'sel-low');
+  document.getElementById('pets-yes').className='priority-btn '+(hasPets?'sel-medium':'');
+}
+
+function selectIdType(el){
+  document.querySelectorAll('.service-category').forEach(c=>{c.style.borderColor='';c.style.background='';});
+  el.style.borderColor='var(--g)'; el.style.background='var(--gl)';
+}
+
+function simulateUpload(boxId, statusId){
+  const box=document.getElementById(boxId);
+  box.innerHTML='<div style="font-size:20px;margin-bottom:4px">⏳</div><p style="font-size:12px;color:var(--mu)">Uploading…</p>';
+  setTimeout(()=>{
+    box.classList.add('uploaded');
+    box.innerHTML='<div style="font-size:28px;margin-bottom:4px">✅</div><p style="font-size:13px;font-weight:600;color:var(--g)">Uploaded</p>';
+    document.getElementById(statusId).style.display='block';
+    showToast('Document uploaded securely','success');
+  },1200);
+}
+
+// ── Notifications ────────────────────────────────────────────────────────────
+const notifications=[
+  {id:1,type:'Payment',msg:'Your April rent of $2,300 is due in 7 days',time:'2 hours ago',unread:true},
+  {id:2,type:'Maintenance',msg:'Your bathroom faucet request has been assigned to a plumber',time:'5 hours ago',unread:true},
+  {id:3,type:'Lease',msg:'Your lease renews in 9 months — Dec 31, 2026',time:'Yesterday',unread:true},
+  {id:4,type:'Passport',msg:'Your Tenant Passport score increased to 87/100 ⭐',time:'2 days ago',unread:true},
+  {id:5,type:'Document',msg:'Move-in inspection report is ready to download',time:'3 days ago',unread:false},
+  {id:6,type:'Security',msg:'New sign-in from Chrome on macOS — Toronto, ON',time:'5 days ago',unread:false},
+];
+
+function openNotifs(){
+  document.getElementById('notifPanel').classList.add('open');
+  document.getElementById('notifOverlay').classList.add('open');
+  renderNotifs();
+}
+function closeNotifs(){
+  document.getElementById('notifPanel').classList.remove('open');
+  document.getElementById('notifOverlay').classList.remove('open');
+}
+function markAllRead(){
+  notifications.forEach(n=>n.unread=false);
+  renderNotifs();
+  showToast('All notifications marked as read','success');
+  document.querySelector('.notif-dot').style.display='none';
+}
+function renderNotifs(){
+  const list=document.getElementById('notifList');
+  list.innerHTML=notifications.map(n=>`
+    <div class="notif-item ${n.unread?'unread':''}" onclick="handleNotif(${n.id})">
+      <div class="notif-msg">
+        <div class="notif-type">${n.type}</div>
+        <div class="notif-msg">${n.msg}</div>
+        <div class="notif-time">${n.time}</div>
+      </div>
+    </div>`).join('');
+}
+function handleNotif(id){
+  const n=notifications.find(x=>x.id===id);
+  if(n) n.unread=false;
+  closeNotifs();
+  if(id===1) showTab('payments');
+  else if(id===2) showTab('services');
+  else if(id===5) showTab('docs');
+}
+
+// ── Tab routing ───────────────────────────────────────────────────────────────
+function showTab(name){
+  activeTab=name;
+  ['home','payments','services','docs','profile'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===name?'block':'none';
+    const btn=document.getElementById('bnav-'+t);
+    if(btn) btn.className='bnav-item'+(t===name?' active':'');
+  });
+}
+
+// ── App init ──────────────────────────────────────────────────────────────────
+function initApp(){
+  buildHome();
+  buildPayments();
+  buildServices();
+  buildDocs();
+  buildProfile();
+}
+
+// ── NEW USER WELCOME ──────────────────────────────────────────────────────────
+function showNewUserWelcome(){
+  openModal(`
+    <div style="text-align:center">
+      <div class="success-circle">🎉</div>
+      <p style="font-family:var(--serif);font-size:26px;color:var(--tx);margin-bottom:8px">Welcome, ${currentUser.name.split(' ')[0]}!</p>
+      <p style="font-size:13px;color:var(--mu);margin-bottom:20px;line-height:1.6">Your Kaya tenant account is active. Here's what you can do:</p>
+      <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:22px;text-align:left">
+        ${[['💳','Pay rent digitally','with full receipt history'],['🔧','Request services','from your landlord'],['📄','Access documents','lease, receipts, inspections'],['⭐','Build your Passport','and improve your rental score'],['🔐','Stay secure','with OTP login protection']].map(f=>`
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:10px;background:var(--bg);border-radius:10px">
+            <span style="font-size:20px">${f[0]}</span>
+            <div><p style="font-size:13px;font-weight:600;color:var(--tx)">${f[1]}</p><p style="font-size:11px;color:var(--mu)">${f[2]}</p></div>
+          </div>`).join('')}
+      </div>
+      <button class="btn-full" onclick="closeModal();showToast('Let\'s get started!','success')">Get Started →</button>
+    </div>`);
+}
+
+// ── HOME TAB ──────────────────────────────────────────────────────────────────
+function buildHome(){
+  const u=DEMO_USER;
+  const daysLeft=daysUntil('2026-04-01');
+  document.getElementById('tab-home').innerHTML=`
+
+  <!-- Hero rent card -->
+  <div style="background:linear-gradient(135deg,#0D5C3A 0%,#0A7A52 60%,#12A06E 100%);padding:22px 20px 20px;margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+      <div>
+        <p style="color:rgba(255,255,255,.5);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Good ${getGreeting()}</p>
+        <p style="font-family:var(--serif);font-size:22px;color:#fff">${u.name.split(' ')[0]} — Unit ${u.unit}</p>
+        <div class="verified-chip" style="margin-top:6px;background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.9)">✓ Verified Tenant</div>
+      </div>
+      <div style="text-align:right">
+        <p style="font-size:9px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px">Passport Score</p>
+        <p style="font-family:var(--serif);font-size:28px;color:#fff;line-height:1">${u.passportScore}</p>
+        <p style="font-size:9px;color:rgba(255,255,255,.45)">/ 100</p>
+      </div>
+    </div>
+    <div style="background:rgba(0,0,0,.2);border-radius:16px;padding:16px 18px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px">
+        <div>
+          <p style="color:rgba(255,255,255,.45);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Next Rent Payment</p>
+          <p style="font-family:var(--serif);font-size:38px;color:#fff;line-height:1">${fmt$(u.rent)}</p>
+          <p style="font-size:11px;color:rgba(255,255,255,.45);margin-top:4px">Due April 1, 2026 · <span style="color:#7AE8B8;font-weight:600">${daysLeft} days away</span></p>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="openPayNow()" style="flex:1;padding:11px;background:#fff;color:var(--gd);border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">Pay Now →</button>
+        <button onclick="showToast('Auto-pay is active — Visa ····4242','info')" style="padding:11px 15px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:10px;font-size:11px;cursor:pointer">✓ Auto-pay</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Story Cards (User Journeys) -->
+  <div style="padding:0 20px;margin-bottom:20px">
+    <p style="font-family:var(--serif);font-size:20px;color:var(--tx);margin-bottom:12px">What would you like to do?</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="story-card" style="background:linear-gradient(135deg,#0D5C3A,#12A06E)" onclick="showTab('services');openNewRequest()">
+        <div class="story-tag" style="color:rgba(255,255,255,.6)">Services</div>
+        <div class="story-title">Report an issue</div>
+        <div class="story-desc">Leak, appliance, or anything that needs fixing</div>
+        <div class="story-icon">🔧</div>
+      </div>
+      <div class="story-card" style="background:linear-gradient(135deg,#1E5FA8,#2E7DD4)" onclick="showTab('payments')">
+        <div class="story-tag" style="color:rgba(255,255,255,.6)">Payments</div>
+        <div class="story-title">View rent history</div>
+        <div class="story-desc">All receipts and payment records</div>
+        <div class="story-icon">🧾</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="story-card" style="background:linear-gradient(135deg,#7C3AED,#9F5AFF)" onclick="showPassportDetail()">
+        <div class="story-tag" style="color:rgba(255,255,255,.6)">Tenant Passport</div>
+        <div class="story-title">Your rental score</div>
+        <div class="story-desc">See what landlords see about you</div>
+        <div class="story-icon">⭐</div>
+      </div>
+      <div class="story-card" style="background:linear-gradient(135deg,#B45309,#D97706)" onclick="showTab('docs')">
+        <div class="story-tag" style="color:rgba(255,255,255,.6)">Documents</div>
+        <div class="story-title">My lease & docs</div>
+        <div class="story-desc">Download receipts, lease, inspection</div>
+        <div class="story-icon">📄</div>
+      </div>
+    </div>
+    <div class="story-card" style="background:linear-gradient(135deg,#0E0F0C,#2D2D2D)" onclick="openMessageLandlord()">
+      <div class="story-tag" style="color:rgba(255,255,255,.5)">Communication</div>
+      <div class="story-title">Message your landlord</div>
+      <div class="story-desc">Send a message directly — all conversations logged and timestamped</div>
+      <div class="story-icon">💬</div>
+      <div class="story-arrow">→</div>
+    </div>
+  </div>
+
+  <!-- Metrics Dashboard -->
+  <div style="padding:0 20px;margin-bottom:20px">
+    <p style="font-family:var(--serif);font-size:20px;color:var(--tx);margin-bottom:12px">Your Dashboard</p>
+    <div class="g3" style="margin-bottom:10px">
+      <div class="metric-card" onclick="showTab('payments')">
+        <div class="mc-lbl">On-time</div>
+        <div class="mc-val" style="font-size:24px;color:var(--g)">100%</div>
+        <div class="mc-sub">All 14 payments</div>
+        <svg class="metric-sparkline" viewBox="0 0 100 40"><polyline points="0,30 15,28 30,25 45,26 60,20 75,18 90,10 100,8" fill="none" stroke="#0A7A52" stroke-width="2"/></svg>
+      </div>
+      <div class="metric-card" onclick="showPassportDetail()">
+        <div class="mc-lbl">Passport</div>
+        <div class="mc-val" style="font-size:24px;color:#7C3AED">${u.passportScore}</div>
+        <div class="mc-sub" style="color:#7C3AED">↑ +4 this month</div>
+        <svg class="metric-sparkline" viewBox="0 0 100 40"><polyline points="0,35 20,30 40,28 60,22 80,16 100,12" fill="none" stroke="#7C3AED" stroke-width="2"/></svg>
+      </div>
+      <div class="metric-card">
+        <div class="mc-lbl">Streak</div>
+        <div class="mc-val" style="font-size:24px;color:var(--am)">🔥${u.streakMonths}</div>
+        <div class="mc-sub">Months perfect</div>
+      </div>
+    </div>
+    <div class="g2" style="margin-bottom:10px">
+      <div class="metric-card" onclick="showLeaseDetail()">
+        <div class="mc-lbl">Lease Remaining</div>
+        <div class="mc-val" style="font-size:22px">${daysUntil('2026-12-31')}</div>
+        <div class="mc-sub">Days until renewal</div>
+        <div class="progress-bar" style="margin-top:8px"><div class="progress-fill" style="width:65%;background:var(--g)"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-lbl">Credit Built</div>
+        <div class="mc-val" style="font-size:22px;color:var(--bl)">+${u.creditBuilt}</div>
+        <div class="mc-sub">Points via Kaya</div>
+      </div>
+    </div>
+    <!-- Open tickets -->
+    <div class="kcard" style="padding:14px;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <p style="font-size:13px;font-weight:600;color:var(--tx)">Active Service Requests</p>
+        <span onclick="showTab('services')" style="font-size:11px;color:var(--g);cursor:pointer;font-weight:600">View all →</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:9px;background:var(--bll);border-radius:9px;cursor:pointer" onclick="showTab('services')">
+          <div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px">🚿</span><div><p style="font-size:12px;font-weight:600;color:var(--tx)">Bathroom faucet dripping</p><p style="font-size:10px;color:var(--mu)">Submitted Mar 12 · Plumber scheduled Mar 15</p></div></div>
+          <span class="badge bbl">In Progress</span>
+        </div>
+      </div>
+    </div>
+    <!-- Security status -->
+    <div class="kcard" style="padding:14px;border-left:3px solid var(--g)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:34px;height:34px;border-radius:9px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:16px">🔒</div>
+        <div style="flex:1">
+          <p style="font-size:12px;font-weight:600;color:var(--tx)">Account Security</p>
+          <p style="font-size:10px;color:var(--mu)">OTP enabled · Last login today 9:02 AM</p>
+        </div>
+        <span class="badge bg">Secured</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function getGreeting(){
+  const h=new Date().getHours();
+  return h<12?'morning':h<17?'afternoon':'evening';
+}
+
+// ── PAYMENTS TAB ──────────────────────────────────────────────────────────────
+function buildPayments(){
+  const months=['Mar 2026','Feb 2026','Jan 2026','Dec 2025','Nov 2025','Oct 2025','Sep 2025'];
+  const dates=['Mar 1','Feb 1','Jan 1','Dec 1','Nov 1','Oct 1','Sep 1'];
+  document.getElementById('tab-payments').innerHTML=`
+  <div style="background:#fff;border-bottom:1px solid var(--br);padding:18px 20px 14px">
+    <p style="font-family:var(--serif);font-size:26px;color:var(--tx);margin-bottom:12px">Payments</p>
+    <div class="g3" style="margin-bottom:0">
+      <div style="background:var(--gl);border-radius:12px;padding:12px;text-align:center">
+        <p style="font-size:9px;font-weight:700;color:var(--gd);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px">Total Paid</p>
+        <p style="font-family:var(--serif);font-size:22px;color:var(--gd)">$32,200</p>
+        <p style="font-size:9px;color:var(--g)">14 payments</p>
+      </div>
+      <div style="background:var(--bg);border-radius:12px;padding:12px;text-align:center;cursor:pointer" onclick="openAutoPaySettings()">
+        <p style="font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px">Auto-Pay</p>
+        <p style="font-family:var(--serif);font-size:22px;color:var(--g)">✓ On</p>
+        <p style="font-size:9px;color:var(--mu)">Visa ····4242</p>
+      </div>
+      <div style="background:var(--bg);border-radius:12px;padding:12px;text-align:center">
+        <p style="font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px">Next Due</p>
+        <p style="font-family:var(--serif);font-size:22px;color:var(--tx)">Apr 1</p>
+        <p style="font-size:9px;color:var(--g)">$2,300</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:16px 20px 0">
+    <!-- Pay now banner -->
+    <div style="background:linear-gradient(135deg,#0D5C3A,#0A7A52);border-radius:16px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;cursor:pointer" onclick="openPayNow()">
+      <div>
+        <p style="color:rgba(255,255,255,.5);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px">April 2026</p>
+        <p style="font-family:var(--serif);font-size:26px;color:#fff;line-height:1">$2,300.00</p>
+        <p style="font-size:11px;color:rgba(255,255,255,.5);margin-top:3px">Due in ${daysUntil('2026-04-01')} days</p>
+      </div>
+      <button style="padding:10px 18px;background:#fff;color:var(--gd);border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer">Pay Now</button>
+    </div>
+
+    <!-- Add payment method -->
+    <div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px">
+      ${[['💳','Visa ····4242','Primary'],['🏦','CIBC Chequing','Backup'],['➕','Add method','']].map(m=>`
+        <div style="background:${m[2]==='Primary'?'var(--gl)':'#fff'};border:1.5px solid ${m[2]==='Primary'?'var(--g)':'var(--br)'};border-radius:12px;padding:11px 14px;flex-shrink:0;cursor:pointer;min-width:120px;transition:all .2s" onclick="${m[2]===''?'openAddPaymentMethod()':'showToast(\''+m[1]+' selected\',\'info\')'}">
+          <div style="font-size:18px;margin-bottom:4px">${m[0]}</div>
+          <p style="font-size:11px;font-weight:600;color:var(--tx)">${m[1]}</p>
+          <p style="font-size:9px;color:var(--mu)">${m[2]}</p>
+        </div>`).join('')}
+    </div>
+
+    <!-- History -->
+    <p style="font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Payment History</p>
+    <div class="kcard" style="margin-bottom:16px">
+      ${months.map((m,i)=>`
+        <div class="row-item" style="border-left:3px solid var(--g)">
+          <div class="ri-l">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--g);font-weight:700">✓</div>
+            <div>
+              <div class="ri-name">${m}</div>
+              <div class="ri-sub">Auto-pay · ${dates[i]} · Receipt emailed</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px">
+            <span style="font-family:var(--serif);font-size:16px;color:var(--tx)">$2,300</span>
+            <span class="badge bg">Paid</span>
+            <button class="btn-o" style="padding:5px 10px;font-size:10px" onclick="downloadReceipt('${m}')">⬇</button>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <!-- Credit building progress -->
+    <div class="kcard" style="padding:16px;margin-bottom:16px;border-left:4px solid #7C3AED">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <div>
+          <p style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px">Credit Builder</p>
+          <p style="font-size:11px;color:var(--mu)">Your on-time payments boost your credit score</p>
+        </div>
+        <span style="font-family:var(--serif);font-size:22px;color:#7C3AED">+340</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="flex:1"><div class="progress-bar"><div class="progress-fill" style="width:68%;background:linear-gradient(90deg,#7C3AED,#9F5AFF)"></div></div></div>
+        <span style="font-size:11px;font-weight:600;color:#7C3AED">68%</span>
+      </div>
+      <p style="font-size:10px;color:var(--mu)">Reported monthly to Equifax & TransUnion · Next report April 1</p>
+    </div>
+  </div>`;
+}
+
+function openPayNow(){
+  openModal(`
+    <div class="modal-head">
+      <div class="modal-title">Pay April Rent</div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div style="background:var(--gl);border-radius:14px;padding:16px;margin-bottom:18px;text-align:center">
+      <p style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px">Amount due — April 1, 2026</p>
+      <p style="font-family:var(--serif);font-size:40px;color:var(--gd);line-height:1">$2,300.00</p>
+      <p style="font-size:11px;color:var(--g);margin-top:4px">${daysUntil('2026-04-01')} days remaining</p>
+    </div>
+    <p style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Payment method</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px">
+      ${[['💳','Visa ending 4242','Auto-pay active',true],['🏦','CIBC Chequing','Backup method',false],['🔄','Interac e-Transfer','rent@kaya.ca',false]].map((m,i)=>`
+        <label style="display:flex;align-items:center;gap:11px;padding:12px 14px;border:1.5px solid ${i===0?'var(--g)':'var(--br)'};border-radius:11px;cursor:pointer;background:${i===0?'var(--gl)':'#fff'}">
+          <input type="radio" name="pm" ${i===0?'checked':''} style="accent-color:var(--g)"/>${m[0]}
+          <div style="flex:1"><p style="font-size:13px;font-weight:600;color:var(--tx)">${m[1]}</p><p style="font-size:10px;color:var(--mu)">${m[2]}</p></div>
+        </label>`).join('')}
+    </div>
+    <div style="padding:10px 14px;background:var(--bg);border-radius:10px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mu)"><span>Rent</span><span style="color:var(--tx);font-weight:600">$2,300.00</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mu);margin-top:4px"><span>Processing fee</span><span style="color:var(--g);font-weight:600">Free</span></div>
+      <div style="border-top:1px solid var(--br);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--tx)"><span>Total</span><span>$2,300.00</span></div>
+    </div>
+    <button class="btn-full" onclick="submitPayment()">Confirm Payment →</button>`);
+}
+
+function submitPayment(){
+  closeModal();
+  showToast('$2,300 payment sent. Digital receipt emailed.','success');
+}
+
+function downloadReceipt(month){
+  showToast(month+' receipt downloading…','info');
+}
+
+function openAutoPaySettings(){
+  openModal(`
+    <div class="modal-head"><div class="modal-title">Auto-Pay Settings</div><button class="close-btn" onclick="closeModal()">✕</button></div>
+    <div style="background:var(--gl);border-radius:12px;padding:14px;margin-bottom:16px">
+      <p style="font-size:13px;font-weight:600;color:var(--gd);margin-bottom:3px">✓ Auto-Pay is Active</p>
+      <p style="font-size:11px;color:var(--g)">Rent is automatically charged on the 1st of each month</p>
+    </div>
+    ${[['Payment card','Visa ending 4242'],['Charge date','1st of every month'],['Next charge','April 1, 2026 · $2,300'],['Notification','24 hrs before charge']].map(r=>`
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--br)">
+        <span style="font-size:12px;color:var(--mu)">${r[0]}</span>
+        <span style="font-size:12px;font-weight:600;color:var(--tx)">${r[1]}</span>
+      </div>`).join('')}
+    <button class="btn-full secondary" style="margin-top:16px" onclick="closeModal();showToast('Auto-pay paused','warning')">Pause Auto-Pay</button>`);
+}
+
+function openAddPaymentMethod(){
+  openModal(`
+    <div class="modal-head"><div class="modal-title">Add Payment Method</div><button class="close-btn" onclick="closeModal()">✕</button></div>
+    <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:18px">
+      ${[['💳','Credit / Debit Card','Visa, Mastercard, Amex'],['🏦','Bank Transfer','Interac e-Transfer'],['📱','Apple Pay / Google Pay','Tap to pay']].map(m=>`
+        <div class="row-item" style="border-radius:11px;border:1.5px solid var(--br);cursor:pointer" onclick="closeModal();showToast('${m[1]} added successfully','success')">
+          <div class="ri-l"><div class="ri-ico">${m[0]}</div><div><div class="ri-name">${m[1]}</div><div class="ri-sub">${m[2]}</div></div></div>
+          <span style="color:var(--g)">→</span>
+        </div>`).join('')}
+    </div>`);
+}
+
+// ── SERVICES TAB ──────────────────────────────────────────────────────────────
+let serviceStep=0;
+let serviceData={category:'',priority:'medium',desc:'',photos:0};
+let tickets=[
+  {id:'KY-1042',title:'Bathroom faucet dripping',cat:'Plumbing',priority:'high',status:'progress',date:'Mar 12',landlordNote:'Plumber scheduled March 15, 2–4 PM. They will contact you.'},
+  {id:'KY-1039',title:'Dishwasher making noise',cat:'Appliance',priority:'medium',status:'resolved',date:'Mar 8',landlordNote:'Replaced pump motor. Issue resolved.'},
+  {id:'KY-1027',title:'Hallway light bulb replacement',cat:'Electrical',priority:'low',status:'closed',date:'Feb 28',landlordNote:'Completed.'},
+];
+
+function buildServices(){
+  document.getElementById('tab-services').innerHTML=`
+  <!-- Service Tab bar -->
+  <div class="tab-bar" id="svcTabBar">
+    <button class="tab-btn active" onclick="switchSvcTab(this,'open')">My Requests</button>
+    <button class="tab-btn" onclick="switchSvcTab(this,'new')">New Request</button>
+    <button class="tab-btn" onclick="switchSvcTab(this,'catalogue')">Service Menu</button>
+  </div>
+  <div id="svcContent" style="padding:16px 20px 20px"></div>`;
+  renderSvcOpen();
+}
+
+function switchSvcTab(el,tab){
+  document.querySelectorAll('#svcTabBar .tab-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  if(tab==='open') renderSvcOpen();
+  else if(tab==='new') renderSvcNew();
+  else if(tab==='catalogue') renderSvcCatalogue();
+}
+
+function renderSvcOpen(){
+  const statColors={progress:'bbl',resolved:'bg',closed:'bgr',open:'bam'};
+  const statLabels={progress:'In Progress',resolved:'✓ Resolved',closed:'Closed',open:'Open'};
+  const iconMap={Plumbing:'🚿',Appliance:'🧺',Electrical:'💡',HVAC:'❄️',Locksmith:'🔑',Cleaning:'🧹',Pest:'🐛',Other:'🔧'};
+  document.getElementById('svcContent').innerHTML=`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <p style="font-family:var(--serif);font-size:20px;color:var(--tx)">My Requests</p>
+    <button class="btn-g" style="padding:8px 14px;font-size:12px;border-radius:9px" onclick="document.querySelectorAll('#svcTabBar .tab-btn')[1].click();renderSvcNew()">+ New</button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    ${tickets.map(t=>`
+      <div class="ticket-card ${t.status}" onclick="openTicketDetail('${t.id}')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div style="display:flex;gap:9px;align-items:flex-start">
+            <span style="font-size:18px;flex-shrink:0">${iconMap[t.cat]||'🔧'}</span>
+            <div>
+              <p style="font-size:13px;font-weight:600;color:var(--tx)">${t.title}</p>
+              <p style="font-size:10px;color:var(--mu)">${t.cat} · ${t.date} · ${t.id}</p>
+            </div>
+          </div>
+          <span class="badge ${statColors[t.status]}">${statLabels[t.status]}</span>
+        </div>
+        ${t.landlordNote?`<div style="background:var(--bg);border-radius:8px;padding:9px;font-size:11px;color:var(--mu);border-left:2px solid ${t.status==='resolved'?'var(--g)':'var(--bl)'}"><strong style="color:var(--tx)">Landlord: </strong>${t.landlordNote}</div>`:''}
+      </div>`).join('')}
+  </div>`;
+}
+
+function openNewRequest(){
+  document.querySelectorAll('#svcTabBar .tab-btn')[1].click();
+  renderSvcNew();
+}
+
+function renderSvcNew(){
+  serviceStep=0; serviceData={category:'',priority:'medium',desc:'',photos:0};
+  document.getElementById('svcContent').innerHTML=`
+  <p style="font-family:var(--serif);font-size:20px;color:var(--tx);margin-bottom:16px">New Service Request</p>
+  <div id="svcForm"></div>`;
+  renderSvcStep();
+}
+
+function renderSvcStep(){
+  const form=document.getElementById('svcForm');
+  if(!form)return;
+  const cats=[
+    {id:'plumbing',icon:'🚿',label:'Plumbing',desc:'Leaks, drains, toilet'},
+    {id:'electrical',icon:'💡',label:'Electrical',desc:'Outlets, switches, lights'},
+    {id:'hvac',icon:'❄️',label:'HVAC',desc:'Heating, cooling, vents'},
+    {id:'appliance',icon:'🧺',label:'Appliances',desc:'Washer, dryer, fridge'},
+    {id:'locksmith',icon:'🔑',label:'Locks & Keys',desc:'Lockouts, replacements'},
+    {id:'cleaning',icon:'🧹',label:'Cleaning',desc:'Common areas, carpets'},
+    {id:'pest',icon:'🐛',label:'Pest Control',desc:'Mice, insects, bugs'},
+    {id:'other',icon:'🔧',label:'Other',desc:'Anything else'},
+  ];
+  if(serviceStep===0){
+    form.innerHTML=`
+      <p class="eyebrow" style="margin-bottom:10px">Step 1 of 3 — What needs attention?</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        ${cats.map(c=>`
+          <div class="service-category ${serviceData.category===c.id?'selected':''}" onclick="selectCategory('${c.id}',this)">
+            <div style="font-size:22px;margin-bottom:4px">${c.icon}</div>
+            <div style="font-size:12px;font-weight:600;color:var(--tx)">${c.label}</div>
+            <div style="font-size:10px;color:var(--mu);margin-top:2px">${c.desc}</div>
+          </div>`).join('')}
+      </div>
+      <button class="btn-full" style="margin-top:16px" onclick="svcNext()" ${serviceData.category?'':'disabled'} id="svcNext1">Next →</button>`;
+  } else if(serviceStep===1){
+    form.innerHTML=`
+      <p class="eyebrow" style="margin-bottom:10px">Step 2 of 3 — Describe the issue</p>
+      <div style="margin-bottom:14px">
+        <div class="inp-label">Issue title</div>
+        <input class="inp" id="svcTitle" placeholder="e.g. Kitchen faucet dripping constantly" value="${serviceData.title||''}"/>
+      </div>
+      <div style="margin-bottom:14px">
+        <div class="inp-label">Description</div>
+        <textarea class="inp" id="svcDesc" rows="4" placeholder="Describe the issue in detail. When did it start? How bad is it? Any safety concern?">${serviceData.desc||''}</textarea>
+      </div>
+      <div style="margin-bottom:14px">
+        <div class="inp-label">Priority</div>
+        <div style="display:flex;gap:8px">
+          <button class="priority-btn ${serviceData.priority==='low'?'sel-low':''}" onclick="setPriority('low',this)">🟢 Low</button>
+          <button class="priority-btn ${serviceData.priority==='medium'?'sel-medium':''}" onclick="setPriority('medium',this)">🟡 Medium</button>
+          <button class="priority-btn ${serviceData.priority==='high'?'sel-high':''}" onclick="setPriority('high',this)">🔴 High</button>
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div class="inp-label">Add photos <span style="color:var(--mu);font-weight:400;text-transform:none">(optional but helps a lot)</span></div>
+        <div class="photo-strip">
+          ${[0,1,2].map(i=>`<div class="photo-thumb ${serviceData.photos>i?'filled':''}" id="photo${i}" onclick="addPhoto(${i})">${serviceData.photos>i?'📷':'+'}</div>`).join('')}
+          <div style="display:flex;align-items:center;justify-content:center;flex:1">
+            <p style="font-size:10px;color:var(--mu)">Photos help resolve issues ${serviceData.photos>0?'faster':''} </p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div class="inp-label">Preferred time for access</div>
+        <select class="select-inp" id="svcTime">
+          <option>Morning (8 AM – 12 PM)</option>
+          <option>Afternoon (12 PM – 5 PM)</option>
+          <option>Evening (5 PM – 8 PM)</option>
+          <option>I will contact you to arrange</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:9px">
+        <button class="btn-full secondary" style="flex:0 0 80px" onclick="serviceStep--;renderSvcStep()">← Back</button>
+        <button class="btn-full" onclick="svcNext()">Review →</button>
+      </div>`;
+  } else if(serviceStep===2){
+    const catLabel={plumbing:'Plumbing',electrical:'Electrical',hvac:'HVAC',appliance:'Appliances',locksmith:'Locks & Keys',cleaning:'Cleaning',pest:'Pest Control',other:'Other'}[serviceData.category];
+    const prioLabel={low:'Low',medium:'Medium',high:'High'}[serviceData.priority];
+    const prioColor={low:'bg',medium:'bam',high:'brd'}[serviceData.priority];
+    form.innerHTML=`
+      <p class="eyebrow" style="margin-bottom:10px">Step 3 of 3 — Review & submit</p>
+      <div class="kcard" style="padding:16px;margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+          <div>
+            <p style="font-size:13px;font-weight:700;color:var(--tx)">${serviceData.title||'Untitled request'}</p>
+            <p style="font-size:11px;color:var(--mu);margin-top:2px">${catLabel} · ${DEMO_USER.unit}, ${DEMO_USER.address}</p>
+          </div>
+          <span class="badge ${prioColor}">${prioLabel} priority</span>
+        </div>
+        <p style="font-size:12px;color:var(--mu);line-height:1.5;margin-bottom:12px">${serviceData.desc||'No description provided.'}</p>
+        ${[['Tenant','John Doe — Unit 4A'],['Category',catLabel],['Priority',prioLabel],['Photos',serviceData.photos+' attached']].map(r=>`
+          <div style="display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--br)">
+            <span style="font-size:11px;color:var(--mu)">${r[0]}</span>
+            <span style="font-size:11px;font-weight:600;color:var(--tx)">${r[1]}</span>
+          </div>`).join('')}
+      </div>
+      <div style="padding:11px 14px;background:var(--gl);border-radius:10px;margin-bottom:16px;font-size:11px;color:var(--gd)">
+        🔒 Your request is logged, timestamped, and delivered to your landlord instantly. You'll be notified when they respond.
+      </div>
+      <div style="display:flex;gap:9px">
+        <button class="btn-full secondary" style="flex:0 0 80px" onclick="serviceStep--;renderSvcStep()">← Back</button>
+        <button class="btn-full" onclick="submitServiceRequest()">Submit Request →</button>
+      </div>`;
+  }
+}
+
+function selectCategory(id,el){
+  serviceData.category=id;
+  document.querySelectorAll('.service-category').forEach(c=>{c.classList.remove('selected');});
+  el.classList.add('selected');
+  const btn=document.getElementById('svcNext1');
+  if(btn) btn.disabled=false;
+}
+function setPriority(p){
+  serviceData.priority=p;
+  renderSvcStep();
+}
+function addPhoto(i){
+  if(serviceData.photos<=i) serviceData.photos=i+1;
+  const el=document.getElementById('photo'+i);
+  if(el){el.classList.add('filled');el.textContent='📷';}
+  showToast('Photo '+( i+1)+' added','success');
+}
+function svcNext(){
+  if(serviceStep===1){
+    serviceData.title=document.getElementById('svcTitle')?.value;
+    serviceData.desc=document.getElementById('svcDesc')?.value;
+  }
+  serviceStep++;
+  renderSvcStep();
+}
+function submitServiceRequest(){
+  const id='KY-10'+Math.floor(Math.random()*90+50);
+  tickets.unshift({id,title:serviceData.title||'New request',cat:serviceData.category,priority:serviceData.priority,status:'open',date:'Today',landlordNote:''});
+  showToast('Request '+id+' submitted to your landlord','success');
+  serviceStep=0;
+  document.getElementById('svcContent').innerHTML=`
+    <div style="text-align:center;padding:40px 20px">
+      <div class="success-circle">✅</div>
+      <p style="font-family:var(--serif);font-size:22px;color:var(--tx);margin-bottom:8px">Request Submitted</p>
+      <p style="font-size:13px;color:var(--mu);margin-bottom:20px;line-height:1.6">Ticket <strong>${id}</strong> has been sent to your landlord. You'll receive a notification when they respond.</p>
+      <button class="btn-full" style="margin-bottom:10px" onclick="document.querySelectorAll('#svcTabBar .tab-btn')[0].click();renderSvcOpen()">View My Requests</button>
+      <button class="btn-full secondary" onclick="renderSvcNew()">Submit Another</button>
+    </div>`;
+}
+
+function openTicketDetail(id){
+  const t=tickets.find(x=>x.id===id);
+  if(!t)return;
+  const statColors={progress:'bbl',resolved:'bg',closed:'bgr',open:'bam'};
+  const statLabels={progress:'In Progress',resolved:'✓ Resolved',closed:'Closed',open:'Open'};
+  openModal(`
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">${t.title}</div>
+        <p style="font-size:11px;color:var(--mu)">${t.id} · ${t.cat} · ${t.date}</p>
+      </div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:16px">
+      <span class="badge ${statColors[t.status]}">${statLabels[t.status]}</span>
+      <span class="badge bgr">${t.priority} priority</span>
+    </div>
+    <div class="timeline">
+      ${[
+        {done:true,label:'Request submitted',sub:t.date},
+        {done:true,label:'Received by landlord',sub:t.date+' (same day)'},
+        {done:t.status!=='open',label:'Vendor assigned',sub:t.status!=='open'?'Confirmed':'Pending'},
+        {done:t.status==='resolved'||t.status==='closed',label:'Work completed',sub:t.status==='resolved'?'Confirmed':'Pending'},
+      ].map(step=>`
+        <div class="tl-item">
+          <div class="tl-dot ${step.done?'done':''}"></div>
+          <div class="tl-title" style="color:${step.done?'var(--tx)':'var(--li)'}">${step.label}</div>
+          <div class="tl-sub">${step.sub}</div>
+        </div>`).join('')}
+    </div>
+    ${t.landlordNote?`
+    <div style="background:var(--gl);border-radius:11px;padding:13px;margin-top:14px">
+      <p style="font-size:11px;font-weight:700;color:var(--gd);margin-bottom:4px">Landlord update</p>
+      <p style="font-size:12px;color:var(--gd);line-height:1.5">${t.landlordNote}</p>
+    </div>`:''}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px">
+      <button class="btn-full secondary" onclick="closeModal();showToast('Message sent to landlord','success')">Message Landlord</button>
+      ${t.status!=='resolved'&&t.status!=='closed'?`<button class="btn-full" onclick="closeModal();showToast('Marked as resolved','success')">Mark Resolved</button>`:'<button class="btn-full secondary" onclick="closeModal();showToast(\'New ticket created\',\'success\')">Report Again</button>'}
+    </div>`);
+}
+
+function renderSvcCatalogue(){
+  const services=[
+    {icon:'🚿',title:'Emergency Plumbing',desc:'Burst pipes, major leaks, no water',time:'2–4 hrs',sla:'Same day'},
+    {icon:'💡',title:'Electrical Repair',desc:'Outages, faulty outlets, panel issues',time:'4–8 hrs',sla:'24 hrs'},
+    {icon:'❄️',title:'HVAC Service',desc:'No heat/cooling, thermostat, vents',time:'4–6 hrs',sla:'24 hrs'},
+    {icon:'🧺',title:'Appliance Repair',desc:'Washer, dryer, dishwasher, fridge',time:'1–3 days',sla:'48 hrs'},
+    {icon:'🔑',title:'Lockout / Lock Change',desc:'Emergency lockout, re-key, new locks',time:'1–2 hrs',sla:'4 hrs'},
+    {icon:'🧹',title:'Cleaning Request',desc:'Unit cleaning, carpet, common areas',time:'2–4 hrs',sla:'48 hrs'},
+    {icon:'🐛',title:'Pest Control',desc:'Mice, cockroaches, bedbugs, ants',time:'2–4 hrs',sla:'48 hrs'},
+    {icon:'🎨',title:'Minor Repairs',desc:'Painting, patching, shelves, doors',time:'2–6 hrs',sla:'1 week'},
+  ];
+  document.getElementById('svcContent').innerHTML=`
+    <p style="font-family:var(--serif);font-size:20px;color:var(--tx);margin-bottom:4px">Service Menu</p>
+    <p style="font-size:12px;color:var(--mu);margin-bottom:16px">All requests go to your landlord · Response times shown are targets</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${services.map(s=>`
+        <div class="row-item" style="border-radius:13px;border:1px solid var(--br);padding:13px" onclick="openNewRequest()">
+          <div class="ri-l">
+            <div class="ri-ico" style="font-size:18px">${s.icon}</div>
+            <div>
+              <div class="ri-name">${s.title}</div>
+              <div class="ri-sub">${s.desc}</div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <p style="font-size:10px;font-weight:600;color:var(--g)">${s.sla}</p>
+            <p style="font-size:9px;color:var(--mu)">Response target</p>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ── DOCS TAB ──────────────────────────────────────────────────────────────────
+function buildDocs(){
+  const docs=[
+    {name:'Lease Agreement',type:'Lease',date:'Jan 1, 2025',status:'signed',icon:'📋'},
+    {name:'March 2026 Receipt',type:'Receipt',date:'Mar 1, 2026',status:'available',icon:'🧾'},
+    {name:'February 2026 Receipt',type:'Receipt',date:'Feb 1, 2026',status:'available',icon:'🧾'},
+    {name:'Move-In Inspection',type:'Inspection',date:'Jan 1, 2025',status:'signed',icon:'🏠'},
+    {name:'Insurance Certificate',type:'Insurance',date:'Jan 1, 2026',status:'available',icon:'🛡'},
+    {name:'Welcome Package',type:'Info',date:'Jan 1, 2025',status:'available',icon:'📦'},
+    {name:'Rules & Regulations',type:'Policy',date:'Jan 1, 2025',status:'available',icon:'📜'},
+  ];
+  document.getElementById('tab-docs').innerHTML=`
+  <div style="background:#fff;border-bottom:1px solid var(--br);padding:18px 20px">
+    <p style="font-family:var(--serif);font-size:26px;color:var(--tx);margin-bottom:12px">Documents</p>
+    <div style="position:relative"><input class="inp" placeholder="Search documents…" oninput="filterDocs(this.value)"/><span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:16px">🔍</span></div>
+  </div>
+  <div style="padding:16px 20px">
+    <!-- Lease highlight -->
+    <div style="background:linear-gradient(135deg,#0D5C3A,#0A7A52);border-radius:16px;padding:16px 18px;margin-bottom:16px;cursor:pointer" onclick="openLeaseDetail()">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <p style="color:rgba(255,255,255,.5);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px">Active Lease</p>
+          <p style="font-family:var(--serif);font-size:20px;color:#fff">123 King Street, Unit 4A</p>
+          <p style="font-size:11px;color:rgba(255,255,255,.5);margin-top:3px">Jan 1, 2025 — Dec 31, 2026</p>
+        </div>
+        <span style="background:rgba(255,255,255,.15);color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px">✓ Active</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button onclick="event.stopPropagation();showToast('Lease downloading…','info')" style="flex:1;padding:9px;background:#fff;color:var(--gd);border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer">Download PDF</button>
+        <button onclick="event.stopPropagation();openLeaseDetail()" style="padding:9px 14px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;font-size:11px;cursor:pointer">View Details</button>
+      </div>
+    </div>
+
+    <!-- Document list -->
+    <p style="font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">All Documents</p>
+    <div class="kcard" id="docList">
+      ${docs.map(d=>`
+        <div class="row-item">
+          <div class="ri-l">
+            <div class="ri-ico">${d.icon}</div>
+            <div><div class="ri-name">${d.name}</div><div class="ri-sub">${d.type} · ${d.date}</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px">
+            <span class="badge ${d.status==='signed'?'bg':'bgr'}">${d.status}</span>
+            <button class="btn-o" style="padding:5px 10px;font-size:10px" onclick="showToast('${d.name} downloading…','info')">⬇</button>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <!-- Passport section -->
+    <div style="margin-top:16px">
+      <p style="font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Tenant Passport</p>
+      <div class="kcard" style="padding:16px;cursor:pointer" onclick="showPassportDetail()">
+        <div style="display:flex;gap:16px;align-items:center">
+          <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#9F5AFF);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;animation:ringPulse 2s infinite">
+            <p style="font-family:var(--serif);font-size:20px;color:#fff;line-height:1">${DEMO_USER.passportScore}</p>
+            <p style="font-size:8px;color:rgba(255,255,255,.7);font-weight:700">SCORE</p>
+          </div>
+          <div style="flex:1">
+            <p style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:3px">Your Tenant Passport</p>
+            <p style="font-size:11px;color:var(--mu);margin-bottom:8px">Portable rental reputation — shared with landlords when you apply</p>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span class="badge bg">✓ Identity verified</span>
+              <span class="badge bg">✓ 14 payments</span>
+              <span class="badge bg">✓ 100% on-time</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function filterDocs(q){
+  // simple filter simulation
+  if(!q) showToast('Showing all documents','info');
+}
+
+function openLeaseDetail(){
+  openModal(`
+    <div class="modal-head"><div class="modal-title">Lease Agreement</div><button class="close-btn" onclick="closeModal()">✕</button></div>
+    <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">
+      <span class="badge bg">✓ Active</span><span class="badge bgr">Ontario Standard Lease</span><span class="badge bgr">Digitally signed</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+      ${[['Unit','4A'],['Address','123 King Street'],['Start','Jan 1, 2025'],['End','Dec 31, 2026'],['Monthly Rent','$2,300'],['Deposit Paid','$2,300']].map(r=>`
+        <div style="background:var(--bg);border-radius:9px;padding:10px">
+          <p style="font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">${r[0]}</p>
+          <p style="font-size:13px;font-weight:600;color:var(--tx)">${r[1]}</p>
+        </div>`).join('')}
+    </div>
+    <div style="background:var(--gl);border-radius:11px;padding:13px;margin-bottom:14px">
+      <p style="font-size:11px;font-weight:700;color:var(--gd);margin-bottom:5px">Ontario Tenant Rights Summary</p>
+      ${['Landlord must give 24 hrs notice before entry','Rent increases capped at 2.5% in 2026 (Ontario guideline)','You have 60 days to respond to a rent increase notice','Maintenance must be addressed in a reasonable timeframe'].map(r=>`<p style="font-size:11px;color:var(--gd);margin-bottom:3px">· ${r}</p>`).join('')}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button class="btn-full secondary" onclick="closeModal();showToast('Lease downloading…','info')">Download PDF</button>
+      <button class="btn-full" onclick="closeModal();showToast('Shared to your email','success')">Email Copy</button>
+    </div>`);
+}
+
+// ── PROFILE TAB ───────────────────────────────────────────────────────────────
+function buildProfile(){
+  const u=DEMO_USER;
+  document.getElementById('tab-profile').innerHTML=`
+  <!-- Profile hero -->
+  <div class="profile-hero">
+    <div class="avatar-lg">JD</div>
+    <div style="flex:1">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+        <p class="profile-name">${u.name}</p>
+        <div class="verified-chip" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);color:#fff;font-size:10px">✓ Verified</div>
+      </div>
+      <p class="profile-unit">Unit ${u.unit} · ${u.address}</p>
+      <p class="profile-unit" style="margin-top:2px">${u.email}</p>
+    </div>
+    <button onclick="openEditProfile()" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);color:#fff;padding:7px 13px;border-radius:9px;font-size:11px;font-weight:600;cursor:pointer">Edit</button>
+  </div>
+
+  <div style="padding:16px 20px">
+    <!-- Passport score card -->
+    <div class="kcard" style="padding:16px;margin-bottom:12px;border-left:4px solid #7C3AED;cursor:pointer" onclick="showPassportDetail()">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div><p style="font-size:13px;font-weight:700;color:var(--tx)">Tenant Passport</p><p style="font-size:11px;color:var(--mu)">Your portable rental reputation</p></div>
+        <div style="text-align:right"><p style="font-family:var(--serif);font-size:28px;color:#7C3AED">${u.passportScore}</p><p style="font-size:9px;color:#7C3AED">/ 100</p></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+        ${[['Payment','100%','On-time rate'],['Identity','✓','Verified'],['Tenancy','14 mo','Experience']].map(m=>`
+          <div style="background:var(--bg);border-radius:9px;padding:9px;text-align:center">
+            <p style="font-size:13px;font-weight:700;color:var(--tx)">${m[1]}</p>
+            <p style="font-size:9px;color:var(--mu)">${m[2]}</p>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Security section -->
+    <p style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin:16px 0 8px">Security & Login</p>
+    <div class="kcard" style="margin-bottom:12px">
+      ${[
+        {icon:'🔐',label:'Two-factor authentication',val:'✓ Active',action:'toggleOTP',bg:'#E6F4EE'},
+        {icon:'🔒',label:'Change password',val:'Last changed 30 days ago',action:'openChangePass',bg:'#EBF2FB'},
+        {icon:'📱',label:'Trusted devices',val:'1 device',action:'openDevices',bg:var_bg},
+        {icon:'🕵️',label:'Login history',val:'View all sessions',action:'openLoginHistory',bg:'#F5F5F5'},
+      ].map(r=>`
+        <div class="settings-row" onclick="${r.action}()">
+          <div style="display:flex;align-items:center;gap:10px;flex:1">
+            <div class="settings-icon" style="background:${r.bg}">${r.icon}</div>
+            <div>
+              <p style="font-size:13px;font-weight:600;color:var(--tx)">${r.label}</p>
+              <p style="font-size:11px;color:var(--mu)">${r.val}</p>
+            </div>
+          </div>
+          <span style="color:var(--li)">›</span>
+        </div>`).join('')}
+    </div>
+
+    <!-- Notification preferences -->
+    <p style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin:16px 0 8px">Notifications</p>
+    <div class="kcard" style="margin-bottom:12px">
+      ${[
+        {label:'Rent reminders',sub:'3 days before due date',on:true},
+        {label:'Maintenance updates',sub:'Status changes on requests',on:true},
+        {label:'Lease alerts',sub:'90, 60, 30 days before expiry',on:true},
+        {label:'Passport score changes',sub:'When your score updates',on:false},
+        {label:'Messages from landlord',sub:'Immediate notification',on:true},
+      ].map(n=>`
+        <div class="settings-row">
+          <div style="flex:1"><p style="font-size:13px;font-weight:600;color:var(--tx)">${n.label}</p><p style="font-size:11px;color:var(--mu)">${n.sub}</p></div>
+          <div class="toggle-wrap" data-on="${n.on?1:0}" onclick="flipToggle(this)" style="background:${n.on?'var(--g)':'var(--br)'}">
+            <div class="toggle-thumb" style="left:${n.on?'19px':'3px'}"></div>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <!-- Account -->
+    <p style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin:16px 0 8px">Account</p>
+    <div class="kcard" style="margin-bottom:12px">
+      <div class="settings-row" onclick="showToast('Language settings','info')">
+        <div style="display:flex;align-items:center;gap:10px;flex:1">
+          <div class="settings-icon" style="background:#FEF3C7">🌐</div>
+          <div><p style="font-size:13px;font-weight:600;color:var(--tx)">Language</p><p style="font-size:11px;color:var(--mu)">English (Canada)</p></div>
+        </div><span style="color:var(--li)">›</span>
+      </div>
+      <div class="settings-row" onclick="showToast('Privacy settings','info')">
+        <div style="display:flex;align-items:center;gap:10px;flex:1">
+          <div class="settings-icon" style="background:#E0F2FE">🛡</div>
+          <div><p style="font-size:13px;font-weight:600;color:var(--tx)">Privacy & Data</p><p style="font-size:11px;color:var(--mu)">Manage your data, download or delete</p></div>
+        </div><span style="color:var(--li)">›</span>
+      </div>
+      <div class="settings-row" onclick="showToast('Support chat opening…','info')">
+        <div style="display:flex;align-items:center;gap:10px;flex:1">
+          <div class="settings-icon" style="background:#F5F5F5">💬</div>
+          <div><p style="font-size:13px;font-weight:600;color:var(--tx)">Help & Support</p><p style="font-size:11px;color:var(--mu)">Chat with Kaya support</p></div>
+        </div><span style="color:var(--li)">›</span>
+      </div>
+    </div>
+    <button class="btn-full secondary" style="border-color:var(--rd);color:var(--rd)" onclick="signOut()">Sign Out</button>
+    <p style="font-size:10px;color:var(--li);text-align:center;margin-top:10px">Kaya v2.1 · Data encrypted · PIPEDA compliant</p>
+  </div>`;
+}
+
+// Hack to avoid template literal issue with CSS var
+const var_bg = "var(--bg)";
+
+function flipToggle(el){
+  const on=el.getAttribute('data-on')==='1';
+  el.setAttribute('data-on',on?'0':'1');
+  el.style.background=on?'var(--br)':'var(--g)';
+  el.children[0].style.left=on?'3px':'19px';
+}
+
+function toggleOTP(){
+  openModal(`
+    <div class="modal-head"><div class="modal-title">Two-Factor Auth</div><button class="close-btn" onclick="closeModal()">✕</button></div>
+    <div style="background:var(--gl);border-radius:12px;padding:14px;margin-bottom:16px;text-align:center">
+      <p style="font-size:28px;margin-bottom:8px">🔐</p>
+      <p style="font-size:13px;font-weight:700;color:var(--gd)">Two-factor authentication is active</p>
+      <p style="font-size:11px;color:var(--g);margin-top:4px">Every sign-in requires a one-time code sent to your email or phone.</p>
+    </div>
+    <p style="font-size:12px;color:var(--mu);margin-bottom:16px;line-height:1.5">OTP protects your account even if your password is stolen. We strongly recommend keeping this enabled.</p>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div style="padding:12px;border:1px solid var(--br);border-radius:11px"><p style="font-size:12px;font-weight:600;color:var(--tx)">✉️ Email OTP</p><p style="font-size:10px;color:var(--mu)">j***@email.com · Active</p></div>
+      <div style="padding:12px;border:1px solid var(--br);border-radius:11px;cursor:pointer" onclick="closeModal();showToast('SMS OTP setup started','info')"><p style="font-size:12px;font-weight:600;color:var(--tx)">📱 Add SMS OTP</p><p style="font-size:10px;color:var(--mu)">Add your phone as a backup method</p></div>
+    </div>
+    <button class="btn-full secondary" style="margin-top:14px;border-color:var(--rd);color:var(--rd)" onclick="closeModal();showToast('Please contact support to disable OTP','warning')">Disable 2FA</button>`);
+}
+function openChangePass(){
+  openModal(`
+    <div class="modal-head"><div class="modal-title">Change Password</div><button class="close-btn" onclick="closeModal()">✕</button></div>
+    <div style="margin-bottom:13px"><div class="inp-label">Current password</div><input class="inp" type="password" placeholder="Enter current password"/></div>
+    <div style="margin-bottom:13px"><div class="inp-label">New password</div><input class="inp" type="password" placeholder="At least 8 characters" oninput="checkStrength(this.value)"/></div>
+    <div style="margin-bottom:16px"><div class="inp-label">Confirm new password</div><input class="inp" type="password" placeholder="Repeat new password"/></div>
+    <button class="btn-full" onclick="closeModal();showToast('Password updated. OTP code required at next login.','success')">Update Password</button>`);
+}
+function openDevices(){openModal(`<div class="modal-head"><div class="modal-title">Trusted Devices</div><button class="close-btn" onclick="closeModal()">✕</button></div><div class="row-item" style="border-radius:11px;border:1px solid var(--br)"><div class="ri-l"><div class="ri-ico">💻</div><div><div class="ri-name">Chrome on macOS</div><div class="ri-sub">Toronto, ON · Last active today</div></div></div><span style="background:var(--rdl);color:var(--rd);font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;cursor:pointer" onclick="closeModal();showToast('Device removed','warning')">Remove</span></div>`);}
+function openLoginHistory(){openModal(`<div class="modal-head"><div class="modal-title">Login History</div><button class="close-btn" onclick="closeModal()">✕</button></div>${['Today 9:02 AM — Chrome, macOS — Toronto, ON','Yesterday 7:31 PM — Safari, iPhone — Toronto, ON','Mar 20 12:14 PM — Chrome, macOS — Toronto, ON'].map(e=>`<div style="padding:10px 0;border-bottom:1px solid var(--br)"><p style="font-size:12px;color:var(--tx)">${e}</p></div>`).join('')}`);}
+function openEditProfile(){
+  openModal(`
+    <div class="modal-head"><div class="modal-title">Edit Profile</div><button class="close-btn" onclick="closeModal()">✕</button></div>
+    ${[['Full Name','John Doe'],['Phone','+1 (416) 555-0123'],['Emergency Contact','Jane Doe'],['Emergency Phone','+1 (416) 555-9999']].map(f=>`<div style="margin-bottom:13px"><div class="inp-label">${f[0]}</div><input class="inp" value="${f[1]}"/></div>`).join('')}
+    <button class="btn-full" onclick="closeModal();showToast('Profile updated','success')">Save Changes</button>`);
+}
+function signOut(){
+  if(confirm('Sign out of your tenant portal?')){
+    currentUser=null;
+    goTo('scr-landing');
+    showToast('Signed out securely','success');
+  }
+}
+
+// ── Modals ────────────────────────────────────────────────────────────────────
+function showPassportDetail(){
+  openModal(`
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Tenant Passport</div>
+        <p style="font-size:11px;color:var(--mu)">Your portable rental reputation score</p>
+      </div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#9F5AFF);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto;animation:ringPulse 2s infinite">
+        <p style="font-family:var(--serif);font-size:34px;color:#fff;line-height:1">${DEMO_USER.passportScore}</p>
+        <p style="font-size:9px;color:rgba(255,255,255,.7);font-weight:700">/ 100</p>
+      </div>
+      <p style="font-size:12px;font-weight:600;color:#7C3AED;margin-top:10px">↑ +4 points this month</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+      ${[
+        {label:'Payment history',score:100,max:100,desc:'14 consecutive on-time payments'},
+        {label:'Identity verification',score:25,max:25,desc:'Government ID verified'},
+        {label:'Tenancy duration',score:14,max:30,desc:'14 months in current unit'},
+        {label:'Maintenance cooperation',score:18,max:20,desc:'Quick access, good communication'},
+        {label:'Document completeness',score:10,max:10,desc:'All required docs submitted'},
+      ].map(s=>`
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;font-weight:600;color:var(--tx)">${s.label}</span>
+            <span style="font-size:11px;font-weight:700;color:#7C3AED">${s.score}/${s.max}</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${Math.round(s.score/s.max*100)}%;background:linear-gradient(90deg,#7C3AED,#9F5AFF)"></div></div>
+          <p style="font-size:10px;color:var(--mu);margin-top:2px">${s.desc}</p>
+        </div>`).join('')}
+    </div>
+    <div style="background:var(--gl);border-radius:11px;padding:12px;margin-bottom:14px">
+      <p style="font-size:11px;font-weight:700;color:var(--gd);margin-bottom:4px">How to improve your score</p>
+      <p style="font-size:11px;color:var(--gd)">· Stay in your current unit (increases tenancy score) · Keep payments on time · Respond quickly to maintenance visits</p>
+    </div>
+    <button class="btn-full" onclick="closeModal();showToast('Passport shared with your landlord','success')">Share with Landlord</button>`);
+}
+
+function showLeaseDetail(){openLeaseDetail();}
+
+function openMessageLandlord(){
+  openModal(`
+    <div class="modal-head"><div class="modal-title">Message Landlord</div><button class="close-btn" onclick="closeModal()">✕</button></div>
+    <div style="background:var(--bg);border-radius:11px;padding:12px;margin-bottom:14px;display:flex;gap:10px;align-items:center">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--g)">JM</div>
+      <div><p style="font-size:12px;font-weight:600;color:var(--tx)">Justin Mafie</p><p style="font-size:10px;color:var(--g)">Usually responds within 2 hours</p></div>
+    </div>
+    <div style="margin-bottom:14px"><div class="inp-label">Subject</div><input class="inp" placeholder="e.g. Question about lease renewal" id="msgSubject"/></div>
+    <div style="margin-bottom:16px"><div class="inp-label">Message</div><textarea class="inp" rows="4" placeholder="Type your message…" id="msgBody"></textarea></div>
+    <div style="background:var(--bll);border-radius:9px;padding:10px;margin-bottom:14px;font-size:10px;color:var(--bl)">🔒 All messages are logged with timestamps and cannot be deleted by either party</div>
+    <button class="btn-full" onclick="sendMsg()">Send Message</button>`);
+}
+function sendMsg(){closeModal();showToast('Message sent to Justin Mafie','success');}
+
+// ── Utils ─────────────────────────────────────────────────────────────────────
+initApp(); // pre-build tabs
+
+// Start on landing screen
+function start(){goTo('scr-landing');}
+start();
+</script>
+</body>
+</html>
