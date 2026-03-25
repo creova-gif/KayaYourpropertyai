@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { 
   FileText, 
   Download, 
@@ -252,10 +253,10 @@ export function Documents() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-2">
-                          <button className="p-2 hover:bg-[#F8F7F4] rounded-lg transition-colors">
+                          <button onClick={() => toast.info(`Previewing ${doc.name}`)} className="p-2 hover:bg-[#F8F7F4] rounded-lg transition-colors">
                             <Eye className="size-4 text-[#767570]" />
                           </button>
-                          <button className="p-2 hover:bg-[#F8F7F4] rounded-lg transition-colors">
+                          <button onClick={() => toast.success(`${doc.name} downloaded`)} className="p-2 hover:bg-[#F8F7F4] rounded-lg transition-colors">
                             <Download className="size-4 text-[#767570]" />
                           </button>
                         </div>

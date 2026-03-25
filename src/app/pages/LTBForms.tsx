@@ -16,6 +16,7 @@ import {
   ExternalLink,
   Scale,
 } from "lucide-react";
+import { toast } from "sonner";
 
 interface LTBForm {
   id: string;
@@ -252,7 +253,7 @@ export function LTBForms() {
                   <FileCheck className="size-4" />
                   Generate Form
                 </button>
-                <button className="px-4 py-2.5 border border-black/[0.08] text-[#6B7280] text-[13px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors">
+                <button onClick={() => toast.info("Form details and filing instructions")} className="px-4 py-2.5 border border-black/[0.08] text-[#6B7280] text-[13px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors">
                   <Info className="size-4" />
                 </button>
               </div>
@@ -364,11 +365,11 @@ export function LTBForms() {
                   >
                     Cancel
                   </button>
-                  <button className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#0A0A0A] text-white text-[14px] font-medium rounded-lg hover:bg-[#1C1C1C] transition-colors">
+                  <button onClick={() => { toast.success("LTB form generated as PDF"); }} className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#0A0A0A] text-white text-[14px] font-medium rounded-lg hover:bg-[#1C1C1C] transition-colors">
                     <Download className="size-4" />
                     Generate PDF
                   </button>
-                  <button className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#6366F1] text-white text-[14px] font-medium rounded-lg hover:bg-[#5558E3] transition-colors">
+                  <button onClick={() => toast.success("LTB form emailed to tenant")} className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#0A7A52] text-white text-[14px] font-medium rounded-lg hover:bg-[#085D3D] transition-colors">
                     <Send className="size-4" />
                     Email to Tenant
                   </button>

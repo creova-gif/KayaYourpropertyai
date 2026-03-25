@@ -108,7 +108,7 @@ export function Properties() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#F8F7F4]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -270,51 +270,51 @@ export function Properties() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl max-w-2xl w-full p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-900">Add New Property</h2>
+              <h2 className="text-2xl font-bold text-[#0E0F0C]">Add New Property</h2>
               <button
                 onClick={() => setShowAddProperty(false)}
-                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-[#F8F7F4] rounded-lg transition-colors"
               >
-                <X className="size-5 text-slate-500" />
+                <X className="size-5 text-[#767570]" />
               </button>
             </div>
 
             <div className="space-y-4 mb-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-[#767570] mb-2">
                   Property Address *
                 </label>
                 <input
                   type="text"
                   value={newProperty.address}
                   onChange={(e) => setNewProperty({ ...newProperty, address: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-3 rounded-lg border border-[rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]"
                   placeholder="123 Main Street"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label className="block text-sm font-medium text-[#767570] mb-2">
                     City *
                   </label>
                   <input
                     type="text"
                     value={newProperty.city}
                     onChange={(e) => setNewProperty({ ...newProperty, city: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 rounded-lg border border-[rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]"
                     placeholder="Toronto"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label className="block text-sm font-medium text-[#767570] mb-2">
                     Province *
                   </label>
                   <select
                     value={newProperty.province}
                     onChange={(e) => setNewProperty({ ...newProperty, province: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 rounded-lg border border-[rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]"
                   >
                     <option value="ON">Ontario</option>
                     <option value="BC">British Columbia</option>
@@ -325,13 +325,13 @@ export function Properties() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-[#767570] mb-2">
                   Property Type *
                 </label>
                 <select
                   value={newProperty.type}
                   onChange={(e) => setNewProperty({ ...newProperty, type: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-3 rounded-lg border border-[rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]"
                 >
                   <option value="Condo">Condo</option>
                   <option value="Apartment Building">Apartment Building</option>
@@ -345,7 +345,7 @@ export function Properties() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowAddProperty(false)}
-                className="flex-1 px-4 py-3 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-colors"
+                className="flex-1 px-4 py-3 border border-[rgba(0,0,0,0.12)] text-[#767570] rounded-lg font-medium hover:bg-[#F8F7F4] transition-colors"
               >
                 Cancel
               </button>
@@ -354,8 +354,8 @@ export function Properties() {
                 disabled={!newProperty.address || !newProperty.city}
                 className={`flex-1 px-4 py-3 rounded-lg font-medium transition-colors ${
                   newProperty.address && newProperty.city
-                    ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-                    : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                    ? "bg-[#0A7A52] hover:bg-[#085D3D] text-white"
+                    : "bg-[#F8F7F4] text-[#767570] cursor-not-allowed"
                 }`}
               >
                 Add Property
@@ -370,38 +370,38 @@ export function Properties() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-slate-900">Add New Unit</h2>
+              <h2 className="text-xl font-bold text-[#0E0F0C]">Add New Unit</h2>
               <button
                 onClick={() => setShowAddUnit(null)}
-                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-[#F8F7F4] rounded-lg transition-colors"
               >
-                <X className="size-5 text-slate-500" />
+                <X className="size-5 text-[#767570]" />
               </button>
             </div>
 
             <div className="space-y-4 mb-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-[#767570] mb-2">
                   Unit Number *
                 </label>
                 <input
                   type="text"
                   value={newUnit.number}
                   onChange={(e) => setNewUnit({ ...newUnit, number: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-3 rounded-lg border border-[rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]"
                   placeholder="4A"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label className="block text-sm font-medium text-[#767570] mb-2">
                     Bedrooms *
                   </label>
                   <select
                     value={newUnit.bedrooms}
                     onChange={(e) => setNewUnit({ ...newUnit, bedrooms: parseInt(e.target.value) })}
-                    className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 rounded-lg border border-[rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]"
                   >
                     <option value="0">Studio</option>
                     <option value="1">1 Bedroom</option>
@@ -412,13 +412,13 @@ export function Properties() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label className="block text-sm font-medium text-[#767570] mb-2">
                     Bathrooms *
                   </label>
                   <select
                     value={newUnit.bathrooms}
                     onChange={(e) => setNewUnit({ ...newUnit, bathrooms: parseFloat(e.target.value) })}
-                    className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 rounded-lg border border-[rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]"
                   >
                     <option value="1">1 Bath</option>
                     <option value="1.5">1.5 Baths</option>
@@ -430,16 +430,16 @@ export function Properties() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-[#767570] mb-2">
                   Monthly Rent *
                 </label>
                 <div className="relative">
-                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-400" />
+                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-[#767570]" />
                   <input
                     type="number"
                     value={newUnit.rent || ""}
                     onChange={(e) => setNewUnit({ ...newUnit, rent: parseInt(e.target.value) || 0 })}
-                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-[rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#0A7A52]"
                     placeholder="2300"
                   />
                 </div>
@@ -449,7 +449,7 @@ export function Properties() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowAddUnit(null)}
-                className="flex-1 px-4 py-3 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-colors"
+                className="flex-1 px-4 py-3 border border-[rgba(0,0,0,0.12)] text-[#767570] rounded-lg font-medium hover:bg-[#F8F7F4] transition-colors"
               >
                 Cancel
               </button>
@@ -458,8 +458,8 @@ export function Properties() {
                 disabled={!newUnit.number || !newUnit.rent}
                 className={`flex-1 px-4 py-3 rounded-lg font-medium transition-colors ${
                   newUnit.number && newUnit.rent
-                    ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-                    : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                    ? "bg-[#0A7A52] hover:bg-[#085D3D] text-white"
+                    : "bg-[#F8F7F4] text-[#767570] cursor-not-allowed"
                 }`}
               >
                 Add Unit

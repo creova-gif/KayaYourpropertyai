@@ -128,18 +128,18 @@ export function NotificationCenter() {
   const getPriorityColor = (priority: Notification['priority']) => {
     switch (priority) {
       case 'urgent': return 'bg-red-50 border-red-200';
-      case 'high': return 'bg-orange-50 border-orange-200';
-      case 'medium': return 'bg-blue-50 border-blue-200';
-      case 'low': return 'bg-slate-50 border-slate-200';
+      case 'high': return 'bg-[#FFF8EC] border-[rgba(245,158,11,0.3)]';
+      case 'medium': return 'bg-[#E5F4EE] border-[rgba(10,122,82,0.2)]';
+      case 'low': return 'bg-[#F8F7F4] border-[rgba(0,0,0,0.08)]';
     }
   };
 
   const getPriorityBadge = (priority: Notification['priority']) => {
     switch (priority) {
       case 'urgent': return 'bg-red-100 text-red-700 border-red-300';
-      case 'high': return 'bg-orange-100 text-orange-700 border-orange-300';
-      case 'medium': return 'bg-blue-100 text-blue-700 border-blue-300';
-      case 'low': return 'bg-slate-100 text-slate-600 border-slate-300';
+      case 'high': return 'bg-[#FFF8EC] text-[#B45309] border-[rgba(245,158,11,0.4)]';
+      case 'medium': return 'bg-[#E5F4EE] text-[#0A7A52] border-[rgba(10,122,82,0.3)]';
+      case 'low': return 'bg-[#F8F7F4] text-[#767570] border-[rgba(0,0,0,0.1)]';
     }
   };
 

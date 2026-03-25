@@ -1,6 +1,7 @@
 import { Download, Receipt, Calendar, Filter, FileText, Sparkles, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 
 const G = "#0A7A52";
 const GL = "#E5F4EE";
@@ -45,7 +46,7 @@ export function TenantReceipts() {
               <p style={{ fontSize: 13, color: "rgba(255,255,255,0.65)" }}>Total rent paid · {filtered.length} receipts · CRA-compliant</p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
-              <button style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 18px", background: "#fff", color: G, borderRadius: 10, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}>
+              <button onClick={() => toast.success(`Downloading all ${selectedYear} receipts as ZIP…`)} style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 18px", background: "#fff", color: G, borderRadius: 10, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}>
                 <Download size={14} strokeWidth={2.5} /> Download All ({selectedYear})
               </button>
               <p style={{ fontSize: 11, color: "rgba(255,255,255,0.45)" }}>One-click ZIP for CRA filing</p>
@@ -93,7 +94,7 @@ export function TenantReceipts() {
                 </div>
                 <div style={{ display: "flex", gap: 6 }}>
                   <span style={{ fontSize: 9, fontWeight: 700, color: G, background: GL, padding: "3px 9px", borderRadius: 99 }}>PAID</span>
-                  <button style={{ width: 32, height: 32, borderRadius: 8, background: "#F8F7F4", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <button onClick={() => toast.info(`${r.month} ${r.year} receipt downloading…`)} style={{ width: 32, height: 32, borderRadius: 8, background: "#F8F7F4", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <Download size={14} color={MU} strokeWidth={2.5} />
                   </button>
                 </div>

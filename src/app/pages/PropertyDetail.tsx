@@ -27,6 +27,7 @@ import {
   Shield,
   Upload,
 } from "lucide-react";
+import { toast } from "sonner";
 
 export function PropertyDetail() {
   const { id } = useParams();
@@ -122,7 +123,7 @@ export function PropertyDetail() {
     .reduce((sum, u) => sum + u.rent, 0);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#F8F7F4]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         {/* Header */}
         <div className="mb-8">
@@ -139,51 +140,51 @@ export function PropertyDetail() {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-indigo-50">
-                <Building2 className="size-5 text-indigo-600" />
+              <div className="p-2 rounded-lg bg-[#E5F4EE]">
+                <Building2 className="size-5 text-[#0A7A52]" />
               </div>
-              <span className="text-sm text-slate-600">Total Units</span>
+              <span className="text-sm text-[#767570]">Total Units</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">{property.totalUnits}</p>
+            <p className="text-3xl font-bold text-[#0E0F0C]">{property.totalUnits}</p>
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-green-50">
-                <Users className="size-5 text-green-600" />
+              <div className="p-2 rounded-lg bg-[#E5F4EE]">
+                <Users className="size-5 text-[#0A7A52]" />
               </div>
-              <span className="text-sm text-slate-600">Occupancy</span>
+              <span className="text-sm text-[#767570]">Occupancy</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">
+            <p className="text-3xl font-bold text-[#0E0F0C]">
               {Math.round((property.occupiedUnits / property.totalUnits) * 100)}%
             </p>
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-purple-50">
-                <DollarSign className="size-5 text-purple-600" />
+              <div className="p-2 rounded-lg bg-[#E5F4EE]">
+                <DollarSign className="size-5 text-[#0A7A52]" />
               </div>
-              <span className="text-sm text-slate-600">Monthly Revenue</span>
+              <span className="text-sm text-[#767570]">Monthly Revenue</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">${totalRevenue.toLocaleString()}</p>
+            <p className="text-3xl font-bold text-[#0E0F0C]">${totalRevenue.toLocaleString()}</p>
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-amber-50">
-                <Calendar className="size-5 text-amber-600" />
+              <div className="p-2 rounded-lg bg-[#E5F4EE]">
+                <Calendar className="size-5 text-[#0A7A52]" />
               </div>
-              <span className="text-sm text-slate-600">Avg Lease Length</span>
+              <span className="text-sm text-[#767570]">Avg Lease Length</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">12 mo</p>
+            <p className="text-3xl font-bold text-[#0E0F0C]">12 mo</p>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-slate-200 mb-6">
+        <div className="border-b border-[rgba(0,0,0,0.08)] mb-6">
           <nav className="flex gap-8">
             {["overview", "units", "documents", "amenities"].map((tab) => (
               <button
@@ -191,8 +192,8 @@ export function PropertyDetail() {
                 onClick={() => setActiveTab(tab)}
                 className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === tab
-                    ? "border-indigo-600 text-indigo-600"
-                    : "border-transparent text-slate-600 hover:text-slate-900"
+                    ? "border-[#0A7A52] text-[#0A7A52]"
+                    : "border-transparent text-[#767570] hover:text-[#0E0F0C]"
                 }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -205,10 +206,10 @@ export function PropertyDetail() {
         {activeTab === "overview" && (
           <div className="space-y-6">
             {/* Images */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
+            <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-slate-900">Property Images</h3>
-                <button className="flex items-center gap-2 px-3 py-1.5 text-sm bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg font-medium transition-colors">
+                <h3 className="text-lg font-semibold text-[#0E0F0C]">Property Images</h3>
+                <button onClick={() => toast.info("Photo upload feature coming soon")} className="flex items-center gap-2 px-3 py-1.5 text-sm bg-[#E5F4EE] hover:bg-[#D1EDE0] text-[#0A7A52] rounded-lg font-medium transition-colors">
                   <Upload className="size-4" />
                   Upload Photos
                 </button>
@@ -218,10 +219,10 @@ export function PropertyDetail() {
                   <div key={idx} className="relative aspect-video rounded-lg overflow-hidden group">
                     <img src={img} alt={`Property ${idx + 1}`} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                      <button className="p-2 bg-white rounded-lg hover:bg-slate-100">
-                        <Camera className="size-5 text-slate-900" />
+                      <button onClick={() => toast.info("Photo viewer coming soon")} className="p-2 bg-white rounded-lg hover:bg-[#F8F7F4]">
+                        <Camera className="size-5 text-[#0E0F0C]" />
                       </button>
-                      <button className="p-2 bg-white rounded-lg hover:bg-slate-100">
+                      <button onClick={() => toast.info("Delete photo")} className="p-2 bg-white rounded-lg hover:bg-[#F8F7F4]">
                         <Trash2 className="size-5 text-red-600" />
                       </button>
                     </div>
@@ -231,30 +232,30 @@ export function PropertyDetail() {
             </div>
 
             {/* Description */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Description</h3>
-              <p className="text-slate-700 leading-relaxed">{property.description}</p>
+            <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-6">
+              <h3 className="text-lg font-semibold text-[#0E0F0C] mb-4">Description</h3>
+              <p className="text-[#0E0F0C] leading-relaxed">{property.description}</p>
             </div>
 
             {/* Property Details */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Property Details</h3>
+            <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-6">
+              <h3 className="text-lg font-semibold text-[#0E0F0C] mb-4">Property Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center justify-between py-3 border-b border-slate-100">
-                  <span className="text-slate-600">Property Type</span>
-                  <span className="font-medium text-slate-900">{property.propertyType}</span>
+                <div className="flex items-center justify-between py-3 border-b border-[rgba(0,0,0,0.06)]">
+                  <span className="text-[#767570]">Property Type</span>
+                  <span className="font-medium text-[#0E0F0C]">{property.propertyType}</span>
                 </div>
-                <div className="flex items-center justify-between py-3 border-b border-slate-100">
-                  <span className="text-slate-600">Year Built</span>
-                  <span className="font-medium text-slate-900">{property.yearBuilt}</span>
+                <div className="flex items-center justify-between py-3 border-b border-[rgba(0,0,0,0.06)]">
+                  <span className="text-[#767570]">Year Built</span>
+                  <span className="font-medium text-[#0E0F0C]">{property.yearBuilt}</span>
                 </div>
-                <div className="flex items-center justify-between py-3 border-b border-slate-100">
-                  <span className="text-slate-600">Total Units</span>
-                  <span className="font-medium text-slate-900">{property.totalUnits}</span>
+                <div className="flex items-center justify-between py-3 border-b border-[rgba(0,0,0,0.06)]">
+                  <span className="text-[#767570]">Total Units</span>
+                  <span className="font-medium text-[#0E0F0C]">{property.totalUnits}</span>
                 </div>
-                <div className="flex items-center justify-between py-3 border-b border-slate-100">
-                  <span className="text-slate-600">Occupied Units</span>
-                  <span className="font-medium text-slate-900">{property.occupiedUnits}</span>
+                <div className="flex items-center justify-between py-3 border-b border-[rgba(0,0,0,0.06)]">
+                  <span className="text-[#767570]">Occupied Units</span>
+                  <span className="font-medium text-[#0E0F0C]">{property.occupiedUnits}</span>
                 </div>
               </div>
             </div>
@@ -265,8 +266,8 @@ export function PropertyDetail() {
         {activeTab === "units" && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-slate-900">Units</h3>
-              <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
+              <h3 className="text-xl font-semibold text-[#0E0F0C]">Units</h3>
+              <button onClick={() => toast.info("Add unit feature coming soon")} className="flex items-center gap-2 px-4 py-2 bg-[#0A7A52] hover:bg-[#085D3D] text-white rounded-lg font-medium transition-colors">
                 <Plus className="size-5" />
                 Add Unit
               </button>
@@ -274,51 +275,51 @@ export function PropertyDetail() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {property.units.map((unit) => (
-                <div key={unit.id} className="bg-white rounded-xl border border-slate-200 p-6">
+                <div key={unit.id} className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h4 className="text-xl font-semibold text-slate-900 mb-2">Unit {unit.number}</h4>
+                      <h4 className="text-xl font-semibold text-[#0E0F0C] mb-2">Unit {unit.number}</h4>
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-medium ${
                           unit.status === "occupied"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-indigo-100 text-indigo-700"
+                            ? "bg-[#E5F4EE] text-[#0A7A52]"
+                            : "bg-[#F8F7F4] text-[#767570]"
                         }`}
                       >
                         {unit.status}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                        <Edit className="size-5 text-slate-600" />
+                      <button onClick={() => toast.info(`Edit unit ${unit.number}`)} className="p-2 hover:bg-[#F8F7F4] rounded-lg transition-colors">
+                        <Edit className="size-5 text-[#767570]" />
                       </button>
-                      <button className="p-2 hover:bg-red-50 rounded-lg transition-colors">
+                      <button onClick={() => toast.info(`Delete unit ${unit.number}`)} className="p-2 hover:bg-red-50 rounded-lg transition-colors">
                         <Trash2 className="size-5 text-red-600" />
                       </button>
                     </div>
                   </div>
 
                   {/* Unit Specs */}
-                  <div className="grid grid-cols-3 gap-4 mb-4 pb-4 border-b border-slate-200">
+                  <div className="grid grid-cols-3 gap-4 mb-4 pb-4 border-b border-[rgba(0,0,0,0.06)]">
                     <div className="flex items-center gap-2">
-                      <Bed className="size-5 text-slate-400" />
+                      <Bed className="size-5 text-[#767570]" />
                       <div>
-                        <p className="text-sm text-slate-600">Bedrooms</p>
-                        <p className="font-semibold text-slate-900">{unit.bedrooms}</p>
+                        <p className="text-sm text-[#767570]">Bedrooms</p>
+                        <p className="font-semibold text-[#0E0F0C]">{unit.bedrooms}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Bath className="size-5 text-slate-400" />
+                      <Bath className="size-5 text-[#767570]" />
                       <div>
-                        <p className="text-sm text-slate-600">Bathrooms</p>
-                        <p className="font-semibold text-slate-900">{unit.bathrooms}</p>
+                        <p className="text-sm text-[#767570]">Bathrooms</p>
+                        <p className="font-semibold text-[#0E0F0C]">{unit.bathrooms}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Ruler className="size-5 text-slate-400" />
+                      <Ruler className="size-5 text-[#767570]" />
                       <div>
-                        <p className="text-sm text-slate-600">Sq Ft</p>
-                        <p className="font-semibold text-slate-900">{unit.squareFeet}</p>
+                        <p className="text-sm text-[#767570]">Sq Ft</p>
+                        <p className="font-semibold text-[#0E0F0C]">{unit.squareFeet}</p>
                       </div>
                     </div>
                   </div>
@@ -326,19 +327,19 @@ export function PropertyDetail() {
                   {/* Pricing */}
                   <div className="mb-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-slate-600">Monthly Rent</span>
-                      <span className="text-xl font-bold text-slate-900">
+                      <span className="text-[#767570]">Monthly Rent</span>
+                      <span className="text-xl font-bold text-[#0E0F0C]">
                         ${unit.rent.toLocaleString()}
                       </span>
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-slate-600">Security Deposit</span>
-                      <span className="font-medium text-slate-900">${unit.deposit.toLocaleString()}</span>
+                      <span className="text-[#767570]">Security Deposit</span>
+                      <span className="font-medium text-[#0E0F0C]">${unit.deposit.toLocaleString()}</span>
                     </div>
                     {unit.parking && (
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-600">Parking Fee</span>
-                        <span className="font-medium text-slate-900">${unit.parkingFee}</span>
+                        <span className="text-[#767570]">Parking Fee</span>
+                        <span className="font-medium text-[#0E0F0C]">${unit.parkingFee}</span>
                       </div>
                     )}
                   </div>
@@ -346,13 +347,13 @@ export function PropertyDetail() {
                   {/* Features */}
                   <div className="flex flex-wrap gap-2 mb-4">
                     {unit.parking && (
-                      <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-medium flex items-center gap-1">
+                      <span className="px-2 py-1 bg-[#F8F7F4] text-[#767570] rounded text-xs font-medium flex items-center gap-1">
                         <Car className="size-3" />
                         Parking
                       </span>
                     )}
                     {unit.petsAllowed ? (
-                      <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium flex items-center gap-1">
+                      <span className="px-2 py-1 bg-[#E5F4EE] text-[#0A7A52] rounded text-xs font-medium flex items-center gap-1">
                         <Dog className="size-3" />
                         Pets OK
                       </span>
@@ -363,7 +364,7 @@ export function PropertyDetail() {
                       </span>
                     )}
                     {!unit.smokingAllowed && (
-                      <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium flex items-center gap-1">
+                      <span className="px-2 py-1 bg-[#E5F4EE] text-[#0A7A52] rounded text-xs font-medium flex items-center gap-1">
                         <Cigarette className="size-3" />
                         No Smoking
                       </span>
@@ -371,7 +372,7 @@ export function PropertyDetail() {
                     {unit.utilitiesIncluded.map((utility, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium"
+                        className="px-2 py-1 bg-[#F8F7F4] text-[#767570] rounded text-xs font-medium"
                       >
                         {utility} Included
                       </span>
@@ -380,24 +381,24 @@ export function PropertyDetail() {
 
                   {/* Tenant Info */}
                   {unit.tenant && (
-                    <div className="pt-4 border-t border-slate-200">
+                    <div className="pt-4 border-t border-[rgba(0,0,0,0.06)]">
                       <div className="flex items-center gap-3 mb-2">
-                        <Users className="size-5 text-slate-400" />
+                        <Users className="size-5 text-[#767570]" />
                         <div>
-                          <p className="text-sm text-slate-600">Current Tenant</p>
-                          <p className="font-semibold text-slate-900">{unit.tenant}</p>
+                          <p className="text-sm text-[#767570]">Current Tenant</p>
+                          <p className="font-semibold text-[#0E0F0C]">{unit.tenant}</p>
                         </div>
                       </div>
-                      <div className="text-sm text-slate-600">
+                      <div className="text-sm text-[#767570]">
                         Lease: {unit.leaseStart} - {unit.leaseEnd}
                       </div>
                     </div>
                   )}
 
                   {/* Requirements */}
-                  <div className="pt-4 border-t border-slate-200 mt-4">
-                    <p className="text-sm font-medium text-slate-900 mb-2">Requirements</p>
-                    <div className="space-y-1 text-sm text-slate-600">
+                  <div className="pt-4 border-t border-[rgba(0,0,0,0.06)] mt-4">
+                    <p className="text-sm font-medium text-[#0E0F0C] mb-2">Requirements</p>
+                    <div className="space-y-1 text-sm text-[#767570]">
                       <p>Min Income: ${unit.minIncome.toLocaleString()}/month</p>
                       <p>Credit Score: {unit.creditScoreMin}+</p>
                       {unit.guarantorRequired && <p>Guarantor Required</p>}
@@ -411,25 +412,25 @@ export function PropertyDetail() {
 
         {/* Documents Tab */}
         {activeTab === "documents" && (
-          <div className="bg-white rounded-xl border border-slate-200">
-            <div className="p-6 border-b border-slate-200 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-900">Property Documents</h3>
-              <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)]">
+            <div className="p-6 border-b border-[rgba(0,0,0,0.08)] flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-[#0E0F0C]">Property Documents</h3>
+              <button onClick={() => toast.info("Document upload coming soon")} className="flex items-center gap-2 px-4 py-2 bg-[#0A7A52] hover:bg-[#085D3D] text-white rounded-lg font-medium transition-colors">
                 <Upload className="size-5" />
                 Upload Document
               </button>
             </div>
-            <div className="divide-y divide-slate-200">
+            <div className="divide-y divide-[rgba(0,0,0,0.06)]">
               {property.documents.map((doc, idx) => (
-                <div key={idx} className="p-6 hover:bg-slate-50 transition-colors">
+                <div key={idx} className="p-6 hover:bg-[#F8F7F4] transition-colors">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="p-3 rounded-lg bg-indigo-50">
-                        <FileText className="size-6 text-indigo-600" />
+                      <div className="p-3 rounded-lg bg-[#E5F4EE]">
+                        <FileText className="size-6 text-[#0A7A52]" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-slate-900">{doc.name}</h4>
-                        <div className="flex items-center gap-3 text-sm text-slate-600 mt-1">
+                        <h4 className="font-semibold text-[#0E0F0C]">{doc.name}</h4>
+                        <div className="flex items-center gap-3 text-sm text-[#767570] mt-1">
                           <span>{doc.type}</span>
                           <span>•</span>
                           <span>Uploaded {doc.uploadDate}</span>
@@ -437,10 +438,10 @@ export function PropertyDetail() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button className="px-3 py-1.5 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+                      <button onClick={() => toast.success(`${doc.name} downloaded`)} className="px-3 py-1.5 text-sm border border-[rgba(0,0,0,0.08)] rounded-lg hover:bg-[#F8F7F4] transition-colors text-[#767570]">
                         Download
                       </button>
-                      <button className="p-2 hover:bg-red-50 rounded-lg transition-colors">
+                      <button onClick={() => toast.info(`Delete ${doc.name}`)} className="p-2 hover:bg-red-50 rounded-lg transition-colors">
                         <Trash2 className="size-5 text-red-600" />
                       </button>
                     </div>
@@ -453,16 +454,16 @@ export function PropertyDetail() {
 
         {/* Amenities Tab */}
         {activeTab === "amenities" && (
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-6">Building Amenities</h3>
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-6">
+            <h3 className="text-lg font-semibold text-[#0E0F0C] mb-6">Building Amenities</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {property.amenities.map((amenity, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-3 p-4 border border-slate-200 rounded-lg"
+                  className="flex items-center gap-3 p-4 border border-[rgba(0,0,0,0.08)] rounded-lg"
                 >
-                  <CheckCircle className="size-5 text-green-600 flex-shrink-0" />
-                  <span className="font-medium text-slate-900">{amenity}</span>
+                  <CheckCircle className="size-5 text-[#0A7A52] flex-shrink-0" />
+                  <span className="font-medium text-[#0E0F0C]">{amenity}</span>
                 </div>
               ))}
             </div>

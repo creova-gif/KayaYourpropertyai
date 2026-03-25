@@ -12,6 +12,21 @@ const SERIF = "'Instrument Serif', Georgia, serif";
 
 const daysUntil = (d: string) => Math.max(0, Math.ceil((new Date(d).getTime() - Date.now()) / 86400000));
 
+// Compute next rent due date dynamically (1st of next month)
+const computeNextDue = () => {
+  const now = new Date();
+  const next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const monthShort = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return {
+    date: next,
+    iso: `${next.getFullYear()}-${String(next.getMonth()+1).padStart(2,"0")}-01`,
+    label: `${monthShort[next.getMonth()]} 1`,
+    fullLabel: `${monthNames[next.getMonth()]} 1, ${next.getFullYear()}`,
+    monthYear: `${monthNames[next.getMonth()]} ${next.getFullYear()}`,
+  };
+};
+
 type Modal = "pay" | "autopay" | "addmethod" | null;
 
 export function TenantPayments() {
@@ -29,7 +44,8 @@ export function TenantPayments() {
   ];
 
   const totalPaid = paymentHistory.reduce((s, p) => s + p.amount, 0);
-  const daysLeft = daysUntil("2026-07-01");
+  const nextDue = computeNextDue();
+  const daysLeft = daysUntil(nextDue.iso);
 
   return (
     <div style={{ fontFamily: SANS }}>
@@ -55,7 +71,7 @@ export function TenantPayments() {
           </div>
           <div style={{ background: "#F8F7F4", borderRadius: 12, padding: 14, textAlign: "center" }}>
             <p style={{ fontSize: 9, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 3 }}>Next Due</p>
-            <p style={{ fontFamily: SERIF, fontSize: 22, color: TX }}>Jul 1</p>
+            <p style={{ fontFamily: SERIF, fontSize: 22, color: TX }}>{nextDue.label}</p>
             <p style={{ fontSize: 9, color: G }}>$2,300</p>
           </div>
         </div>
@@ -67,7 +83,7 @@ export function TenantPayments() {
           onClick={() => setModal("pay")}
         >
           <div>
-            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 3 }}>July 2026</p>
+            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 3 }}>{nextDue.monthYear}</p>
             <p style={{ fontFamily: SERIF, fontSize: 30, color: "#fff", lineHeight: 1 }}>$2,300.00</p>
             <p style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginTop: 3 }}>Due in {daysLeft} days</p>
           </div>
@@ -167,11 +183,11 @@ export function TenantPayments() {
               {modal === "pay" && (
                 <>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
-                    <h3 style={{ fontFamily: SERIF, fontSize: 26, color: TX }}>Pay July Rent</h3>
+                    <h3 style={{ fontFamily: SERIF, fontSize: 26, color: TX }}>Pay {nextDue.monthYear} Rent</h3>
                     <button onClick={() => setModal(null)} style={{ background: "none", border: "none", cursor: "pointer", color: MU, fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%" }}><X size={18} /></button>
                   </div>
                   <div style={{ background: GL, borderRadius: 14, padding: 16, marginBottom: 18, textAlign: "center" }}>
-                    <p style={{ fontSize: 10, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 5 }}>Amount due — July 1, 2026</p>
+                    <p style={{ fontSize: 10, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 5 }}>Amount due — {nextDue.fullLabel}</p>
                     <p style={{ fontFamily: SERIF, fontSize: 44, color: "#085040", lineHeight: 1 }}>$2,300.00</p>
                     <p style={{ fontSize: 11, color: G, marginTop: 4 }}>{daysLeft} days remaining</p>
                   </div>
@@ -211,7 +227,7 @@ export function TenantPayments() {
                     <p style={{ fontSize: 13, fontWeight: 600, color: "#085040", marginBottom: 3 }}>✓ Auto-Pay is Active</p>
                     <p style={{ fontSize: 11, color: G }}>Rent is automatically charged on the 1st of each month</p>
                   </div>
-                  {[["Payment card", "Visa ending 4242"], ["Charge date", "1st of every month"], ["Next charge", "July 1, 2026 · $2,300"], ["Notification", "24 hrs before charge"]].map(r => (
+                  {[["Payment card", "Visa ending 4242"], ["Charge date", "1st of every month"], ["Next charge", `${nextDue.fullLabel} · $2,300`], ["Notification", "24 hrs before charge"]].map(r => (
                     <div key={r[0]} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
                       <span style={{ fontSize: 12, color: MU }}>{r[0]}</span>
                       <span style={{ fontSize: 12, fontWeight: 600, color: TX }}>{r[1]}</span>

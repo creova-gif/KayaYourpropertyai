@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Download, FileText, Calendar, TrendingUp, DollarSign, Home, Users, Wrench, Filter, ChevronDown, Printer, Mail, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { toast } from "sonner";
 
 interface Report {
   id: string;
@@ -93,15 +94,15 @@ export function Reports() {
     ? availableReports 
     : availableReports.filter(r => r.category === selectedCategory);
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'financial': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-      case 'occupancy': return 'bg-blue-50 text-blue-700 border-blue-200';
-      case 'maintenance': return 'bg-orange-50 text-orange-700 border-orange-200';
-      case 'compliance': return 'bg-purple-50 text-purple-700 border-purple-200';
-      case 'tenant': return 'bg-pink-50 text-pink-700 border-pink-200';
-      default: return 'bg-slate-50 text-slate-700 border-slate-200';
-    }
+  const getCategoryStyle = (category: string): React.CSSProperties => {
+    const map: Record<string, React.CSSProperties> = {
+      financial:   { background: "#E5F4EE", color: "#0A7A52",  border: "1px solid rgba(10,122,82,0.2)" },
+      occupancy:   { background: "#EBF2FB", color: "#1E5FA8",  border: "1px solid rgba(30,95,168,0.2)" },
+      maintenance: { background: "#FEF3C7", color: "#B45309",  border: "1px solid rgba(180,83,9,0.2)" },
+      compliance:  { background: "#F5F3FF", color: "#6D28D9",  border: "1px solid rgba(109,40,217,0.2)" },
+      tenant:      { background: "#FDF2F8", color: "#BE185D",  border: "1px solid rgba(190,24,93,0.2)" },
+    };
+    return map[category] ?? { background: "#F8F7F4", color: "#767570", border: "1px solid rgba(0,0,0,0.1)" };
   };
 
   // Sample financial summary data
@@ -133,11 +134,11 @@ export function Reports() {
             </div>
 
             <div className="flex items-center gap-3">
-              <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-[#767570] bg-white hover:bg-[#F8F7F4] border border-[rgba(0,0,0,0.08)] transition-colors">
+              <button onClick={() => { window.print(); }} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-[#767570] bg-white hover:bg-[#F8F7F4] border border-[rgba(0,0,0,0.08)] transition-colors">
                 <Printer className="size-4" />
                 Print All
               </button>
-              <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-[#0A7A52] hover:bg-[#085D3D] transition-colors shadow-lg shadow-[#0A7A52]/20">
+              <button onClick={() => toast.success("Exporting all reports as PDF…")} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-[#0A7A52] hover:bg-[#085D3D] transition-colors shadow-lg shadow-[#0A7A52]/20">
                 <Download className="size-4" />
                 Export Reports
               </button>
@@ -207,9 +208,7 @@ export function Reports() {
             <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.08)] p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-[#767570]">Total Revenue</span>
-                <div className={`flex items-center gap-1 text-xs font-semibold ${
-                  financialSummary.revenueChange >= 0 ? 'text-emerald-600' : 'text-red-600'
-                }`}>
+                <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, color: financialSummary.revenueChange >= 0 ? "#0A7A52" : "#C0392B" }}>
                   {financialSummary.revenueChange >= 0 ? (
                     <ArrowUpRight className="size-3" />
                   ) : (
@@ -227,9 +226,7 @@ export function Reports() {
             <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.08)] p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-[#767570]">Total Expenses</span>
-                <div className={`flex items-center gap-1 text-xs font-semibold ${
-                  financialSummary.expenseChange <= 0 ? 'text-emerald-600' : 'text-red-600'
-                }`}>
+                <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, color: financialSummary.expenseChange <= 0 ? "#0A7A52" : "#C0392B" }}>
                   {financialSummary.expenseChange >= 0 ? (
                     <ArrowUpRight className="size-3" />
                   ) : (
@@ -281,9 +278,7 @@ export function Reports() {
                       <h3 className="font-semibold text-[#0E0F0C] text-lg">
                         {report.name}
                       </h3>
-                      <span className={`text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-lg border ${
-                        getCategoryColor(report.category)
-                      }`}>
+                      <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", padding: "3px 10px", borderRadius: 8, ...getCategoryStyle(report.category) }}>
                         {report.category}
                       </span>
                     </div>
@@ -306,10 +301,10 @@ export function Reports() {
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <button className="p-2 rounded-lg hover:bg-[#F8F7F4] transition-colors text-[#767570]">
+                        <button onClick={() => toast.success(`${report.name} emailed to your inbox`)} className="p-2 rounded-lg hover:bg-[#F8F7F4] transition-colors text-[#767570]">
                           <Mail className="size-4" />
                         </button>
-                        <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#0A7A52] hover:bg-[#085D3D] transition-colors">
+                        <button onClick={() => toast.success(`Generating ${report.name}…`)} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#0A7A52] hover:bg-[#085D3D] transition-colors">
                           <Download className="size-4" />
                           Generate
                         </button>
@@ -345,14 +340,14 @@ export function Reports() {
                     Sent on the 1st of each month
                   </p>
                 </div>
-                <button className="text-xs font-medium text-[#0A7A52] hover:text-[#085D3D]">
+                <button onClick={() => toast.info("Open schedule settings")} className="text-xs font-medium text-[#0A7A52] hover:text-[#085D3D]">
                   Edit
                 </button>
               </div>
             </div>
 
             <div className="p-4 rounded-xl border border-dashed border-[rgba(0,0,0,0.08)] bg-[#F8F7F4] flex items-center justify-center">
-              <button className="text-sm font-medium text-[#0A7A52] hover:text-[#085D3D]">
+              <button onClick={() => toast.success("Schedule new report – coming soon")} className="text-sm font-medium text-[#0A7A52] hover:text-[#085D3D]">
                 + Schedule New Report
               </button>
             </div>

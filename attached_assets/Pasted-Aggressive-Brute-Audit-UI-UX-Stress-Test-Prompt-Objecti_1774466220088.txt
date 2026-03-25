@@ -1,0 +1,80 @@
+Aggressive Brute Audit + UI/UX Stress Test Prompt
+
+Objective:
+Perform an aggressive, exhaustive, end-to-end stress test of my AI-powered web application. Test all user flows, UI/UX interactions, API endpoints, authentication, payments, forms, dashboards, media, and integrations. The goal is to break, stress, or expose flaws in the system while also assessing usability and responsiveness under extreme conditions.
+
+Instructions for the AI Auditor/Test Agent:
+
+Massive User Flow Testing
+Simulate multiple users performing all flows simultaneously:
+Sign up, login, logout, password reset.
+Profile updates, content creation, file uploads.
+Form submissions with valid and invalid data.
+Payment flows, subscriptions, and checkout.
+Edge cases: empty fields, invalid characters, large input sizes.
+Attempt concurrent actions that may cause race conditions or session conflicts.
+UI/UX Stress Testing
+Rapidly click, hover, and navigate through every button, menu, dropdown, modal, slider, carousel, and tab.
+Test responsiveness on desktop, tablet, and mobile (portrait and landscape).
+Test with extreme screen resolutions and zoom levels.
+Stress-test animations, transitions, and dynamic content: trigger repeated updates, overlapping modals, or simultaneous API responses.
+Evaluate usability under fast or chaotic interactions (e.g., spamming clicks, rapid tab switching, resizing window).
+API & Backend Aggression
+Send high-frequency API requests, including:
+Valid and invalid payloads.
+Boundary values and extreme data sets.
+Simulated malformed headers, tokens, and missing parameters.
+Test API error handling under stress: rate limits, timeouts, unexpected failures.
+Confirm data integrity between frontend and backend for all operations.
+Security Stress Testing
+Attempt XSS, CSRF, SQL/NoSQL injection, command injection, and broken auth scenarios.
+Test session hijacking, token reuse, invalid login attempts.
+Check HTTPS enforcement and secure headers.
+Simulate brute-force login attempts with proper throttling observation.
+Performance Stress
+Measure page load, API latency, and database queries under high concurrency.
+Load-test media: images, videos, and documents uploaded in bulk.
+Simulate multiple simultaneous users performing complex workflows.
+Identify memory leaks, slow rendering, and JS execution bottlenecks.
+Accessibility & UI Stress
+Test keyboard navigation, tab order, focus states under repeated usage.
+Screen reader simulation: check if content is readable and actionable.
+Evaluate color contrast, font scaling, and responsiveness to accessibility settings.
+Test overlapping popups, dynamic alerts, and error messages for clarity and legibility.
+Error Logging & Reporting
+Capture all console errors, warnings, API failures, and unhandled exceptions.
+For each detected issue, provide:
+Category (Functionality, UX, Security, Performance, API, Accessibility)
+Severity (Critical, High, Medium, Low)
+Steps to reproduce
+Suggested fix or optimization
+Scenario Generation
+Generate randomized extreme scenarios:
+User spamming actions, multi-tab interference.
+Network interruptions, delayed API responses, partial data submission.
+Device orientation changes mid-action, browser tab switching during tasks.
+Output Requirements
+Provide a structured, readable report:
+[Category: Functionality]
+- Issue: …
+- Severity: …
+- Steps to Reproduce: …
+- Suggested Fix: …
+
+[Category: UX/UI]
+- Issue: …
+- Severity: …
+- Steps to Reproduce: …
+- Suggested Fix: …
+
+[Category: API]
+…
+[Category: Security]
+…
+[Category: Performance]
+…
+[Category: Accessibility]
+…
+
+💡 Pro Tip:
+If you feed this to an AI agent capable of simulating user events (like Playwright, Cypress, or Puppeteer), it can automatically run the scenarios while logging and highlighting failures. You can also combine it with your Replit dev environment to test live.

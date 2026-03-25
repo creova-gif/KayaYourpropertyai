@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Search, Send, Phone, Video, MoreVertical, Paperclip, Smile, Check, CheckCheck, Pin, Archive, Trash2, Filter, Star, UserCircle, Building2, Image as ImageIcon } from "lucide-react";
+import { toast } from "sonner";
 
 interface Message {
   id: string;
@@ -319,13 +320,13 @@ export function MessagingCenter() {
               </div>
 
               <div className="flex items-center gap-2">
-                <button className="p-2.5 rounded-xl hover:bg-[#F8F7F4] transition-colors text-[#767570]">
+                <button onClick={() => toast.info("Phone call feature coming soon")} className="p-2.5 rounded-xl hover:bg-[#F8F7F4] transition-colors text-[#767570]">
                   <Phone className="size-5" />
                 </button>
-                <button className="p-2.5 rounded-xl hover:bg-[#F8F7F4] transition-colors text-[#767570]">
+                <button onClick={() => toast.info("Video call feature coming soon")} className="p-2.5 rounded-xl hover:bg-[#F8F7F4] transition-colors text-[#767570]">
                   <Video className="size-5" />
                 </button>
-                <button className="p-2.5 rounded-xl hover:bg-[#F8F7F4] transition-colors text-[#767570]">
+                <button onClick={() => toast.info("More options coming soon")} className="p-2.5 rounded-xl hover:bg-[#F8F7F4] transition-colors text-[#767570]">
                   <MoreVertical className="size-5" />
                 </button>
               </div>
@@ -386,7 +387,7 @@ export function MessagingCenter() {
           {/* Message Input */}
           <div className="bg-white border-t border-[rgba(0,0,0,0.08)] p-6">
             <div className="flex items-end gap-3">
-              <button className="p-2.5 rounded-xl hover:bg-[#F8F7F4] transition-colors text-[#767570]">
+              <button onClick={() => toast.info("File attachment coming soon")} className="p-2.5 rounded-xl hover:bg-[#F8F7F4] transition-colors text-[#767570]">
                 <Paperclip className="size-5" />
               </button>
               
@@ -405,7 +406,7 @@ export function MessagingCenter() {
                   className="w-full px-4 py-3 pr-12 rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#F8F7F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#0A7A52]/20 focus:border-[#0A7A52] resize-none"
                   style={{ fontFamily: "'DM Sans', sans-serif" }}
                 />
-                <button className="absolute right-3 top-1/2 -translate-y-1/2 text-[#767570] hover:text-[#0A7A52] transition-colors">
+                <button onClick={() => toast.info("Emoji picker coming soon")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#767570] hover:text-[#0A7A52] transition-colors">
                   <Smile className="size-5" />
                 </button>
               </div>

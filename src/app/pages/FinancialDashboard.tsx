@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { DollarSign, TrendingUp, Download, Building2, Receipt, Wallet, ArrowUpRight } from "lucide-react";
+import { toast } from "sonner";
 import { LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const G="#0A7A52",GL="#E5F4EE",BG="#F8F7F4",TEXT="#0E0F0C",MUTED="#767570",BORDER="rgba(0,0,0,0.07)";
@@ -76,7 +77,7 @@ export function FinancialDashboard() {
               <option value="12months">Last 12 months</option>
               <option value="ytd">Year to date</option>
             </select>
-            <button style={{display:"flex",alignItems:"center",gap:8,padding:"10px 20px",background:TEXT,border:"none",borderRadius:10,color:"#fff",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:SANS}}>
+            <button onClick={() => toast.success("Exporting financial report as PDF…")} style={{display:"flex",alignItems:"center",gap:8,padding:"10px 20px",background:TEXT,border:"none",borderRadius:10,color:"#fff",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:SANS}}>
               <Download size={14}/>Export
             </button>
           </div>

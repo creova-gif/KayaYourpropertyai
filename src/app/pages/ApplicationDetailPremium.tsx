@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   AlertTriangle,
@@ -305,11 +306,11 @@ export function ApplicationDetailPremium() {
             </div>
 
             <div className="flex items-center gap-3">
-              <button className="px-4 py-2.5 border border-black/[0.08] text-[#0A0A0A] text-[14px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors flex items-center gap-2">
+              <button onClick={() => toast.info("Application PDF downloading…")} className="px-4 py-2.5 border border-black/[0.08] text-[#0A0A0A] text-[14px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors flex items-center gap-2">
                 <Download className="size-4" />
                 Download
               </button>
-              <button className="px-4 py-2.5 border border-black/[0.08] text-[#0A0A0A] text-[14px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors flex items-center gap-2">
+              <button onClick={() => toast.success("Information request sent to applicant")} className="px-4 py-2.5 border border-black/[0.08] text-[#0A0A0A] text-[14px] font-medium rounded-lg hover:bg-[#F5F5F5] transition-colors flex items-center gap-2">
                 <Send className="size-4" />
                 Request Info
               </button>

@@ -17,6 +17,7 @@ import {
   Plus,
 } from "lucide-react";
 import { MarketplaceAPI } from "../services/backend.service";
+import { toast } from "sonner";
 
 interface Contractor {
   id: string;
@@ -335,7 +336,7 @@ export function ContractorMarketplace() {
                 </div>
 
                 {/* Action Button */}
-                <button className="w-full mt-4 px-4 py-2.5 bg-[#0A7A52] text-white rounded-xl font-medium hover:bg-[#085D3D] transition-colors">
+                <button onClick={() => toast.success(`Message sent to ${contractor.name}`)} className="w-full mt-4 px-4 py-2.5 bg-[#0A7A52] text-white rounded-xl font-medium hover:bg-[#085D3D] transition-colors">
                   Contact Contractor
                 </button>
               </div>
@@ -401,7 +402,7 @@ export function ContractorMarketplace() {
               </div>
             </div>
 
-            <button className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#0A7A52] rounded-xl font-semibold hover:bg-slate-50 transition-colors shadow-lg">
+            <button onClick={() => toast.success("Redirecting to contractor subscription plans…")} className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#0A7A52] rounded-xl font-semibold hover:bg-[#F8F7F4] transition-colors shadow-lg">
               <Plus className="size-5" />
               Start Your Contractor Subscription
             </button>

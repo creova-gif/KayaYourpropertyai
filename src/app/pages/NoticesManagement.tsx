@@ -15,6 +15,7 @@ import {
   Download,
   Filter,
 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Notice {
   id: number;
@@ -133,13 +134,13 @@ export function NoticesManagement() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "sent":
-        return "bg-green-100 text-green-700";
+        return "bg-[#E5F4EE] text-[#0A7A52]";
       case "scheduled":
-        return "bg-blue-100 text-blue-700";
+        return "bg-[#E5F4EE] text-[#0A7A52]";
       case "draft":
-        return "bg-slate-100 text-slate-700";
+        return "bg-[#F8F7F4] text-[#767570]";
       default:
-        return "bg-slate-100 text-slate-700";
+        return "bg-[#F8F7F4] text-[#767570]";
     }
   };
 
@@ -148,16 +149,16 @@ export function NoticesManagement() {
       case "high":
         return "bg-red-100 text-red-700";
       case "medium":
-        return "bg-amber-100 text-amber-700";
+        return "bg-[#FFF8EC] text-[#B45309]";
       case "low":
-        return "bg-green-100 text-green-700";
+        return "bg-[#E5F4EE] text-[#0A7A52]";
       default:
-        return "bg-slate-100 text-slate-700";
+        return "bg-[#F8F7F4] text-[#767570]";
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#F8F7F4]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         {/* Header */}
         <div className="mb-8">
@@ -173,43 +174,43 @@ export function NoticesManagement() {
               <div className="p-2.5 rounded-xl bg-[#0A7A52]/5">
                 <FileText className="size-5 text-[#0A7A52]" />
               </div>
-              <span className="text-sm font-medium text-slate-600">Total Notices</span>
+              <span className="text-sm font-medium text-[#767570]">Total Notices</span>
             </div>
-            <p className="text-3xl font-serif font-semibold text-slate-900">{notices.length}</p>
+            <p className="text-3xl font-serif font-semibold text-[#0E0F0C]">{notices.length}</p>
           </div>
 
           <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-6 hover:border-[#0A7A52]/20 transition-all">
             <div className="flex items-center gap-3 mb-3">
-              <div className="p-2.5 rounded-xl bg-emerald-50">
-                <Check className="size-5 text-emerald-600" />
+              <div className="p-2.5 rounded-xl bg-[#E5F4EE]">
+                <Check className="size-5 text-[#0A7A52]" />
               </div>
-              <span className="text-sm font-medium text-slate-600">Sent</span>
+              <span className="text-sm font-medium text-[#767570]">Sent</span>
             </div>
-            <p className="text-3xl font-serif font-semibold text-slate-900">
+            <p className="text-3xl font-serif font-semibold text-[#0E0F0C]">
               {notices.filter((n) => n.status === "sent").length}
             </p>
           </div>
 
           <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-6 hover:border-[#0A7A52]/20 transition-all">
             <div className="flex items-center gap-3 mb-3">
-              <div className="p-2.5 rounded-xl bg-amber-50">
-                <Clock className="size-5 text-amber-600" />
+              <div className="p-2.5 rounded-xl bg-[#FFF8EC]">
+                <Clock className="size-5 text-[#B45309]" />
               </div>
-              <span className="text-sm font-medium text-slate-600">Scheduled</span>
+              <span className="text-sm font-medium text-[#767570]">Scheduled</span>
             </div>
-            <p className="text-3xl font-serif font-semibold text-slate-900">
+            <p className="text-3xl font-serif font-semibold text-[#0E0F0C]">
               {notices.filter((n) => n.status === "scheduled").length}
             </p>
           </div>
 
           <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-6 hover:border-[#0A7A52]/20 transition-all">
             <div className="flex items-center gap-3 mb-3">
-              <div className="p-2.5 rounded-xl bg-slate-100">
-                <FileText className="size-5 text-slate-600" />
+              <div className="p-2.5 rounded-xl bg-[#F8F7F4] border border-[rgba(0,0,0,0.06)]">
+                <FileText className="size-5 text-[#767570]" />
               </div>
-              <span className="text-sm font-medium text-slate-600">Drafts</span>
+              <span className="text-sm font-medium text-[#767570]">Drafts</span>
             </div>
-            <p className="text-3xl font-serif font-semibold text-slate-900">
+            <p className="text-3xl font-serif font-semibold text-[#0E0F0C]">
               {notices.filter((n) => n.status === "draft").length}
             </p>
           </div>
@@ -222,7 +223,7 @@ export function NoticesManagement() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2.5 border border-[#0A7A52]/20 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#0A7A52] focus:border-[#0A7A52] hover:border-[#0A7A52]/40 transition-all text-sm font-medium text-slate-700"
+              className="px-4 py-2.5 border border-[#0A7A52]/20 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#0A7A52] focus:border-[#0A7A52] hover:border-[#0A7A52]/40 transition-all text-sm font-medium text-[#767570]"
             >
               <option value="all">All Status</option>
               <option value="sent">Sent</option>
@@ -233,7 +234,7 @@ export function NoticesManagement() {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-4 py-2.5 border border-[#0A7A52]/20 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#0A7A52] focus:border-[#0A7A52] hover:border-[#0A7A52]/40 transition-all text-sm font-medium text-slate-700"
+              className="px-4 py-2.5 border border-[#0A7A52]/20 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#0A7A52] focus:border-[#0A7A52] hover:border-[#0A7A52]/40 transition-all text-sm font-medium text-[#767570]"
             >
               <option value="all">All Types</option>
               <option value="rent_increase">Rent Increase</option>
@@ -247,28 +248,28 @@ export function NoticesManagement() {
         </div>
 
         {/* Notices List */}
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-          <div className="divide-y divide-slate-200">
+        <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] overflow-hidden">
+          <div className="divide-y divide-[rgba(0,0,0,0.06)]">
             {filteredNotices.map((notice) => {
               const Icon = getNoticeIcon(notice.type);
               return (
-                <div key={notice.id} className="p-6 hover:bg-slate-50 transition-colors">
+                <div key={notice.id} className="p-6 hover:bg-[#F8F7F4] transition-colors">
                   <div className="flex items-start gap-4">
                     <div className={`p-3 rounded-lg ${
                       notice.priority === "high" ? "bg-red-50" :
-                      notice.priority === "medium" ? "bg-amber-50" : "bg-blue-50"
+                      notice.priority === "medium" ? "bg-[#FFF8EC]" : "bg-[#E5F4EE]"
                     }`}>
                       <Icon className={`size-6 ${
                         notice.priority === "high" ? "text-red-600" :
-                        notice.priority === "medium" ? "text-amber-600" : "text-blue-600"
+                        notice.priority === "medium" ? "text-[#B45309]" : "text-[#0A7A52]"
                       }`} />
                     </div>
 
                     <div className="flex-1">
                       <div className="flex items-start justify-between mb-2">
                         <div>
-                          <h3 className="text-lg font-semibold text-slate-900 mb-1">{notice.title}</h3>
-                          <p className="text-slate-600 text-sm mb-3">{notice.description}</p>
+                          <h3 className="text-lg font-semibold text-[#0E0F0C] mb-1">{notice.title}</h3>
+                          <p className="text-[#767570] text-sm mb-3">{notice.description}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(notice.status)}`}>
@@ -280,7 +281,7 @@ export function NoticesManagement() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-6 text-sm text-slate-600 mb-4">
+                      <div className="flex items-center gap-6 text-sm text-[#767570] mb-4">
                         <div className="flex items-center gap-2">
                           <Building2 className="size-4" />
                           <span>{notice.property}</span>
@@ -305,17 +306,17 @@ export function NoticesManagement() {
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <button className="flex items-center gap-2 px-3 py-1.5 text-sm bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg font-medium transition-colors">
+                        <button onClick={() => toast.info("Opening notice preview")} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 12px", fontSize: 13, fontWeight: 600, background: "#E5F4EE", color: "#0A7A52", border: "none", borderRadius: 8, cursor: "pointer", fontFamily: "inherit" }}>
                           <Eye className="size-4" />
                           View
                         </button>
                         {notice.status === "draft" && (
-                          <button className="flex items-center gap-2 px-3 py-1.5 text-sm bg-green-50 hover:bg-green-100 text-green-700 rounded-lg font-medium transition-colors">
+                          <button onClick={() => toast.success("Notice sent to all recipients")} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 12px", fontSize: 13, fontWeight: 600, background: "#E5F4EE", color: "#0A7A52", border: "none", borderRadius: 8, cursor: "pointer", fontFamily: "inherit" }}>
                             <Send className="size-4" />
                             Send Now
                           </button>
                         )}
-                        <button className="flex items-center gap-2 px-3 py-1.5 text-sm border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg font-medium transition-colors">
+                        <button onClick={() => toast.success("Notice downloaded as PDF")} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 12px", fontSize: 13, fontWeight: 600, background: "transparent", color: "#767570", border: "1px solid rgba(0,0,0,0.12)", borderRadius: 8, cursor: "pointer", fontFamily: "inherit" }}>
                           <Download className="size-4" />
                           Download PDF
                         </button>
@@ -330,22 +331,23 @@ export function NoticesManagement() {
 
         {/* Notice Templates */}
         <div className="mt-8">
-          <h2 className="text-xl font-semibold text-slate-900 mb-4">LTB-Compliant Templates</h2>
+          <h2 className="text-xl font-semibold text-[#0E0F0C] mb-4">LTB-Compliant Templates</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {noticeTemplates.map((template, idx) => {
               const Icon = template.icon;
               return (
                 <button
                   key={idx}
-                  className="p-4 bg-white rounded-xl border border-slate-200 hover:border-indigo-300 hover:shadow-lg transition-all text-left group"
+                  onClick={() => toast.success(`Opening ${template.name} template`)}
+                  className="p-4 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] hover:border-[#0A7A52] hover:shadow-lg transition-all text-left group"
                 >
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 rounded-lg bg-indigo-50 group-hover:bg-indigo-100 transition-colors">
-                      <Icon className="size-5 text-indigo-600" />
+                    <div className="p-2 rounded-lg bg-[#E5F4EE] group-hover:bg-[#D1EDE0] transition-colors">
+                      <Icon className="size-5 text-[#0A7A52]" />
                     </div>
-                    <h4 className="font-semibold text-slate-900">{template.name}</h4>
+                    <h4 className="font-semibold text-[#0E0F0C]">{template.name}</h4>
                   </div>
-                  <p className="text-sm text-slate-600">Use pre-approved template</p>
+                  <p className="text-sm text-[#767570]">Use pre-approved template</p>
                 </button>
               );
             })}
