@@ -1,199 +1,183 @@
-import { FileText, Download, Eye, Calendar, Shield, Receipt, Clipboard, Pin, Folder } from "lucide-react";
+import { FileText, Download, Eye, Calendar, Shield, Receipt, Clipboard, Pin, Folder, Sparkles } from "lucide-react";
+import { motion } from "motion/react";
+
+const G = "#0A7A52";
+const GL = "#E5F4EE";
+const TX = "#0E0F0C";
+const MU = "#767570";
+const SANS = "'DM Sans', system-ui, sans-serif";
+const SERIF = "'Instrument Serif', Georgia, serif";
+
+type LIcon = React.ComponentType<{ size?: number; color?: string; strokeWidth?: number; className?: string }>;
+
+const getDocStyle = (type: string): { color: string; bg: string; icon: LIcon } => {
+  switch (type) {
+    case "lease": return { color: G, bg: GL, icon: FileText };
+    case "receipt": return { color: "#0A7A52", bg: "#E5F4EE", icon: Receipt };
+    case "inspection": return { color: "#1D4ED8", bg: "#EFF6FF", icon: Clipboard };
+    case "info": return { color: "#B45309", bg: "#FEF3C7", icon: Pin };
+    default: return { color: MU, bg: "#F8F7F4", icon: Folder };
+  }
+};
 
 export function TenantDocuments() {
   const documents = [
-    {
-      id: 1,
-      name: "Lease Agreement",
-      type: "lease",
-      date: "Jan 1, 2025",
-      size: "245 KB",
-      status: "signed",
-      description: "Standard Ontario lease for Unit 4A"
-    },
-    {
-      id: 2,
-      name: "March 2026 Receipt",
-      type: "receipt",
-      date: "Mar 1, 2026",
-      size: "92 KB",
-      status: "available",
-      description: "Payment receipt for March rent"
-    },
-    {
-      id: 3,
-      name: "February 2026 Receipt",
-      type: "receipt",
-      date: "Feb 1, 2026",
-      size: "92 KB",
-      status: "available",
-      description: "Payment receipt for February rent"
-    },
-    {
-      id: 4,
-      name: "Move-In Inspection Report",
-      type: "inspection",
-      date: "Jan 1, 2025",
-      size: "1.8 MB",
-      status: "signed",
-      description: "Property condition at move-in"
-    },
-    {
-      id: 5,
-      name: "Welcome Package",
-      type: "info",
-      date: "Jan 1, 2025",
-      size: "420 KB",
-      status: "available",
-      description: "Building rules and landlord contact info"
-    },
+    { id: 1, name: "Lease Agreement", type: "lease", date: "Jan 1, 2026", size: "245 KB", status: "signed", description: "Standard Ontario lease for Unit 4A" },
+    { id: 2, name: "June 2026 Receipt", type: "receipt", date: "Jun 1, 2026", size: "92 KB", status: "available", description: "Payment receipt for June rent" },
+    { id: 3, name: "May 2026 Receipt", type: "receipt", date: "May 1, 2026", size: "92 KB", status: "available", description: "Payment receipt for May rent" },
+    { id: 4, name: "Move-In Inspection Report", type: "inspection", date: "Jan 1, 2026", size: "1.8 MB", status: "signed", description: "Property condition at move-in" },
+    { id: 5, name: "Welcome Package", type: "info", date: "Jan 1, 2026", size: "420 KB", status: "available", description: "Building rules and landlord contact info" },
   ];
 
-  const getDocIcon = (type: string) => {
-    switch (type) {
-      case "lease": return { color: "indigo", icon: FileText };
-      case "receipt": return { color: "green", icon: Receipt };
-      case "inspection": return { color: "blue", icon: Clipboard };
-      case "info": return { color: "purple", icon: Pin };
-      default: return { color: "slate", icon: Folder };
-    }
-  };
+  const signedCount = documents.filter(d => d.status === "signed").length;
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Documents</h1>
-          <p className="mt-2 text-slate-600">Access your lease, receipts, and important documents</p>
+    <div style={{ fontFamily: SANS }}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+
+        {/* Header */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 4 }}>Documents</p>
+          <h1 style={{ fontFamily: SERIF, fontSize: 36, fontWeight: 400, color: TX, letterSpacing: "-1px", lineHeight: 1 }}>Your Documents</h1>
+        </motion.div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          {[
+            { label: "Total Documents", value: String(documents.length), icon: FileText },
+            { label: "Signed", value: String(signedCount), icon: Shield },
+            { label: "Latest Update", value: "Jun 1", icon: Calendar },
+          ].map(s => {
+            const Icon = s.icon;
+            return (
+              <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                style={{ background: "#fff", borderRadius: 14, padding: "18px 20px", border: "1px solid rgba(0,0,0,0.07)" }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                  <div style={{ width: 30, height: 30, borderRadius: 8, background: GL, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Icon size={14} color={G} strokeWidth={2.5} />
+                  </div>
+                  <span style={{ fontSize: 11, color: MU, fontWeight: 500 }}>{s.label}</span>
+                </div>
+                <p style={{ fontFamily: SERIF, fontSize: 28, fontWeight: 400, color: TX, margin: 0 }}>{s.value}</p>
+              </motion.div>
+            );
+          })}
         </div>
 
-        {/* Summary */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 rounded-lg bg-indigo-50">
-                <FileText className="size-5 text-indigo-600" />
-              </div>
-              <span className="text-sm text-slate-600">Total Documents</span>
-            </div>
-            <p className="text-3xl font-bold text-slate-900">{documents.length}</p>
-          </div>
-
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 rounded-lg bg-green-50">
-                <Shield className="size-5 text-green-600" />
-              </div>
-              <span className="text-sm text-slate-600">Signed Documents</span>
-            </div>
-            <p className="text-3xl font-bold text-slate-900">
-              {documents.filter(d => d.status === "signed").length}
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 rounded-lg bg-purple-50">
-                <Calendar className="size-5 text-purple-600" />
-              </div>
-              <span className="text-sm text-slate-600">Latest Update</span>
-            </div>
-            <p className="text-lg font-bold text-slate-900">Mar 1</p>
-            <p className="text-xs text-slate-500">2026</p>
-          </div>
-        </div>
-
-        {/* Active Lease */}
-        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-6 text-white mb-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-lg bg-white/20 backdrop-blur-sm">
-              <FileText className="size-6" />
+        {/* Active Lease hero */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="rounded-2xl p-7 sm:p-8 mb-7"
+          style={{ background: `linear-gradient(135deg, ${G} 0%, #065E3C 100%)`, boxShadow: `0 16px 48px ${G}35` }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+            <div style={{ width: 46, height: 46, borderRadius: 12, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <FileText size={22} color="#fff" strokeWidth={2.5} />
             </div>
             <div>
-              <h2 className="text-xl font-semibold">Current Lease Agreement</h2>
-              <p className="text-white/80 text-sm">Unit 4A - 123 King Street, Toronto</p>
+              <h2 style={{ fontSize: 18, fontWeight: 600, color: "#fff", margin: 0 }}>Current Lease Agreement</h2>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", margin: "3px 0 0" }}>Unit 4A · 123 King Street, Toronto</p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div>
-              <p className="text-white/70 text-sm mb-1">Lease Period</p>
-              <p className="font-semibold">Jan 1, 2025 - Dec 31, 2025</p>
-            </div>
-            <div>
-              <p className="text-white/70 text-sm mb-1">Monthly Rent</p>
-              <p className="font-semibold">$2,300</p>
-            </div>
+            {[
+              ["Lease Period", "May 1, 2026 – May 1, 2027"],
+              ["Monthly Rent", "$2,300"],
+              ["Deposit Held", "$2,300"],
+              ["Renewal Date", "Feb 1, 2027"],
+            ].map(([label, val]) => (
+              <div key={label}>
+                <p style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>{label}</p>
+                <p style={{ fontSize: 14, fontWeight: 600, color: "#fff", margin: 0 }}>{val}</p>
+              </div>
+            ))}
           </div>
-          <div className="flex gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 bg-white text-indigo-600 rounded-lg font-medium hover:bg-white/90 transition-colors">
-              <Eye className="size-4" />
-              View Lease
+          <div style={{ display: "flex", gap: 10 }}>
+            <button style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 18px", background: "#fff", color: G, borderRadius: 10, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}>
+              <Eye size={14} strokeWidth={2.5} /> View Lease
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg font-medium transition-colors">
-              <Download className="size-4" />
-              Download PDF
+            <button style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 18px", background: "rgba(255,255,255,0.12)", color: "#fff", borderRadius: 10, border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>
+              <Download size={14} strokeWidth={2.5} /> Download PDF
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* All Documents */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6">
-          <h2 className="text-lg font-semibold text-slate-900 mb-6">All Documents</h2>
-          <div className="space-y-3">
-            {documents.map((doc) => {
-              const docStyle = getDocIcon(doc.type);
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", marginBottom: 24, border: "1px solid rgba(0,0,0,0.07)" }}
+        >
+          <h2 style={{ fontFamily: SERIF, fontSize: 20, fontWeight: 400, color: TX, marginBottom: 16 }}>All Documents</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+            {documents.map((doc, idx) => {
+              const ds = getDocStyle(doc.type);
+              const DocIcon = ds.icon;
               return (
-                <div key={doc.id} className="flex items-center justify-between p-4 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">{(()=>{const DI=docStyle.icon;return<DI className="size-5 text-slate-500"/>;})()}</div>
+                <div
+                  key={doc.id}
+                  style={{
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    padding: "14px 0",
+                    borderBottom: idx < documents.length - 1 ? "1px solid rgba(0,0,0,0.05)" : "none",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                    <div style={{ width: 42, height: 42, borderRadius: 10, background: ds.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <DocIcon size={18} color={ds.color} strokeWidth={2.5} />
+                    </div>
                     <div>
-                      <h3 className="font-semibold text-slate-900">{doc.name}</h3>
-                      <p className="text-sm text-slate-500 mt-1">{doc.description}</p>
-                      <div className="flex items-center gap-3 mt-2 text-xs text-slate-400">
-                        <span>{doc.date}</span>
-                        <span>•</span>
-                        <span>{doc.size}</span>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: TX, margin: 0 }}>{doc.name}</p>
+                      <p style={{ fontSize: 12, color: MU, margin: "2px 0 0" }}>{doc.description}</p>
+                      <div style={{ display: "flex", gap: 8, marginTop: 3 }}>
+                        <span style={{ fontSize: 11, color: MU }}>{doc.date}</span>
+                        <span style={{ fontSize: 11, color: "rgba(0,0,0,0.2)" }}>•</span>
+                        <span style={{ fontSize: 11, color: MU }}>{doc.size}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     {doc.status === "signed" && (
-                      <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                        Signed
-                      </span>
+                      <span style={{ fontSize: 9, fontWeight: 700, color: G, background: GL, padding: "3px 10px", borderRadius: 99 }}>SIGNED</span>
                     )}
-                    <div className="flex gap-2">
-                      <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                        <Eye className="size-4 text-slate-600" />
-                      </button>
-                      <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                        <Download className="size-4 text-slate-600" />
-                      </button>
-                    </div>
+                    <button style={{ width: 32, height: 32, borderRadius: 8, background: "#F8F7F4", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <Eye size={14} color={MU} strokeWidth={2.5} />
+                    </button>
+                    <button style={{ width: 32, height: 32, borderRadius: 8, background: "#F8F7F4", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <Download size={14} color={MU} strokeWidth={2.5} />
+                    </button>
                   </div>
                 </div>
               );
             })}
           </div>
-        </div>
+        </motion.div>
 
-        {/* AI Document Help */}
-        <div className="mt-6 p-6 rounded-xl bg-blue-50 border border-blue-200">
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-blue-100">
-              <Shield className="size-5 text-blue-600" />
+        {/* AI help */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          style={{ background: GL, borderRadius: 14, padding: "18px 22px", border: `1px solid ${G}20`, cursor: "pointer" }}
+          onClick={() => window.dispatchEvent(new CustomEvent("openAIWithQuery", { detail: { query: "Explain my lease agreement" } }))}
+        >
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+            <div style={{ width: 34, height: 34, borderRadius: 9, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 6px rgba(0,0,0,0.06)" }}>
+              <Sparkles size={16} color={G} strokeWidth={2.5} />
             </div>
             <div>
-              <h3 className="font-semibold text-blue-900 mb-2">Need Help Understanding Your Lease?</h3>
-              <p className="text-sm text-blue-800 mb-3">
-                Our AI assistant can explain any clause or term in simple language. Just ask!
+              <p style={{ fontSize: 13, fontWeight: 700, color: TX, margin: "0 0 4px" }}>Need help understanding your lease?</p>
+              <p style={{ fontSize: 13, color: "#3D6B55", margin: 0, lineHeight: 1.5 }}>
+                Kaya AI can explain any clause in plain language — tap to ask.
               </p>
-              <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
-                Ask AI Assistant
-              </button>
             </div>
           </div>
-        </div>
+        </motion.div>
+
       </div>
     </div>
   );

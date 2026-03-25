@@ -24,6 +24,12 @@ import { NoticesManagement } from "./pages/NoticesManagement";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { LayoutPremium } from "./components/LayoutPremium";
 import { TenantPortalPremium } from "./pages/TenantPortalPremium";
+import { TenantLayout } from "./pages/tenant-portal/TenantLayout";
+import { TenantPayments } from "./pages/tenant-portal/TenantPayments";
+import { TenantDocuments } from "./pages/tenant-portal/TenantDocuments";
+import { TenantMaintenance } from "./pages/tenant-portal/TenantMaintenance";
+import { TenantApplications } from "./pages/tenant-portal/TenantApplications";
+import { TenantLeaseSigning } from "./pages/tenant-portal/TenantLeaseSigning";
 import { PropertyListingsRedesign } from "./pages/PropertyListingsRedesign";
 import { LandingPage } from "./pages/LandingPage";
 import { LTBForms } from "./pages/LTBForms";
@@ -213,10 +219,18 @@ export const router = createBrowserRouter([
       { path: "inspection", Component: PropertyInspection },
     ],
   },
-  // Premium Tenant Portal (Protected)
+  // Premium Tenant Portal (Protected) — nested under TenantLayout
   {
     path: "/tenant",
-    element: <ProtectedRoute><TenantPortalPremium /></ProtectedRoute>,
+    element: <ProtectedRoute><TenantLayout /></ProtectedRoute>,
+    children: [
+      { index: true, Component: TenantPortalPremium },
+      { path: "payments", Component: TenantPayments },
+      { path: "documents", Component: TenantDocuments },
+      { path: "maintenance", Component: TenantMaintenance },
+      { path: "applications", Component: TenantApplications },
+      { path: "lease-signing", Component: TenantLeaseSigning },
+    ],
   },
   // AI Features Demo
   {
