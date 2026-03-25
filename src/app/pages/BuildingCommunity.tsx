@@ -57,9 +57,9 @@ export function BuildingCommunity(){
       <div style={{maxWidth:720,margin:"0 auto",padding:"110px 36px 80px"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:28}}>
           <div>
-            <p style={{fontSize:9,fontWeight:700,color:MU,textTransform:"uppercase",letterSpacing:".7px",marginBottom:8}}>123 King Street West</p>
+            <p style={{fontSize:9,fontWeight:700,color:MU,textTransform:"uppercase",letterSpacing:".7px",marginBottom:8}}>Kaya Community · Per-Building Boards</p>
             <h1 style={{fontFamily:SERIF,fontSize:42,color:TX,lineHeight:1,letterSpacing:"-1px"}}>
-              Building <em style={{fontStyle:"italic",color:G}}>Community</em>
+              Tenant <em style={{fontStyle:"italic",color:G}}>Community</em>
             </h1>
           </div>
           <button onClick={()=>setCompose(!compose)} style={{padding:"10px 18px",background:TX,color:"#fff",border:"none",borderRadius:10,fontFamily:SANS,fontSize:12,fontWeight:600,cursor:"pointer"}}>

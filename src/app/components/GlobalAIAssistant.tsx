@@ -154,7 +154,8 @@ export function GlobalAIAssistant({ pageContext, userContext, userId }: GlobalAI
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-40 size-14 rounded-full bg-gradient-to-br from-[#0A7A52] to-[#085D3D] shadow-2xl flex items-center justify-center text-white hover:shadow-[#0A7A52]/50 transition-all duration-300"
+            className="fixed z-40 size-14 rounded-full bg-gradient-to-br from-[#0A7A52] to-[#085D3D] shadow-2xl flex items-center justify-center text-white hover:shadow-[#0A7A52]/50 transition-all duration-300"
+            style={{ bottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))', right: '1.5rem' }}
             aria-label="Open AI Assistant"
           >
             <Sparkles className="size-6" strokeWidth={2.5} />
@@ -174,10 +175,10 @@ export function GlobalAIAssistant({ pageContext, userContext, userId }: GlobalAI
             transition={{ duration: 0.2 }}
             className={`fixed z-50 bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-[rgba(0,0,0,0.08)] ${
               isMinimized 
-                ? 'bottom-6 right-6 w-80 h-16' 
-                : 'bottom-6 right-6 w-96 h-[600px]'
+                ? 'w-80 h-16' 
+                : 'w-96 h-[600px]'
             }`}
-            style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+            style={{ bottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))', right: '1.5rem', fontFamily: "'DM Sans', system-ui, sans-serif" }}
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(0,0,0,0.08)] bg-gradient-to-r from-[#0A7A52] to-[#085D3D]">

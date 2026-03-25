@@ -234,7 +234,9 @@ export function PricingPage() {
                   className={`block w-full text-center py-3 px-6 rounded-xl font-semibold text-[14px] transition-all duration-300 mb-8 ${
                     plan.popular
                       ? "bg-gradient-to-r from-[#0A7A52] to-[#085D3D] text-white hover:shadow-lg hover:shadow-[#0A7A52]/30"
-                      : "bg-[#F8F7F4] text-[#0A7A52] hover:bg-[#0A7A52] hover:text-white"
+                      : plan.name === "Scale"
+                        ? "bg-[#0E0F0C] text-white hover:bg-[#1A1B17] hover:shadow-lg"
+                        : "bg-[#F8F7F4] text-[#0A7A52] hover:bg-[#0A7A52] hover:text-white"
                   }`}
                   style={{ fontFamily: "'DM Sans', sans-serif" }}
                 >

@@ -397,10 +397,10 @@ export function PublicSearch(){
         {mode==="residential"&&(
           <>
             {/* Neighbourhood quick-filter pills */}
-            <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>
+            <div style={{display:"flex",gap:6,overflowX:"auto",marginBottom:16,paddingBottom:4,WebkitOverflowScrolling:"touch",scrollbarWidth:"none",msOverflowStyle:"none"}}>
               {["Downtown Core","Annex","Liberty Village","Scarborough","Midtown","North York","Etobicoke"].map(n=>(
                 <button key={n} onClick={()=>setSearch(search===n?"":n)}
-                  style={{padding:"5px 13px",borderRadius:20,border:`1px solid ${search===n?G:BD}`,background:search===n?G:"#fff",color:search===n?"#fff":MU,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:SANS,transition:"all .15s"}}>
+                  style={{padding:"5px 13px",borderRadius:20,border:`1px solid ${search===n?G:BD}`,background:search===n?G:"#fff",color:search===n?"#fff":MU,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:SANS,transition:"all .15s",flexShrink:0,whiteSpace:"nowrap"}}>
                   {n}
                 </button>
               ))}

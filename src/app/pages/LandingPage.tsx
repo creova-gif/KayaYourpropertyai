@@ -3,7 +3,8 @@ import { motion } from "motion/react";
 import { useNavigate } from "react-router";
 import { 
   Sparkles, Shield, TrendingUp, Zap, Brain, Lock, 
-  CheckCircle, ArrowRight, ChevronRight, Building2, Users, FileText
+  CheckCircle, ArrowRight, ChevronRight, Building2, Users, FileText,
+  Search, UserCheck, CreditCard
 } from "lucide-react";
 import { PublicNav } from "../components/PublicNav";
 
@@ -70,7 +71,7 @@ export function LandingPage() {
       <section style={{
         minHeight: "100vh", display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
-        padding: "120px 48px 80px", textAlign: "center",
+        padding: "90px 48px 64px", textAlign: "center",
         position: "relative", overflow: "hidden",
         background: TEXT
       }}>
@@ -177,6 +178,98 @@ export function LandingPage() {
               {item}
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section style={{ background: "#F8F7F4", padding: "96px 48px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", maxWidth: 560, margin: "0 auto 64px" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", color: G, marginBottom: 16 }}>
+              <div style={{ width: 24, height: 1.5, background: G }} />
+              HOW IT WORKS
+            </div>
+            <h2 style={{
+              fontFamily: "'Instrument Serif', serif",
+              fontSize: "clamp(34px, 5vw, 52px)",
+              color: TEXT, letterSpacing: "-1px", lineHeight: 1.05, marginBottom: 12
+            }}>
+              Up and running in <em style={{ fontStyle: "italic", color: G }}>three steps</em>
+            </h2>
+            <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.65, fontWeight: 400 }}>
+              No long onboarding. No training required. Most landlords are collecting rent within the first day.
+            </p>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24, position: "relative" }}>
+            {[
+              {
+                step: "01",
+                Icon: Search,
+                title: "Add your property",
+                body: "Import your units and existing tenants in minutes. Kaya syncs with common spreadsheets and syncs all lease data automatically.",
+                highlight: "Takes under 10 minutes"
+              },
+              {
+                step: "02",
+                Icon: UserCheck,
+                title: "Screen & onboard tenants",
+                body: "Post listings, collect applications, and run AI-powered credit + background checks — all from one dashboard.",
+                highlight: "92% screening accuracy"
+              },
+              {
+                step: "03",
+                Icon: CreditCard,
+                title: "Automate rent & compliance",
+                body: "Set up Interac or Stripe auto-pay, generate LTB-compliant forms, and let Kaya handle reminders and receipts.",
+                highlight: "15+ hrs saved per week"
+              }
+            ].map(({ step, Icon, title, body, highlight }, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.12 }}
+                style={{
+                  background: "#fff",
+                  border: "1px solid rgba(0,0,0,0.07)",
+                  borderRadius: 20, padding: "32px 28px",
+                  position: "relative", overflow: "hidden"
+                }}
+              >
+                <div style={{
+                  position: "absolute", top: 20, right: 24,
+                  fontFamily: "'Instrument Serif', serif",
+                  fontSize: 72, lineHeight: 1, color: "rgba(0,0,0,0.04)",
+                  fontWeight: 400, pointerEvents: "none", userSelect: "none"
+                }}>
+                  {step}
+                </div>
+                <div style={{
+                  width: 48, height: 48, background: GL, borderRadius: 14,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  marginBottom: 20, color: G
+                }}>
+                  <Icon size={22} />
+                </div>
+                <h3 style={{ fontSize: 17, fontWeight: 600, marginBottom: 10, color: TEXT, lineHeight: 1.3 }}>
+                  {title}
+                </h3>
+                <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.65, marginBottom: 18 }}>
+                  {body}
+                </p>
+                <div style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  fontSize: 12, fontWeight: 600, color: G,
+                  background: GL, borderRadius: 40, padding: "4px 12px"
+                }}>
+                  <CheckCircle size={12} />
+                  {highlight}
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 

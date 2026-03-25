@@ -193,6 +193,12 @@ export function LayoutPremium() {
             <p style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", margin: 0, lineHeight: 1.5 }}>
               Ask about rent, LTB forms, tenants…
             </p>
+            <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 6 }}>
+              <kbd style={{ fontSize: 9, color: "rgba(255,255,255,0.22)", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4, padding: "1px 5px", fontFamily: "monospace", letterSpacing: "0.3px" }}>⌘K</kbd>
+              <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)" }}>/</span>
+              <kbd style={{ fontSize: 9, color: "rgba(255,255,255,0.22)", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4, padding: "1px 5px", fontFamily: "monospace", letterSpacing: "0.3px" }}>Ctrl+K</kbd>
+              <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", marginLeft: 2 }}>to open anywhere</span>
+            </div>
           </button>
         </div>
 

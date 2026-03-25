@@ -1,22 +1,31 @@
 import { motion, AnimatePresence } from "motion/react";
 import { Sparkles, X, ChevronRight, Lightbulb } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface AIContextualHelperProps {
   context: string;
   suggestions: string[];
   onSuggestionClick?: (suggestion: string) => void;
   position?: "top-right" | "bottom-right" | "bottom-left" | "top-left";
+  sessionKey?: string;
 }
 
 export function AIContextualHelper({ 
   context, 
   suggestions, 
   onSuggestionClick,
-  position = "top-right" 
+  position = "top-right",
+  sessionKey = "ai-helper-shown",
 }: AIContextualHelperProps) {
-  const [isVisible, setIsVisible] = useState(true);
-  const [isDismissed, setIsDismissed] = useState(false);
+  const alreadySeen = sessionStorage.getItem(sessionKey) === "1";
+  const [isVisible, setIsVisible] = useState(!alreadySeen);
+  const [isDismissed, setIsDismissed] = useState(alreadySeen);
+
+  useEffect(() => {
+    if (!alreadySeen) {
+      sessionStorage.setItem(sessionKey, "1");
+    }
+  }, []);
 
   const handleDismiss = () => {
     setIsVisible(false);
@@ -30,7 +39,6 @@ export function AIContextualHelper({
       const event = new CustomEvent('openAIWithQuery', { detail: { query: suggestion } });
       window.dispatchEvent(event);
     }
-    // Dismiss the panel after any suggestion click
     handleDismiss();
   };
 
@@ -55,7 +63,6 @@ export function AIContextualHelper({
           style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
         >
           <div className="bg-white rounded-2xl shadow-2xl border border-[rgba(0,0,0,0.08)] overflow-hidden">
-            {/* Header */}
             <div className="px-4 py-3 bg-gradient-to-r from-[#0A7A52] to-[#085D3D] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Sparkles className="size-4 text-white" strokeWidth={2.5} />
@@ -70,7 +77,6 @@ export function AIContextualHelper({
               </button>
             </div>
 
-            {/* Content */}
             <div className="p-4">
               <div className="flex items-start gap-2 mb-3">
                 <div className="size-8 rounded-lg bg-[#E5F4EE] flex items-center justify-center flex-shrink-0">
@@ -86,7 +92,6 @@ export function AIContextualHelper({
                 </div>
               </div>
 
-              {/* Suggestions */}
               <div className="space-y-2">
                 {suggestions.map((suggestion, idx) => (
                   <motion.button
@@ -103,7 +108,6 @@ export function AIContextualHelper({
                 ))}
               </div>
 
-              {/* Footer */}
               <div className="mt-3 pt-3 border-t border-[rgba(0,0,0,0.05)]">
                 <p className="text-xs text-[#767570] text-center">
                   Press <kbd className="px-1.5 py-0.5 bg-white rounded border border-[rgba(0,0,0,0.08)] font-mono">⌘K</kbd> or <kbd className="px-1.5 py-0.5 bg-white rounded border border-[rgba(0,0,0,0.08)] font-mono">Ctrl+K</kbd> to open AI command palette
