@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import { toast } from "sonner";
@@ -66,6 +66,21 @@ export function TenantMaintenance() {
   const [detail, setDetail] = useState<Ticket | null>(null);
 
   const [form, setForm] = useState({ category: "", title: "", desc: "", priority: "medium" as "low" | "medium" | "high", photos: 0, access: "Morning (8 AM – 12 PM)" });
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+
+  function handlePhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setPhotoPreviews(prev => {
+      const next = [...prev, url].slice(0, 3);
+      setForm(f => ({ ...f, photos: next.length }));
+      return next;
+    });
+    toast.success("Photo attached");
+    e.target.value = "";
+  }
 
   const [tickets, setTickets] = useState<Ticket[]>([
     { id: "KY-1042", title: "Bathroom faucet dripping", cat: "Plumbing", priority: "high", status: "progress", date: "Mar 12", landlordNote: "Plumber scheduled March 15, 2–4 PM. They will contact you." },
@@ -83,6 +98,7 @@ export function TenantMaintenance() {
 
   function resetNew() {
     setForm({ category: "", title: "", desc: "", priority: "medium", photos: 0, access: "Morning (8 AM – 12 PM)" });
+    setPhotoPreviews([]);
     setStep(0);
     setSubmitted(false);
     setActiveTab("new");
@@ -212,13 +228,15 @@ export function TenantMaintenance() {
                     </div>
                     <div style={{ marginBottom: 14 }}>
                       <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 8 }}>Add photos <span style={{ color: MU, fontWeight: 400, textTransform: "none" }}>(optional but helps)</span></p>
+                      <input ref={photoInputRef} type="file" accept="image/*" onChange={handlePhotoSelect} style={{ display: "none" }} />
                       <div style={{ display: "flex", gap: 8 }}>
                         {[0, 1, 2].map(i => (
-                          <div key={i} onClick={() => { if (form.photos <= i) { setForm(f => ({ ...f, photos: i + 1 })); toast.success(`Photo ${i + 1} added`); } }} style={{ width: 64, height: 64, borderRadius: 8, background: form.photos > i ? GL : "#F8F7F4", border: `1.5px ${form.photos > i ? "solid" : "dashed"} ${form.photos > i ? G : "rgba(0,0,0,0.12)"}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: form.photos > i ? 20 : 18, transition: "all 0.2s" }}>
-                            {form.photos > i ? "📷" : "+"}
+                          <div key={i} onClick={() => { if (i === photoPreviews.length && photoPreviews.length < 3) { photoInputRef.current?.click(); } }} style={{ width: 64, height: 64, borderRadius: 8, background: photoPreviews[i] ? GL : "#F8F7F4", border: `1.5px ${photoPreviews[i] ? "solid" : "dashed"} ${photoPreviews[i] ? G : "rgba(0,0,0,0.12)"}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: i === photoPreviews.length ? "pointer" : "default", overflow: "hidden", transition: "all 0.2s" }}>
+                            {photoPreviews[i] ? <img src={photoPreviews[i]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : i === photoPreviews.length ? <span style={{ fontSize: 22, color: MU }}>+</span> : null}
                           </div>
                         ))}
                       </div>
+                      {photoPreviews.length > 0 && <p style={{ fontSize: 10, color: G, marginTop: 5 }}>{photoPreviews.length} photo{photoPreviews.length > 1 ? "s" : ""} attached</p>}
                     </div>
                     <div style={{ marginBottom: 16 }}>
                       <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 5 }}>Preferred access time</p>

@@ -12,6 +12,7 @@ const SERIF = "'Instrument Serif', Georgia, serif";
 export function TenantLeaseRenewal() {
   const [response, setResponse] = useState<"accept" | "negotiate" | "vacate" | null>(null);
   const [note, setNote] = useState("");
+  const [counterRent, setCounterRent] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -164,6 +165,28 @@ export function TenantLeaseRenewal() {
 
           {(response === "negotiate" || response === "vacate") && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
+              {response === "negotiate" && (
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: TX, marginBottom: 6 }}>
+                    Your counter-offer rent <span style={{ fontWeight: 400, color: MU }}>(per month, optional)</span>
+                  </label>
+                  <div style={{ position: "relative", maxWidth: 220 }}>
+                    <span style={{ position: "absolute", left: 13, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: MU, fontWeight: 600 }}>$</span>
+                    <input
+                      type="number"
+                      value={counterRent}
+                      onChange={e => setCounterRent(e.target.value)}
+                      placeholder={String(lease.currentRent)}
+                      style={{ width: "100%", padding: "11px 13px 11px 26px", border: "1.5px solid rgba(0,0,0,0.08)", borderRadius: 10, fontFamily: SANS, fontSize: 14, color: TX, outline: "none", boxSizing: "border-box" }}
+                    />
+                  </div>
+                  {counterRent && Number(counterRent) > 0 && Number(counterRent) < lease.proposedRent && (
+                    <p style={{ fontSize: 11, color: G, marginTop: 5, fontWeight: 600 }}>
+                      ${(lease.proposedRent - Number(counterRent)).toFixed(0)}/mo less than proposed · {((lease.proposedRent - Number(counterRent)) / lease.proposedRent * 100).toFixed(1)}% reduction
+                    </p>
+                  )}
+                </div>
+              )}
               <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: TX, marginBottom: 8 }}>
                 {response === "negotiate" ? "What terms would you like to discuss?" : "Additional notes (optional)"}
               </label>

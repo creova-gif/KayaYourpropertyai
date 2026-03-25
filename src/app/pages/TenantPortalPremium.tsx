@@ -25,6 +25,12 @@ export function TenantPortalPremium() {
   const passportScore = 87;
   const streakMonths = 14;
 
+  const nextRentDate = new Date("2026-08-01");
+  const todayDate = new Date();
+  todayDate.setHours(0, 0, 0, 0);
+  const daysToRent = Math.max(0, Math.ceil((nextRentDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24)));
+  const rentDateLabel = nextRentDate.toLocaleDateString("en-CA", { month: "long", day: "numeric", year: "numeric" });
+
   const handlePaymentSubmit = (paymentData: PaymentData) => {
     console.log("Payment submitted:", paymentData);
     setTimeout(() => { setShowPaymentModal(false); }, 500);
@@ -53,7 +59,7 @@ export function TenantPortalPremium() {
             <div>
               <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 4 }}>Next Rent Payment</p>
               <h2 style={{ fontFamily: SERIF, fontSize: 48, fontWeight: 400, color: "#fff", lineHeight: 1, marginBottom: 4 }}>$2,300</h2>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>Due July 1, 2026 · <span style={{ color: "#7AE8B8", fontWeight: 600 }}>7 days away</span></p>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>Due {rentDateLabel} · <span style={{ color: "#7AE8B8", fontWeight: 600 }}>{daysToRent} days away</span></p>
             </div>
             <div style={{ textAlign: "right" }}>
               <p style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 3 }}>Passport Score</p>

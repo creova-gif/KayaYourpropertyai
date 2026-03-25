@@ -1,6 +1,7 @@
-import { CheckSquare, Square, Camera, Plus, Sparkles, CheckCircle2, Clock } from "lucide-react";
-import { useState } from "react";
+import { CheckSquare, Square, Camera, Plus, Sparkles, CheckCircle2, Clock, Download, Send } from "lucide-react";
+import { useState, useRef } from "react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 
 const G = "#0A7A52";
 const GL = "#E5F4EE";
@@ -31,6 +32,39 @@ export function TenantChecklist() {
   const [mode, setMode] = useState<"move-in" | "move-out">("move-in");
   const [items, setItems] = useState<Record<string, ItemStatus>>({});
   const [expandedSection, setExpandedSection] = useState<string | null>("kitchen");
+  const [photoTarget, setPhotoTarget] = useState<string | null>(null);
+  const [finalizeSubmitted, setFinalizeSubmitted] = useState(false);
+  const checklistPhotoRef = useRef<HTMLInputElement>(null);
+
+  function handleChecklistPhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files?.[0] && photoTarget) {
+      setItems(prev => ({ ...prev, [photoTarget]: { ...(prev[photoTarget] ?? { checked: true, condition: null, note: "" }), hasPhoto: true, checked: true } }));
+      toast.success("Photo attached to inspection item");
+      setPhotoTarget(null);
+    }
+    e.target.value = "";
+  }
+
+  function downloadReport() {
+    const lines: string[] = [`Kaya Housing — ${mode === "move-in" ? "Move-In" : "Move-Out"} Inspection Report`, `Date: ${new Date().toLocaleDateString("en-CA")}`, `Tenant: Sarah Kim · Unit 4A, 123 King St, Toronto`, `Progress: ${checkedCount}/${allItems.length} items inspected`, ""];
+    CHECKLIST_SECTIONS.forEach(s => {
+      lines.push(`=== ${s.title} ===`);
+      s.items.forEach(item => {
+        const key = `${s.id}-${item}`;
+        const st = items[key];
+        const cond = st?.condition ? ` [${st.condition.toUpperCase()}]` : " [NOT RATED]";
+        const photo = st?.hasPhoto ? " 📷" : "";
+        lines.push(`  [${st?.checked ? "✓" : " "}] ${item}${cond}${photo}`);
+      });
+      lines.push("");
+    });
+    const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `kaya-inspection-${mode}-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.click(); URL.revokeObjectURL(url);
+    toast.success("Inspection report downloaded");
+  }
 
   const allItems = CHECKLIST_SECTIONS.flatMap(s => s.items.map(i => `${s.id}-${i}`));
   const checkedCount = allItems.filter(k => items[k]?.checked).length;
@@ -46,6 +80,7 @@ export function TenantChecklist() {
 
   return (
     <div style={{ fontFamily: SANS }}>
+      <input ref={checklistPhotoRef} type="file" accept="image/*" onChange={handleChecklistPhoto} style={{ display: "none" }} />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 4 }}>Inspection</p>
@@ -133,7 +168,7 @@ export function TenantChecklist() {
                             {state?.checked ? <CheckSquare size={20} color={G} strokeWidth={2.5} /> : <Square size={20} color="rgba(0,0,0,0.2)" strokeWidth={2} />}
                           </button>
                           <span style={{ fontSize: 14, fontWeight: 500, color: state?.checked ? TX : MU, flex: 1, textAlign: "left" }}>{item}</span>
-                          <button onClick={() => setItems(prev => ({ ...prev, [key]: { ...(prev[key] ?? { checked: true, condition: null, note: "" }), hasPhoto: true, checked: true } }))} style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 8, border: `1px solid ${state?.hasPhoto ? G : "rgba(0,0,0,0.08)"}`, background: state?.hasPhoto ? GL : "#fff", color: state?.hasPhoto ? G : MU, fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>
+                          <button onClick={() => { setPhotoTarget(key); setTimeout(() => checklistPhotoRef.current?.click(), 0); }} style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 8, border: `1px solid ${state?.hasPhoto ? G : "rgba(0,0,0,0.08)"}`, background: state?.hasPhoto ? GL : "#fff", color: state?.hasPhoto ? G : MU, fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>
                             <Camera size={11} strokeWidth={2.5} /> {state?.hasPhoto ? "Added" : "Photo"}
                           </button>
                         </div>
@@ -170,6 +205,33 @@ export function TenantChecklist() {
             </div>
           </div>
         </motion.div>
+
+        {/* Finalize section */}
+        {finalizeSubmitted ? (
+          <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} style={{ marginTop: 20, background: "#fff", borderRadius: 16, padding: "28px 24px", border: `2px solid ${G}`, textAlign: "center" }}>
+            <div style={{ width: 56, height: 56, borderRadius: "50%", background: GL, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>
+              <CheckCircle2 size={28} color={G} strokeWidth={2} />
+            </div>
+            <p style={{ fontFamily: SERIF, fontSize: 22, color: TX, marginBottom: 6 }}>Inspection Submitted</p>
+            <p style={{ fontSize: 13, color: MU, marginBottom: 20, lineHeight: 1.6 }}>Your {mode === "move-in" ? "move-in" : "move-out"} inspection has been submitted to your landlord for co-signature. You'll be notified when they sign.</p>
+            <button onClick={() => setFinalizeSubmitted(false)} style={{ padding: "10px 22px", background: "#F8F7F4", color: TX, border: "1.5px solid rgba(0,0,0,0.07)", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>Back to Checklist</button>
+          </motion.div>
+        ) : (
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} style={{ marginTop: 20, background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1px solid rgba(0,0,0,0.07)" }}>
+            <h2 style={{ fontFamily: SERIF, fontSize: 20, fontWeight: 400, color: TX, marginBottom: 4 }}>Finalize Inspection</h2>
+            <p style={{ fontSize: 13, color: MU, marginBottom: 18, lineHeight: 1.6 }}>
+              {pct < 100 ? `${allItems.length - checkedCount} item${allItems.length - checkedCount !== 1 ? "s" : ""} still need inspection. You can still download or submit a partial report.` : "All items inspected! Ready to submit for landlord co-signature."}
+            </p>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <button onClick={downloadReport} style={{ display: "flex", alignItems: "center", gap: 7, padding: "11px 18px", background: "#F8F7F4", color: TX, border: "1.5px solid rgba(0,0,0,0.08)", borderRadius: 11, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>
+                <Download size={14} strokeWidth={2.5} /> Download Report
+              </button>
+              <button onClick={() => { toast.success("Inspection submitted for co-signature"); setFinalizeSubmitted(true); }} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "11px 18px", background: G, color: "#fff", border: "none", borderRadius: 11, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: SANS, boxShadow: `0 4px 14px ${G}30` }}>
+                <Send size={14} strokeWidth={2.5} /> Submit for Co-Sign {pct < 100 && <span style={{ fontSize: 10, opacity: 0.75, marginLeft: 4 }}>({pct}% done)</span>}
+              </button>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

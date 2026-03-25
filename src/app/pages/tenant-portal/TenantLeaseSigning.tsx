@@ -31,7 +31,7 @@ export function TenantLeaseSigning() {
     leaseEnd: "March 31, 2027",
     leaseTerm: "12 months",
     landlordName: "Premium Properties Inc.",
-    tenantName: "John Doe",
+    tenantName: "Sarah Kim",
     generatedDate: "March 14, 2026",
   };
 

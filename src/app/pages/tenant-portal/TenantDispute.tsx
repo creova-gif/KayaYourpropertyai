@@ -1,6 +1,7 @@
 import { Scale, FileText, ArrowRight, CheckCircle2, AlertCircle, ExternalLink, Sparkles, Clock, Shield } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 
 const G = "#0A7A52";
 const GL = "#E5F4EE";
@@ -121,7 +122,7 @@ export function TenantDispute() {
                       <button onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent("openAIWithQuery", { detail: { query: `Help me fill out LTB form ${form.code}: ${form.title}` } })); }} style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 18px", background: G, color: "#fff", borderRadius: 10, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: SANS, boxShadow: `0 4px 12px ${G}30` }}>
                         <Sparkles size={14} strokeWidth={2.5} /> AI Guided Fill
                       </button>
-                      <button onClick={(e) => e.stopPropagation()} style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 18px", background: "#fff", color: TX, borderRadius: 10, border: "1px solid rgba(0,0,0,0.08)", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>
+                      <button onClick={(e) => { e.stopPropagation(); window.open("https://tribunalsontario.ca/ltb/forms/", "_blank"); toast.info(`Search "${form.code}" on the LTB page to download the official PDF`); }} style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 18px", background: "#fff", color: TX, borderRadius: 10, border: "1px solid rgba(0,0,0,0.08)", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>
                         <FileText size={14} strokeWidth={2.5} /> Download Blank Form
                       </button>
                       <a href="https://tribunalsontario.ca/ltb/" target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ display: "flex", alignItems: "center", gap: 7, padding: "10px 18px", background: "#fff", color: "#1D4ED8", borderRadius: 10, border: "1px solid rgba(29,78,216,0.15)", fontSize: 13, fontWeight: 600, textDecoration: "none", fontFamily: SANS }}>

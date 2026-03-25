@@ -6,7 +6,7 @@ export function Maintenance() {
   const [viewMode, setViewMode] = useState<"kanban" | "list">("kanban");
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div style={{ minHeight: "100vh", background: "#F8F7F4" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         {/* Header */}
         <div className="mb-8">
@@ -89,12 +89,55 @@ export function Maintenance() {
           </div>
         </div>
 
-        {/* Kanban Board */}
+        {/* Kanban Board / List View */}
         {viewMode === "kanban" ? (
           <MaintenanceKanban />
         ) : (
-          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] p-6">
-            <p className="text-[#767570] text-center py-12 text-[14px]">List view coming soon...</p>
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.07)] overflow-hidden">
+            {/* List header */}
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: 0, padding: "10px 20px", borderBottom: "1px solid rgba(0,0,0,0.06)", background: "#F8F7F4" }}>
+              {["Issue", "Property", "Priority", "Status", "Reported"].map(h => (
+                <span key={h} style={{ fontSize: 10, fontWeight: 700, color: "#767570", textTransform: "uppercase", letterSpacing: "0.6px" }}>{h}</span>
+              ))}
+            </div>
+            {[
+              { id: "KY-1042", title: "Bathroom faucet dripping", unit: "Unit 4A · 123 King St", priority: "high", status: "In Progress", date: "Mar 12", cat: "🚿" },
+              { id: "KY-1041", title: "Bedroom window won't latch", unit: "Unit 2B · 123 King St", priority: "high", status: "Open", date: "Mar 14", cat: "🪟" },
+              { id: "KY-1039", title: "Dishwasher making noise", unit: "Unit 4A · 123 King St", priority: "medium", status: "In Progress", date: "Mar 8", cat: "🧺" },
+              { id: "KY-1037", title: "Hallway light flickering", unit: "Unit 1C · 456 Queen Ave", priority: "medium", status: "Open", date: "Mar 5", cat: "💡" },
+              { id: "KY-1034", title: "Thermostat not responding", unit: "Unit 3A · 456 Queen Ave", priority: "low", status: "Completed", date: "Feb 28", cat: "❄️" },
+            ].map((ticket, i) => {
+              const priorityColors: Record<string, { bg: string; text: string }> = {
+                high: { bg: "#FEF2F2", text: "#DC2626" },
+                medium: { bg: "#FEF3C7", text: "#B45309" },
+                low: { bg: "#F8F7F4", text: "#767570" },
+              };
+              const statusColors: Record<string, { bg: string; text: string }> = {
+                "Open": { bg: "#FEF3C7", text: "#B45309" },
+                "In Progress": { bg: "#EFF6FF", text: "#1D4ED8" },
+                "Completed": { bg: "#E5F4EE", text: "#0A7A52" },
+              };
+              const pc = priorityColors[ticket.priority];
+              const sc = statusColors[ticket.status];
+              return (
+                <div key={ticket.id} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: 0, padding: "14px 20px", borderBottom: "1px solid rgba(0,0,0,0.04)", alignItems: "center", cursor: "pointer", transition: "background 0.15s" }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "#FAFAF9")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 16 }}>{ticket.cat}</span>
+                    <div>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: "#0E0F0C", margin: 0 }}>{ticket.title}</p>
+                      <p style={{ fontSize: 10, color: "#767570", margin: 0 }}>{ticket.id}</p>
+                    </div>
+                  </div>
+                  <span style={{ fontSize: 11, color: "#767570" }}>{ticket.unit}</span>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: pc.text, background: pc.bg, padding: "3px 10px", borderRadius: 99, display: "inline-block" }}>{ticket.priority}</span>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: sc.text, background: sc.bg, padding: "3px 10px", borderRadius: 99, display: "inline-block" }}>{ticket.status}</span>
+                  <span style={{ fontSize: 11, color: "#767570" }}>{ticket.date}</span>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
