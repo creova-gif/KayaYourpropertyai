@@ -1,7 +1,7 @@
 import { Outlet, useNavigate, useLocation } from "react-router";
 import {
   Building2, Menu, X, Plus, ChevronRight, Zap,
-  Home, Bell
+  Home, Bell, Sparkles
 } from "lucide-react";
 import { NavigationMenu } from "./NavigationMenu";
 import { LanguageSwitcher } from "./LanguageSwitcher";
@@ -241,6 +241,44 @@ export function LayoutPremium() {
         className="lg:ml-0 pt-14 lg:pt-0"
       >
         <TrialBanner />
+
+        {/* ── Persistent topbar ── */}
+        <div style={{
+          position: "sticky", top: 0, zIndex: 30,
+          background: "rgba(248,247,244,0.95)", backdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(0,0,0,0.05)",
+          padding: "0 24px", height: 48,
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          fontFamily: SANS,
+        }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: "rgba(0,0,0,0.3)", textTransform: "uppercase", letterSpacing: "0.9px", margin: 0 }}>
+            {getPageContext()}
+          </p>
+
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("openAIWithQuery", { detail: { query: "" } }))}
+            title="Open AI Command Palette (Ctrl+K / ⌘K)"
+            style={{
+              display: "flex", alignItems: "center", gap: 7,
+              padding: "5px 12px 5px 10px",
+              background: "#fff", border: "1px solid rgba(0,0,0,0.08)",
+              borderRadius: 9, cursor: "pointer",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
+              fontFamily: SANS, transition: "all 0.15s",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#0A7A52"; e.currentTarget.style.background = "#F0F9F5"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(0,0,0,0.08)"; e.currentTarget.style.background = "#fff"; }}
+          >
+            <Sparkles size={13} color="#0A7A52" strokeWidth={2.5} />
+            <span style={{ fontSize: 12, fontWeight: 500, color: "#767570" }}>AI</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 3, marginLeft: 2 }}>
+              <kbd style={{ fontSize: 10, color: "#767570", background: "#F8F7F4", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 4, padding: "1px 5px", fontFamily: "monospace", letterSpacing: "0.3px" }}>⌘K</kbd>
+              <span style={{ fontSize: 10, color: "rgba(0,0,0,0.25)" }}>/</span>
+              <kbd style={{ fontSize: 10, color: "#767570", background: "#F8F7F4", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 4, padding: "1px 5px", fontFamily: "monospace", letterSpacing: "0.3px" }}>Ctrl+K</kbd>
+            </div>
+          </button>
+        </div>
+
         <Outlet />
       </main>
     </div>

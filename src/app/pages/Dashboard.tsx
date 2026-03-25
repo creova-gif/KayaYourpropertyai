@@ -1,4 +1,5 @@
 import { useNavigate, Link } from "react-router";
+import { useState } from "react";
 import { 
   Building2, 
   Users, 
@@ -7,7 +8,10 @@ import {
   TrendingUp, 
   CheckCircle2,
   Clock,
-  DollarSign
+  DollarSign,
+  X,
+  CheckCircle,
+  Sparkles
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { GamificationBadge } from "../components/GamificationBadge";
@@ -15,7 +19,41 @@ import { AICoachSuggestion } from "../components/AICoachSuggestion";
 import { PropertyHeatmap } from "../components/PropertyHeatmap";
 import "../utils/suppressRechartsWarnings";
 
+const G = "#0A7A52";
+const GL = "#E5F4EE";
+const SANS = "'DM Sans', system-ui, sans-serif";
+const SERIF = "'Instrument Serif', Georgia, serif";
+
+const onboardingSteps = [
+  { id: "add-property", label: "Add your first property", link: "/app/properties", done: true },
+  { id: "invite-tenant", label: "Invite a tenant", link: "/app/tenants", done: false },
+  { id: "screen-tenant", label: "Screen a tenant with AI", link: "/app/tenant-screening", done: false },
+  { id: "set-rent", label: "Set up rent collection", link: "/app/payments", done: false },
+  { id: "explore-ai", label: "Ask Kaya AI a question", link: "#ai", done: false },
+];
+
 export function Dashboard() {
+  const [onboardingDismissed, setOnboardingDismissed] = useState(() => {
+    try { return localStorage.getItem("kaya_onboarding_dismissed") === "true"; } catch { return false; }
+  });
+  const [completedSteps, setCompletedSteps] = useState<Record<string, boolean>>(() => {
+    try { return JSON.parse(localStorage.getItem("kaya_onboarding_steps") || "{}"); } catch { return {}; }
+  });
+
+  const dismissOnboarding = () => {
+    setOnboardingDismissed(true);
+    try { localStorage.setItem("kaya_onboarding_dismissed", "true"); } catch { /* ignore */ }
+  };
+
+  const toggleStep = (id: string) => {
+    const next = { ...completedSteps, [id]: !completedSteps[id] };
+    setCompletedSteps(next);
+    try { localStorage.setItem("kaya_onboarding_steps", JSON.stringify(next)); } catch { /* ignore */ }
+  };
+
+  const stepsCompleted = onboardingSteps.filter(s => s.done || completedSteps[s.id]).length;
+  const progressPct = (stepsCompleted / onboardingSteps.length) * 100;
+
   const stats = [
     { name: "Total Units", value: "12", change: "+2", icon: Building2, color: "indigo" },
     { name: "Occupied", value: "10", change: "83%", icon: CheckCircle2, color: "green" },
@@ -104,6 +142,69 @@ export function Dashboard() {
           <h1 className="text-[48px] font-normal text-[#0E0F0C] tracking-tight" style={{ fontFamily: "'Instrument Serif', Georgia, serif", letterSpacing: '-1px' }}>Good evening, Justin</h1>
           <p className="mt-2 text-[14px] text-[#767570]">Here's what's happening with your properties today.</p>
         </div>
+
+        {/* Onboarding checklist */}
+        {!onboardingDismissed && (
+          <div style={{
+            background: "#fff", border: "1px solid rgba(0,0,0,0.07)",
+            borderRadius: 16, padding: "20px 24px", marginBottom: 28,
+            boxShadow: "0 2px 12px rgba(0,0,0,0.04)", fontFamily: SANS,
+            position: "relative",
+          }}>
+            <button onClick={dismissOnboarding} style={{ position: "absolute", top: 14, right: 14, background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 6, color: "#767570" }} title="Dismiss">
+              <X size={16} />
+            </button>
+
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 16 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 11, background: GL, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Sparkles size={18} color={G} strokeWidth={2.5} />
+              </div>
+              <div style={{ flex: 1, paddingRight: 24 }}>
+                <h3 style={{ fontSize: 17, fontWeight: 400, color: "#0E0F0C", margin: "0 0 2px", fontFamily: SERIF }}>Get started with Kaya</h3>
+                <p style={{ fontSize: 12, color: "#767570", margin: 0 }}>{stepsCompleted} of {onboardingSteps.length} steps complete</p>
+              </div>
+            </div>
+
+            {/* Progress bar */}
+            <div style={{ height: 4, borderRadius: 99, background: "rgba(0,0,0,0.06)", marginBottom: 16 }}>
+              <div style={{ height: "100%", width: `${progressPct}%`, borderRadius: 99, background: `linear-gradient(90deg, ${G}, #5DCAA5)`, transition: "width 0.4s ease" }} />
+            </div>
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {onboardingSteps.map(step => {
+                const isDone = step.done || !!completedSteps[step.id];
+                const handleClick = () => {
+                  if (step.link === "#ai") {
+                    window.dispatchEvent(new CustomEvent("openAIWithQuery", { detail: { query: "" } }));
+                  }
+                  if (!step.done) toggleStep(step.id);
+                };
+                return (
+                  <button
+                    key={step.id}
+                    onClick={handleClick}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 7,
+                      padding: "7px 14px 7px 10px",
+                      background: isDone ? GL : "#F8F7F4",
+                      border: `1px solid ${isDone ? "rgba(10,122,82,0.25)" : "rgba(0,0,0,0.07)"}`,
+                      borderRadius: 99, cursor: "pointer", fontFamily: SANS,
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    {isDone
+                      ? <CheckCircle size={13} color={G} strokeWidth={2.5} />
+                      : <div style={{ width: 13, height: 13, borderRadius: "50%", border: "1.5px solid rgba(0,0,0,0.2)" }} />
+                    }
+                    <span style={{ fontSize: 12, fontWeight: isDone ? 600 : 400, color: isDone ? G : "#0E0F0C", whiteSpace: "nowrap" }}>
+                      {step.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Gamification Badges */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">

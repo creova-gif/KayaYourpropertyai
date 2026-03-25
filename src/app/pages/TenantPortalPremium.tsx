@@ -1,9 +1,19 @@
 import { motion } from "motion/react";
-import { DollarSign, FileText, Home, Calendar, Download } from "lucide-react";
+import { DollarSign, FileText, Home, Calendar, Download, Building2, Sparkles, LogOut } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { PaymentForm, PaymentData } from "../components/PaymentForm";
+import { GlobalAIAssistant } from "../components/GlobalAIAssistant";
+import { AICommandPalette } from "../components/AICommandPalette";
+
+const G = "#0A7A52";
+const TX = "#0E0F0C";
+const MU = "#767570";
+const SANS = "'DM Sans', system-ui, sans-serif";
+const SERIF = "'Instrument Serif', Georgia, serif";
 
 export function TenantPortalPremium() {
+  const navigate = useNavigate();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
 
@@ -28,8 +38,50 @@ export function TenantPortalPremium() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12" style={{ background: '#F8F7F4', minHeight: '100vh', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "#F8F7F4", fontFamily: SANS }}>
+      <GlobalAIAssistant pageContext="Tenant Portal" userContext="Tenant" userId="demo-tenant" />
+      <AICommandPalette userId="demo-tenant" />
+
+      {/* Top navigation bar */}
+      <div style={{
+        position: "sticky", top: 0, zIndex: 40,
+        background: TX, height: 56,
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "0 24px", borderBottom: "1px solid rgba(255,255,255,0.06)",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button onClick={() => navigate("/")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, padding: 0 }}>
+            <div style={{ width: 30, height: 30, borderRadius: 8, background: `linear-gradient(135deg, ${G} 0%, #065E3C 100%)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Building2 size={15} color="#fff" strokeWidth={2.5} />
+            </div>
+            <span style={{ fontFamily: SERIF, fontSize: 20, color: "#fff" }}>Kaya<span style={{ color: G }}>.</span></span>
+          </button>
+          <div style={{ width: 1, height: 18, background: "rgba(255,255,255,0.12)", margin: "0 6px" }} />
+          <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.7px" }}>Tenant Portal</span>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("openAIWithQuery", { detail: { query: "" } }))}
+            style={{
+              display: "flex", alignItems: "center", gap: 6,
+              padding: "5px 11px", background: "rgba(10,122,82,0.2)",
+              border: "1px solid rgba(10,122,82,0.35)", borderRadius: 8,
+              cursor: "pointer", fontFamily: SANS,
+            }}
+          >
+            <Sparkles size={12} color="#5DCAA5" strokeWidth={2.5} />
+            <span style={{ fontSize: 11, fontWeight: 600, color: "#5DCAA5" }}>AI</span>
+            <kbd style={{ fontSize: 9, color: "rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4, padding: "1px 4px", fontFamily: "monospace" }}>⌘K</kbd>
+          </button>
+          <button onClick={() => navigate("/login")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 5, padding: 0 }}>
+            <LogOut size={14} color="rgba(255,255,255,0.35)" />
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>Sign out</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Premium Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

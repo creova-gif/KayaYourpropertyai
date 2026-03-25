@@ -119,6 +119,37 @@ src/
 - **User profile:** Avatar + name + PRO badge + language switcher (dark-mode adapted)
 - **Mobile:** Hamburger button at top-left, full-height slide-in sidebar with backdrop blur
 - **NavigationMenu:** Accepts `dark` prop — dark mode uses white text variants, green active tint, section headers
+- **Sticky topbar:** 48px bar below TrialBanner in main content area; shows page context label (uppercase) + Sparkles AI button that fires `openAIWithQuery` event to open AICommandPalette
+
+## Tenant Portal (TenantPortalPremium — `/tenant`)
+- Standalone page (not inside LayoutPremium), rendered directly for the Tenant Demo flow
+- **Nav bar:** Sticky dark bar with Kaya. logo, "Tenant Portal" label, green AI⌘K button, Sign-out link
+- **AI:** GlobalAIAssistant (floating chat) + AICommandPalette (⌘K) both mounted; fires `openAIWithQuery` event
+- Pays rent, views documents, lease info, payment history; Pay Now + Schedule Payment modals
+
+## TenantLayout (sub-routes under `/tenant/*`)
+- **Sidebar:** Dark (#0E0F0C) with Kaya. brand, tenant avatar/unit info, green-accented active nav, AI nudge card (⌘K)
+- **Bottom nav:** Mobile-only bottom tab bar with Kaya green active states
+- **Topbar:** Sticky 48px topbar with current page label + Sparkles AI button
+- **AI:** GlobalAIAssistant + AICommandPalette included
+
+## Dashboard (`/app`)
+- **Onboarding checklist:** Dismissible card at top (hidden after localStorage key `kaya_onboarding_dismissed`=true); shows 5 pill-style steps with green progress bar; clicking "Ask Kaya AI" fires `openAIWithQuery`; step completion persisted to `kaya_onboarding_steps` in localStorage
+
+## FeaturesPage (`/features`)
+- Each of the 12 feature cards now has an inline mini UI mockup preview rendered as code-based JSX (no images):
+  - AI Screening: score meter with 3 progress bars + LOW RISK badge
+  - Rent Intelligence: bar chart with 6-month trend + recommended rent
+  - Rent Collection: 3 tenant payment rows with PAID/PENDING badges
+  - LTB Compliance: form list (N4/N5/N12/L1) with check indicators
+  - Document Management: 3 file rows with PDF icons
+  - Financial Tracking: 3-stat grid (Revenue/Expenses/NOI) + CRA badge
+  - Maintenance: 3 request rows with HIGH/MED/LOW priority badges
+  - Tenant Portal: dark mini portal card with Pay Now/Schedule buttons
+  - Multi-Language: language pill grid (6 flags + names)
+  - Messaging: 2-bubble chat mockup (landlord/tenant exchange)
+  - Automations: 3 trigger→action workflow rules
+  - Guarantor: 4-step progress checklist with checkmarks
 
 ## PublicSearch (/search)
 - **Residential / Commercial toggle** at hero — switches entire listing experience
