@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router";
-import { Search, Filter, CheckCircle2, AlertTriangle, XCircle, ChevronRight, Brain, Building2, Briefcase } from "lucide-react";
+import { Search, CheckCircle2, AlertTriangle, XCircle, ChevronRight, Brain, Building2, Briefcase, Users, Star, Clock } from "lucide-react";
 import { AIContextualHelper } from "../components/AIContextualHelper";
+import { toast } from "sonner";
 
 const G = "#0A7A52";
 const GL = "#E5F4EE";
@@ -62,36 +63,52 @@ const businessApplications: BusinessApplication[] = [
 function ScoreRing({ score, risk }: { score: number; risk: string }) {
   const color = risk === "low" ? G : risk === "medium" ? "#B45309" : "#C0392B";
   const bg = risk === "low" ? GL : risk === "medium" ? "#FEF3C7" : "#FDECEA";
+  const radius = 22;
+  const circumference = 2 * Math.PI * radius;
+  const progress = (score / 100) * circumference;
   return (
-    <div style={{ width: 56, height: 56, borderRadius: "50%", background: bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-      <span style={{ fontSize: 18, fontWeight: 700, color, lineHeight: 1 }}>{score}</span>
-      <span style={{ fontSize: 9, color, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.3px" }}>AI</span>
+    <div style={{ width: 64, height: 64, flexShrink: 0, position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <svg width={64} height={64} style={{ position: "absolute", top: 0, left: 0, transform: "rotate(-90deg)" }}>
+        <circle cx={32} cy={32} r={radius} fill="none" stroke={bg} strokeWidth={5} />
+        <circle cx={32} cy={32} r={radius} fill="none" stroke={color} strokeWidth={5}
+          strokeDasharray={`${progress} ${circumference}`} strokeLinecap="round" />
+      </svg>
+      <div style={{ textAlign: "center" }}>
+        <span style={{ fontSize: 16, fontWeight: 700, color, lineHeight: 1, display: "block" }}>{score}</span>
+        <span style={{ fontSize: 8, color, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>AI</span>
+      </div>
     </div>
   );
 }
 
-function RiskBadge({ rec, risk }: { rec: string; risk: string }) {
+function RiskBadge({ rec }: { rec: string }) {
   const map = {
-    approve: { bg: GL, color: G, icon: <CheckCircle2 size={12} />, label: "Approve" },
-    review:  { bg: "#FEF3C7", color: "#B45309", icon: <AlertTriangle size={12} />, label: "Review" },
-    reject:  { bg: "#FDECEA", color: "#C0392B", icon: <XCircle size={12} />, label: "Reject" },
+    approve: { bg: GL, color: G, icon: <CheckCircle2 size={11} />, label: "Approve" },
+    review:  { bg: "#FEF3C7", color: "#B45309", icon: <AlertTriangle size={11} />, label: "Review" },
+    reject:  { bg: "#FDECEA", color: "#C0392B", icon: <XCircle size={11} />, label: "Reject" },
   };
   const c = map[rec as keyof typeof map];
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: c.bg, color: c.color, fontSize: 12, fontWeight: 600, padding: "5px 12px", borderRadius: 20 }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, background: c.bg, color: c.color, fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 20, letterSpacing: "0.2px" }}>
       {c.icon}{c.label}
     </span>
   );
 }
 
-function StatPill({ label, value, warn }: { label: string; value: string; warn?: boolean }) {
+function StatCell({ label, value, warn }: { label: string; value: string; warn?: boolean }) {
   return (
-    <div style={{ textAlign: "center" }}>
-      <p style={{ fontSize: 14, fontWeight: 700, color: warn ? "#B45309" : TEXT }}>{value}</p>
-      <p style={{ fontSize: 10, color: MUTED, marginTop: 2, fontWeight: 500 }}>{label}</p>
+    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <span style={{ fontSize: 13, fontWeight: 700, color: warn ? "#B45309" : TEXT }}>{value}</span>
+      <span style={{ fontSize: 10, color: MUTED, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.4px" }}>{label}</span>
     </div>
   );
 }
+
+const RISK_BORDER: Record<string, string> = {
+  low: G,
+  medium: "#B45309",
+  high: "#C0392B",
+};
 
 export function ApplicationsPremium() {
   const navigate = useNavigate();
@@ -109,245 +126,322 @@ export function ApplicationsPremium() {
     (a.companyName.toLowerCase().includes(search.toLowerCase()) || a.unit.toLowerCase().includes(search.toLowerCase()))
   );
 
-  const stats = tenantType === "residential" ? {
-    total: applications.length,
-    pending: applications.length,
-    highScore: applications.filter(a => a.aiScore >= 85).length,
-    attention: applications.filter(a => a.riskLevel !== "low").length,
-  } : {
-    total: businessApplications.length,
-    pending: businessApplications.length,
-    highScore: businessApplications.filter(a => a.aiScore >= 85).length,
-    attention: businessApplications.filter(a => a.riskLevel !== "low").length,
-  };
+  const stats = tenantType === "residential" ? [
+    { label: "Total", val: applications.length, icon: <Users size={18} color={G} />, color: TEXT },
+    { label: "Pending Review", val: applications.length, icon: <Clock size={18} color={MUTED} />, color: TEXT },
+    { label: "High AI Score", val: applications.filter(a => a.aiScore >= 85).length, icon: <Star size={18} color={G} />, color: G },
+    { label: "Needs Attention", val: applications.filter(a => a.riskLevel !== "low").length, icon: <AlertTriangle size={18} color="#B45309" />, color: "#B45309" },
+  ] : [
+    { label: "Total", val: businessApplications.length, icon: <Building2 size={18} color={G} />, color: TEXT },
+    { label: "Pending Review", val: businessApplications.length, icon: <Clock size={18} color={MUTED} />, color: TEXT },
+    { label: "High AI Score", val: businessApplications.filter(a => a.aiScore >= 85).length, icon: <Star size={18} color={G} />, color: G },
+    { label: "Needs Attention", val: businessApplications.filter(a => a.riskLevel !== "low").length, icon: <AlertTriangle size={18} color="#B45309" />, color: "#B45309" },
+  ];
+
+  const displayCount = tenantType === "residential" ? filtered.length : filteredBusiness.length;
+  const totalCount = tenantType === "residential" ? applications.length : businessApplications.length;
 
   return (
-    <div style={{ minHeight: "100vh", background: BG, fontFamily: "'DM Sans', system-ui, sans-serif", position: "relative" }}>
-      {/* AI Contextual Helper - Application-specific suggestions */}
+    <div style={{ minHeight: "100vh", background: BG, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
       <AIContextualHelper
         context="Application Review"
-        suggestions={[
-          "Screen Sarah Kim with AI",
-          "Compare all high-score applicants",
-          "Check income verification requirements",
-          "Generate approval letter"
-        ]}
+        suggestions={["Screen Sarah Kim with AI", "Compare all high-score applicants", "Check income verification requirements", "Generate approval letter"]}
         position="top-right"
       />
-      
+
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 40px 80px" }}>
 
-        {/* Header */}
+        {/* ── Page Header ── */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: 40 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, marginBottom: 8 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 12, background: TEXT, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Brain size={20} color="#fff" />
+          <p style={{ fontSize: 10, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 10 }}>
+            Tenant Screening
+          </p>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: GL, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Brain size={22} color={G} />
               </div>
               <div>
-                <h1 style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 42, fontWeight: 400, color: TEXT, lineHeight: 1, letterSpacing: "-0.5px" }}>
+                <h1 style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 44, fontWeight: 400, color: TEXT, lineHeight: 1, letterSpacing: "-1px", margin: 0 }}>
                   Smart Screening
                 </h1>
+                <p style={{ fontSize: 13, color: MUTED, margin: "6px 0 0" }}>
+                  {tenantType === "residential" ? "AI-powered residential tenant analysis" : "Corporate entity & business credit screening"} · {totalCount} applications
+                </p>
               </div>
             </div>
+
             {/* Tenant type toggle */}
-            <div style={{ display: "flex", background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 10, padding: 4, gap: 4 }}>
-              <button onClick={() => { setTenantType("residential"); setFilter("all"); }}
-                style={{ padding: "8px 16px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer",
-                  background: tenantType === "residential" ? TEXT : "transparent", color: tenantType === "residential" ? "#fff" : MUTED, transition: "all .2s", display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ display: "flex", background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 12, padding: 4, gap: 3, flexShrink: 0 }}>
+              <button
+                onClick={() => { setTenantType("residential"); setFilter("all"); setSearch(""); }}
+                style={{ padding: "9px 18px", borderRadius: 9, border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+                  background: tenantType === "residential" ? TEXT : "transparent",
+                  color: tenantType === "residential" ? "#fff" : MUTED,
+                  transition: "all .2s" }}
+              >
                 Residential
               </button>
-              <button onClick={() => { setTenantType("business"); setFilter("all"); }}
-                style={{ padding: "8px 16px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer",
-                  background: tenantType === "business" ? TEXT : "transparent", color: tenantType === "business" ? "#fff" : MUTED, transition: "all .2s", display: "flex", alignItems: "center", gap: 6 }}>
-                <Building2 size={13} />Business Tenants
+              <button
+                onClick={() => { setTenantType("business"); setFilter("all"); setSearch(""); }}
+                style={{ padding: "9px 18px", borderRadius: 9, border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+                  background: tenantType === "business" ? TEXT : "transparent",
+                  color: tenantType === "business" ? "#fff" : MUTED,
+                  transition: "all .2s", display: "flex", alignItems: "center", gap: 6 }}
+              >
+                <Building2 size={13} />Business
               </button>
             </div>
           </div>
-          <p style={{ fontSize: 14, color: MUTED, marginLeft: 54 }}>
-            {tenantType === "residential" ? "AI-powered tenant analysis" : "Corporate entity screening"} — {stats.total} applications
-          </p>
         </motion.div>
 
-        {/* Stat row */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 32 }}>
-          {[
-            { label: "Total", val: stats.total, color: TEXT },
-            { label: "Pending", val: stats.pending, color: TEXT },
-            { label: "High AI Score", val: stats.highScore, color: G },
-            { label: "Needs Attention", val: stats.attention, color: "#B45309" },
-          ].map((s, i) => (
+        {/* ── Stat Cards ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 32 }}>
+          {stats.map((s, i) => (
             <motion.div
               key={s.label}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.07 }}
-              style={{ background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 14, padding: "20px 22px" }}
+              style={{ background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 16, padding: "20px 22px" }}
             >
-              <p style={{ fontSize: 10, color: MUTED, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 8 }}>{s.label}</p>
-              <p style={{ fontFamily: "'Instrument Serif', serif", fontSize: 36, color: s.color, lineHeight: 1 }}>{s.val}</p>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                <p style={{ fontSize: 11, color: MUTED, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.7px", margin: 0 }}>{s.label}</p>
+                <div style={{ width: 34, height: 34, borderRadius: 10, background: BG, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {s.icon}
+                </div>
+              </div>
+              <p style={{ fontFamily: "'Instrument Serif', serif", fontSize: 38, color: s.color, lineHeight: 1, margin: 0 }}>{s.val}</p>
             </motion.div>
           ))}
         </div>
 
-        {/* Filters */}
-        <div style={{ display: "flex", gap: 12, marginBottom: 24, alignItems: "center" }}>
-          <div style={{ position: "relative", flex: 1, maxWidth: 340 }}>
-            <Search size={15} color={MUTED} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }} />
+        {/* ── Business tenant notice ── */}
+        {tenantType === "business" && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+            style={{ background: GL, border: `1px solid rgba(10,122,82,0.2)`, borderRadius: 12, padding: "13px 18px", marginBottom: 22, display: "flex", gap: 11, alignItems: "center" }}
+          >
+            <Briefcase size={15} color={G} style={{ flexShrink: 0 }} />
+            <span style={{ fontSize: 13, color: G, fontWeight: 500, lineHeight: 1.4 }}>
+              Business screening includes corporate credit score, incorporation status, personal guarantee, and annual revenue verification.
+            </span>
+          </motion.div>
+        )}
+
+        {/* ── Search & Filter bar ── */}
+        <div style={{ display: "flex", gap: 12, marginBottom: 20, alignItems: "center" }}>
+          {/* Search */}
+          <div style={{ position: "relative", width: 320, flexShrink: 0 }}>
+            <Search size={15} color={MUTED} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search applicants..."
-              style={{ width: "100%", padding: "11px 14px 11px 38px", border: `1px solid ${BORDER}`, borderRadius: 10, fontSize: 13, fontFamily: "inherit", background: "#fff", color: TEXT, outline: "none" }}
+              placeholder={tenantType === "residential" ? "Search applicants..." : "Search companies..."}
+              style={{ width: "100%", padding: "11px 14px 11px 40px", border: `1px solid ${BORDER}`, borderRadius: 10, fontSize: 13, fontFamily: "inherit", background: "#fff", color: TEXT, outline: "none", boxSizing: "border-box" }}
             />
           </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            {["all", "low", "medium", "high"].map(f => (
+
+          {/* Risk filter pills */}
+          <div style={{ display: "flex", gap: 6, flex: 1 }}>
+            {[
+              { val: "all", label: "All" },
+              { val: "low", label: "Low risk" },
+              { val: "medium", label: "Medium risk" },
+              { val: "high", label: "High risk" },
+            ].map(f => (
               <button
-                key={f}
-                onClick={() => setFilter(f)}
+                key={f.val}
+                onClick={() => setFilter(f.val)}
                 style={{
-                  padding: "9px 16px", borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", border: "1px solid",
-                  background: filter === f ? TEXT : "#fff",
-                  color: filter === f ? "#fff" : MUTED,
-                  borderColor: filter === f ? TEXT : BORDER,
-                  transition: "all 0.15s"
+                  padding: "9px 16px", borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  fontFamily: "inherit", border: "1px solid",
+                  background: filter === f.val ? TEXT : "#fff",
+                  color: filter === f.val ? "#fff" : MUTED,
+                  borderColor: filter === f.val ? TEXT : BORDER,
+                  transition: "all 0.15s",
+                  whiteSpace: "nowrap",
                 }}
               >
-                {f === "all" ? "All" : f.charAt(0).toUpperCase() + f.slice(1) + " risk"}
+                {f.label}
               </button>
             ))}
           </div>
-          <p style={{ marginLeft: "auto", fontSize: 12, color: MUTED }}>{filtered.length} of {applications.length}</p>
+
+          {/* Count */}
+          <span style={{ fontSize: 12, color: MUTED, flexShrink: 0, whiteSpace: "nowrap" }}>
+            {displayCount} of {totalCount}
+          </span>
         </div>
 
-        {/* Residential Application List */}
+        {/* ── Residential Application Cards ── */}
         {tenantType === "residential" && (
           <>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <AnimatePresence>
+            <AnimatePresence>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {filtered.map((app, i) => (
                   <motion.div
                     key={app.id}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
                     transition={{ delay: i * 0.05 }}
+                    whileHover={{ x: 3 }}
                     onClick={() => navigate(`/applications/${app.id}`)}
-                    whileHover={{ x: 4 }}
                     style={{
-                      background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 16,
-                      padding: "20px 24px", cursor: "pointer", display: "flex", alignItems: "center", gap: 20,
-                      borderLeft: `3px solid ${app.riskLevel === "low" ? G : app.riskLevel === "medium" ? "#B45309" : "#C0392B"}`,
+                      background: "#fff",
+                      border: `1px solid ${BORDER}`,
+                      borderLeft: `4px solid ${RISK_BORDER[app.riskLevel]}`,
+                      borderRadius: 14,
+                      padding: "20px 24px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 20,
                     }}
                   >
+                    {/* AI Score ring */}
                     <ScoreRing score={app.aiScore} risk={app.riskLevel} />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                        <p style={{ fontSize: 16, fontWeight: 600, color: TEXT }}>{app.name}</p>
-                        <RiskBadge rec={app.recommendation} risk={app.riskLevel} />
+
+                    {/* Main content */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 3 }}>
+                        <p style={{ fontSize: 15, fontWeight: 700, color: TEXT, margin: 0 }}>{app.name}</p>
+                        <RiskBadge rec={app.recommendation} />
                       </div>
-                      <p style={{ fontSize: 13, color: MUTED, marginBottom: 12 }}>{app.unit} · Applied {app.appliedDate}</p>
-                      <div style={{ display: "flex", gap: 32 }}>
-                        <StatPill label="Monthly income" value={`$${app.income.toLocaleString()}`} />
-                        <StatPill label="Rent / income" value={`${app.rentToIncomeRatio}%`} warn={app.rentToIncomeRatio > 35} />
-                        <StatPill label="Credit score" value={String(app.creditScore)} warn={app.creditScore < 650} />
-                        <StatPill label="Employment" value={`${app.employmentYears} yrs`} warn={app.employmentYears < 1} />
+                      <p style={{ fontSize: 12, color: MUTED, margin: "0 0 14px" }}>{app.unit} &middot; Applied {app.appliedDate}</p>
+
+                      {/* Stats row */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
+                        {[
+                          { label: "Monthly income", value: `$${app.income.toLocaleString()}`, warn: false },
+                          { label: "Rent / income", value: `${app.rentToIncomeRatio}%`, warn: app.rentToIncomeRatio > 35 },
+                          { label: "Credit score", value: String(app.creditScore), warn: app.creditScore < 650 },
+                          { label: "Employment", value: `${app.employmentYears} yrs`, warn: app.employmentYears < 1 },
+                        ].map((stat, idx) => (
+                          <div key={idx} style={{ display: "flex", alignItems: "center" }}>
+                            {idx > 0 && <div style={{ width: 1, height: 28, background: BORDER, margin: "0 20px" }} />}
+                            <StatCell label={stat.label} value={stat.value} warn={stat.warn} />
+                          </div>
+                        ))}
                       </div>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+
+                    {/* Actions */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "stretch", flexShrink: 0, minWidth: 110 }}>
                       {app.recommendation === "approve" && (
-                        <button onClick={e => { e.stopPropagation(); }}
-                          style={{ padding: "9px 20px", background: G, color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                        <button
+                          onClick={e => { e.stopPropagation(); toast.success(`Approval started for ${app.name}`); }}
+                          style={{ padding: "9px 0", background: G, color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", textAlign: "center" }}
+                        >
                           Approve
                         </button>
                       )}
-                      <button onClick={e => { e.stopPropagation(); navigate(`/applications/${app.id}`); }}
-                        style={{ padding: "9px 20px", background: BG, color: MUTED, border: `1px solid ${BORDER}`, borderRadius: 10, fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 4 }}>
+                      <button
+                        onClick={e => { e.stopPropagation(); navigate(`/applications/${app.id}`); }}
+                        style={{ padding: "9px 0", background: BG, color: MUTED, border: `1px solid ${BORDER}`, borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}
+                      >
                         View details <ChevronRight size={12} />
                       </button>
                     </div>
                   </motion.div>
                 ))}
-              </AnimatePresence>
-            </div>
+              </div>
+            </AnimatePresence>
             {filtered.length === 0 && (
-              <div style={{ textAlign: "center", padding: "60px 0" }}>
-                <p style={{ fontSize: 16, color: MUTED }}>No applications match your filter.</p>
+              <div style={{ textAlign: "center", padding: "64px 0" }}>
+                <Users size={36} color={BORDER} style={{ margin: "0 auto 12px" }} />
+                <p style={{ fontSize: 15, color: MUTED, margin: 0 }}>No applications match your filter.</p>
               </div>
             )}
           </>
         )}
 
-        {/* Business Tenant Application List */}
+        {/* ── Business Tenant Application Cards ── */}
         {tenantType === "business" && (
           <>
-            <div style={{ background: "#EBF2FB", border: "1px solid #BFDBFE", borderRadius: 12, padding: "12px 16px", marginBottom: 20, display: "flex", gap: 10, alignItems: "center" }}>
-              <Briefcase size={15} color="#1E5FA8" />
-              <span style={{ fontSize: 13, color: "#1E5FA8", fontWeight: 500 }}>Business tenant screening includes corporate credit, incorporation status, personal guarantee, and annual revenue verification.</span>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <AnimatePresence>
-                {filteredBusiness.map((app, i) => {
-                  const rColor = app.riskLevel === "low" ? G : app.riskLevel === "medium" ? "#B45309" : "#C0392B";
-                  return (
-                    <motion.div
-                      key={app.id}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
-                      transition={{ delay: i * 0.05 }}
-                      whileHover={{ x: 4 }}
-                      style={{
-                        background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 16,
-                        padding: "20px 24px", cursor: "pointer", display: "flex", alignItems: "flex-start", gap: 20,
-                        borderLeft: `3px solid ${rColor}`,
-                      }}
-                    >
-                      {/* AI Score */}
-                      <ScoreRing score={app.aiScore} risk={app.riskLevel} />
+            <AnimatePresence>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {filteredBusiness.map((app, i) => (
+                  <motion.div
+                    key={app.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ delay: i * 0.05 }}
+                    whileHover={{ x: 3 }}
+                    style={{
+                      background: "#fff",
+                      border: `1px solid ${BORDER}`,
+                      borderLeft: `4px solid ${RISK_BORDER[app.riskLevel]}`,
+                      borderRadius: 14,
+                      padding: "20px 24px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 20,
+                    }}
+                  >
+                    {/* AI Score ring */}
+                    <ScoreRing score={app.aiScore} risk={app.riskLevel} />
 
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 2, flexWrap: "wrap" }}>
-                          <p style={{ fontSize: 16, fontWeight: 700, color: TEXT }}>{app.companyName}</p>
-                          <RiskBadge rec={app.recommendation} risk={app.riskLevel} />
-                          {app.hasPersonalGuarantee && (
-                            <span style={{ fontSize: 11, fontWeight: 600, background: GL, color: G, padding: "2px 9px", borderRadius: 20 }}>✓ Personal Guarantee</span>
-                          )}
-                          {!app.hasPersonalGuarantee && (
-                            <span style={{ fontSize: 11, fontWeight: 600, background: "#FEF3C7", color: "#B45309", padding: "2px 9px", borderRadius: 20 }}>⚠ No Guarantee</span>
-                          )}
-                        </div>
-                        <p style={{ fontSize: 13, color: MUTED, marginBottom: 14 }}>
-                          {app.contactName} · {app.unit} · {app.leaseType} Lease · Applied {app.appliedDate}
-                        </p>
-                        <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
-                          <StatPill label="Business Credit" value={`${app.businessCreditScore}/100`} warn={app.businessCreditScore < 60} />
-                          <StatPill label="Annual Revenue" value={`$${(app.annualRevenue/1000).toFixed(0)}K`} />
-                          <StatPill label="Inc. Year" value={String(app.incorporationYear)} warn={app.incorporationYear >= 2023} />
-                          <StatPill label="Base Rent" value={`$${app.baseRent.toLocaleString()}/mo`} />
-                        </div>
-                        <p style={{ fontSize: 11, color: MUTED, marginTop: 10 }}>Corp. No: {app.incorporationNo}</p>
-                      </div>
-
-                      <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end", flexShrink: 0 }}>
-                        {app.recommendation === "approve" && (
-                          <button style={{ padding: "9px 20px", background: G, color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-                            Approve
-                          </button>
+                    {/* Main content */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3, flexWrap: "wrap" }}>
+                        <p style={{ fontSize: 15, fontWeight: 700, color: TEXT, margin: 0 }}>{app.companyName}</p>
+                        <RiskBadge rec={app.recommendation} />
+                        {app.hasPersonalGuarantee ? (
+                          <span style={{ fontSize: 10, fontWeight: 700, background: GL, color: G, padding: "3px 8px", borderRadius: 20, letterSpacing: "0.3px" }}>✓ Personal Guarantee</span>
+                        ) : (
+                          <span style={{ fontSize: 10, fontWeight: 700, background: "#FEF3C7", color: "#B45309", padding: "3px 8px", borderRadius: 20, letterSpacing: "0.3px" }}>⚠ No Guarantee</span>
                         )}
-                        <button style={{ padding: "9px 20px", background: BG, color: MUTED, border: `1px solid ${BORDER}`, borderRadius: 10, fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 4 }}>
-                          View LOI <ChevronRight size={12} />
-                        </button>
                       </div>
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
-            </div>
+                      <p style={{ fontSize: 12, color: MUTED, margin: "0 0 14px" }}>
+                        {app.contactName} &middot; {app.unit} &middot; {app.leaseType} lease &middot; Applied {app.appliedDate}
+                      </p>
+
+                      {/* Stats row */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
+                        {[
+                          { label: "Business credit", value: `${app.businessCreditScore}/100`, warn: app.businessCreditScore < 60 },
+                          { label: "Annual revenue", value: `$${(app.annualRevenue / 1000).toFixed(0)}K` },
+                          { label: "Inc. year", value: String(app.incorporationYear), warn: app.incorporationYear >= 2023 },
+                          { label: "Monthly rent", value: `$${app.baseRent.toLocaleString()}` },
+                        ].map((stat, idx) => (
+                          <div key={idx} style={{ display: "flex", alignItems: "center" }}>
+                            {idx > 0 && <div style={{ width: 1, height: 28, background: BORDER, margin: "0 20px" }} />}
+                            <StatCell label={stat.label} value={stat.value} warn={stat.warn} />
+                          </div>
+                        ))}
+                      </div>
+                      <p style={{ fontSize: 10, color: MUTED, margin: "10px 0 0", fontWeight: 500 }}>Corp. No: {app.incorporationNo}</p>
+                    </div>
+
+                    {/* Actions */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "stretch", flexShrink: 0, minWidth: 110 }}>
+                      {app.recommendation === "approve" && (
+                        <button
+                          onClick={e => { e.stopPropagation(); toast.success(`Approval started for ${app.companyName}`); }}
+                          style={{ padding: "9px 0", background: G, color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", textAlign: "center" }}
+                        >
+                          Approve
+                        </button>
+                      )}
+                      <button
+                        onClick={e => { e.stopPropagation(); toast.info(`Opening Letter of Intent for ${app.companyName}`); }}
+                        style={{ padding: "9px 0", background: BG, color: MUTED, border: `1px solid ${BORDER}`, borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}
+                      >
+                        View LOI <ChevronRight size={12} />
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </AnimatePresence>
             {filteredBusiness.length === 0 && (
-              <div style={{ textAlign: "center", padding: "60px 0" }}>
-                <p style={{ fontSize: 16, color: MUTED }}>No business applications match your filter.</p>
+              <div style={{ textAlign: "center", padding: "64px 0" }}>
+                <Building2 size={36} color={BORDER} style={{ margin: "0 auto 12px" }} />
+                <p style={{ fontSize: 15, color: MUTED, margin: 0 }}>No business applications match your filter.</p>
               </div>
             )}
           </>
