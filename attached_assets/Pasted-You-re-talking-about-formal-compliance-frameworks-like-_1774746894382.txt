@@ -1,0 +1,88 @@
+You’re talking about formal compliance frameworks like **SOC 2**, ISO 27001, GDPR/HIPAA/PCI etc. – not just “good security”. I’ll explain what these are and what you actually need to do as an app/product team. [secureframe](https://secureframe.com/hub/soc-2/what-is-soc-2)
+
+***
+
+## 1. What SOC 2 and ISO 27001 are
+
+- SOC 2 is a security and privacy standard for service organizations (especially SaaS) that defines how you must manage customer data based on five “Trust Services Criteria”: security, availability, processing integrity, confidentiality, and privacy. [checkpoint](https://www.checkpoint.com/cyber-hub/cyber-security/what-is-soc-2-compliance/)
+- An independent auditor reviews your controls against these criteria and issues a SOC 2 report, which you then show to customers or partners as proof. [vanta](https://www.vanta.com/collection/soc-2/what-is-soc-2)
+- ISO 27001 is an international standard for building and running an Information Security Management System (ISMS) across your whole company, including application security, infrastructure, processes, and people. [stackhawk](https://www.stackhawk.com/blog/iso-27001-application-security-compliance/)
+
+In practice: SOC 2 is very common in North America for SaaS; ISO 27001 is very common with enterprises and governments globally. [vanta](https://www.vanta.com/collection/soc-2/what-is-soc-2)
+
+***
+
+## 2. What SOC 2 expects you to do
+
+SOC 2 is built around “Trust Services Criteria” and internal controls that you define and implement. [barnesdennig](https://www.barnesdennig.com/understanding-soc2-compliance-guide/)
+
+At a high level you must:
+
+- Scope the system: define which app(s), APIs, and infrastructure are “in scope” for SOC 2 and which Trust Criteria you’re targeting. [checkpoint](https://www.checkpoint.com/cyber-hub/cyber-security/what-is-soc-2-compliance/)
+- Implement core controls:  
+  - Access controls: role‑based access, least privilege, SSO/MFA, joiner‑mover‑leaver procedures. [barnesdennig](https://www.barnesdennig.com/understanding-soc2-compliance-guide/)
+  - Change management: documented process for code changes, peer review, testing, approvals, and rollbacks. [ictinstitute](https://ictinstitute.nl/iso-27001-controls-software-development/)
+  - System operations: monitoring, logging, incident response, backup and recovery procedures. [stackhawk](https://www.stackhawk.com/blog/iso-27001-application-security-compliance/)
+  - Risk management: periodic risk assessments and remedial actions. [fortinet](https://www.fortinet.com/resources/cyberglossary/soc-2-compliance)
+- Document everything: policies, procedures, diagrams, risk registers, audit logs, evidence of controls working (tickets, reports, screenshots). [dev](https://dev.to/alejandro_areiza2346/a-practical-introduction-to-iso-27001-for-developers-3c87)
+- Undergo audit: a CPA firm (or equivalent) tests your controls over a period (Type II) and issues a report. [vanta](https://www.vanta.com/collection/soc-2/what-is-soc-2)
+
+For a dev team, this translates into disciplined SDLC, access control, monitoring, and a lot of documentation rather than just ad‑hoc good practice. [ictinstitute](https://ictinstitute.nl/iso-27001-controls-software-development/)
+
+***
+
+## 3. What ISO 27001 expects from your apps
+
+ISO 27001 requires you to run security as a continuous management system, not a one‑time setup. [invicti](https://www.invicti.com/white-papers/application-security-according-to-iso-27001-invicti-ebook)
+
+Key expectations that affect your apps:
+
+- Secure SDLC: separate dev/test/prod environments, security requirements in design, secure architecture, regular security testing (scans and pen tests), and formal change management. [stackhawk](https://www.stackhawk.com/blog/iso-27001-application-security-compliance/)
+- Secure coding standards: written secure coding guidelines per language, mandatory code review, and developer training in vulnerability prevention and remediation. [dev](https://dev.to/alejandro_areiza2346/a-practical-introduction-to-iso-27001-for-developers-3c87)
+- Asset and access management: classify data and systems, manage who can access repositories, environments, and production data. [ictinstitute](https://ictinstitute.nl/iso-27001-controls-software-development/)
+- Logging and monitoring: security event logging, monitoring, and regular review to detect incidents. [dev](https://dev.to/alejandro_areiza2346/a-practical-introduction-to-iso-27001-for-developers-3c87)
+
+Certification comes after an external auditor verifies that your ISMS and controls are in place and working over time. [stackhawk](https://www.stackhawk.com/blog/iso-27001-application-security-compliance/)
+
+***
+
+## 4. Sector‑specific compliance (GDPR, HIPAA, PCI DSS)
+
+On top of SOC 2/ISO 27001, you might also need to meet data‑protection regulations. [nextbigtechnology](https://nextbigtechnology.com/how-to-build-gdpr-hipaa-pci-compliant-apps/)
+
+For apps and websites, especially healthcare and payments:
+
+- GDPR (EU personal data): consent, data minimization, records of processing, DPIAs for high‑risk processing, user rights (access, deletion, export) and lawful basis for each processing activity. [nextbigtechnology](https://nextbigtechnology.com/how-to-build-gdpr-hipaa-pci-compliant-apps/)
+- HIPAA (US health data): administrative, technical, and physical safeguards for PHI, business associate agreements, audit logs, breach notification procedures. [tekclarion](https://www.tekclarion.com/cyber-security/compliance-standards/)
+- PCI DSS (card data): secure network, protect cardholder data, vulnerability management, access control, monitoring, and security policy. [netapp](https://www.netapp.com/blog/data-compliance-regulations-hipaa-gdpr-and-pci-dss/)
+
+Each framework also specifies required documentation (records of processing, PHI handling, cardholder data security docs, etc.). [nextbigtechnology](https://nextbigtechnology.com/how-to-build-gdpr-hipaa-pci-compliant-apps/)
+
+***
+
+## 5. Step‑by‑step: how to move toward “real” compliance
+
+If you want your apps to be ready for SOC 2 / ISO 27001 level scrutiny, treat this as a maturity roadmap. [invicti](https://www.invicti.com/white-papers/application-security-according-to-iso-27001-invicti-ebook)
+
+For a small product team:
+
+1. **Define scope and risks**  
+   - Decide which product and infrastructure are “in scope” and list key data flows and assets. [barnesdennig](https://www.barnesdennig.com/understanding-soc2-compliance-guide/)
+   - Run an initial risk assessment and simple gap analysis against SOC 2 criteria or ISO 27001 controls. [barnesdennig](https://www.barnesdennig.com/understanding-soc2-compliance-guide/)
+
+2. **Put in place core controls**  
+   - Implement RBAC, least privilege, SSO/MFA, and clean access review processes. [checkpoint](https://www.checkpoint.com/cyber-hub/cyber-security/what-is-soc-2-compliance/)
+   - Formalize change management (tickets with security acceptance criteria, mandatory reviews, CI/CD gates). [checkpoint](https://www.checkpoint.com/cyber-hub/cyber-security/what-is-soc-2-compliance/)
+   - Enforce secure SDLC with regular vulnerability scanning and periodic penetration testing. [invicti](https://www.invicti.com/white-papers/application-security-according-to-iso-27001-invicti-ebook)
+
+3. **Build policy and documentation layer**  
+   - Create written policies for information security, access control, incident response, backup, and acceptable use. [stackhawk](https://www.stackhawk.com/blog/iso-27001-application-security-compliance/)
+   - Maintain evidence: logs, training records, test reports, meeting notes for risk reviews. [dev](https://dev.to/alejandro_areiza2346/a-practical-introduction-to-iso-27001-for-developers-3c87)
+
+4. **Align with data‑protection laws you care about**  
+   - Map your data and identify whether GDPR, HIPAA, PCI DSS apply, then plug their specific requirements into your controls and documentation. [tekclarion](https://www.tekclarion.com/cyber-security/compliance-standards/)
+
+5. **Work with an auditor when ready**  
+   - For SOC 2 or ISO 27001 certification, you eventually bring in an external auditor to review and certify your environment. [vanta](https://www.vanta.com/collection/soc-2/what-is-soc-2)
+
+Given your context (health + transport AI in Tanzania), the next big decision is: which formal framework are you aiming for first (SOC 2, ISO 27001, or just GDPR/HIPAA‑like readiness) so we can design a concrete, minimal roadmap for your team?
