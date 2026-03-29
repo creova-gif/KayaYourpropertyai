@@ -108,13 +108,6 @@ const COMPLIANCE_ITEMS:ComplianceItem[]=[
     actions:["Kaya auto-populates N4 from your rent ledger","Double-check termination dates using the LTB date calculator","Confirm service method matches what you'll declare","Keep a copy of all served notices"],
     law:"Residential Tenancies Act, 2006",severity:"medium"
   },
-  {
-    id:"pci_dss",title:"Payment Card Security (PCI DSS)",
-    description:"Any platform accepting credit or debit card payments must comply with the Payment Card Industry Data Security Standard. Kaya processes all payments through Stripe, a PCI DSS Level 1 certified processor — the highest level of certification.",
-    status:"compliant",category:"Payments",
-    actions:["Kaya uses Stripe Checkout — raw card numbers never touch Kaya servers","Stripe handles all card tokenization, storage, and transmission","Kaya's PCI scope is SAQ-A (the smallest, lowest-risk questionnaire)","Never log or store card numbers, CVVs, or full PANs in any form","Review Stripe's PCI compliance report annually at dashboard.stripe.com/settings/compliance"],
-    law:"PCI DSS v4.0 — Requirement 12.3 / SAQ-A",severity:"medium"
-  },
 ];
 
 const STATUS_CONFIG:{[k in Status]:{label:string;color:string;bg:string;icon:React.ReactNode}}={
@@ -158,7 +151,7 @@ export default function ComplianceCenter(){
               <div>
                 <h1 style={{fontSize:26,fontWeight:700,color:TX,fontFamily:SERIF,margin:0}}>Compliance Centre</h1>
                 <p style={{fontSize:14,color:MU,margin:0}}>
-                  {mode==="residential"?"PIPEDA · PCI DSS · Ontario Human Rights Code · CASL · LTB Requirements":"Commercial Tenancies Act · HST (ETA) · REBBA · Superior Court"}
+                  {mode==="residential"?"PIPEDA · Ontario Human Rights Code · CASL · LTB Requirements":"Commercial Tenancies Act · HST (ETA) · REBBA · Superior Court"}
                 </p>
               </div>
             </div>
@@ -191,7 +184,7 @@ export default function ComplianceCenter(){
               </div>
             </div>
             <div style={{fontSize:13,fontWeight:700,color:TX,textAlign:"center"}}>Compliance Score</div>
-            <div style={{fontSize:11,color:MU,marginTop:2,textAlign:"center"}}>{compliantCount}/{allItems.length} items passing</div>
+            <div style={{fontSize:11,color:MU,marginTop:2,textAlign:"center"}}>{compliantCount}/{COMPLIANCE_ITEMS.length} items passing</div>
           </motion.div>
 
           {/* Status breakdown */}
