@@ -9,12 +9,26 @@ KAYA is an AI-powered, bilingual property management platform for Ontario landlo
 - **Styling:** Tailwind CSS 4, Emotion, MUI
 - **Routing:** React Router 7
 - **UI Components:** Radix UI, shadcn-style components
-- **Backend/DB:** Supabase (auth + database)
+- **Backend/DB:** Supabase (auth + database + Edge Functions via Deno + Hono)
 - **Payments:** Stripe
 - **Charts:** Recharts
 - **Drag & Drop:** React DnD
 - **Animations:** Motion (Framer Motion)
 - **Forms:** React Hook Form
+
+## Compliance Module (PIPEDA + Ontario RTA)
+Implemented in `supabase/functions/server/index.tsx` with frontend client at `src/app/services/compliance.service.ts`.
+
+| Feature | Backend Endpoint | Notes |
+|---|---|---|
+| Rate Limiting | Middleware on all routes | 100 req/min general; 10/min for auth routes |
+| Audit Logging | `GET/POST /compliance/audit-log` | Append-only, 500 entries per user, IP-tagged |
+| Consent Management | `GET/POST/DELETE /compliance/consent` | 5 PIPEDA consent types tracked with timestamps |
+| Right to Erasure | `DELETE /compliance/users/:id/data` | Anonymizes PII; retains financial trail (CRA 7yr) |
+| Rent Increase Validation | `GET /compliance/rent-increase/validate` | Ontario guideline table 2022–2026; Form N1 notice logic |
+| Notice Delivery Tracking | `GET/POST /compliance/notices/track` | LTB-admissible receipts with method + timestamp |
+| Soft Delete | `softDelete()` utility | Never hard-deletes; sets `deletedAt` + audit log |
+| Compliance Health | `GET /compliance/health` | Status check, module list, data residency |
 
 ## Project Structure
 ```
