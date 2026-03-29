@@ -4,7 +4,7 @@
  */
 
 import { projectId, publicAnonKey } from '/utils/supabase/info';
-import { getAccessToken } from './auth.service';
+import { supabase } from '/src/lib/supabase';
 import type { Property, Unit, Application, Payment, MaintenanceRequest } from '../types/database.types';
 
 // API base URL
@@ -15,7 +15,8 @@ const API_BASE = `https://${projectId}.supabase.co/functions/v1/make-server-2071
 // ============================================================================
 
 async function apiFetch(endpoint: string, options: RequestInit = {}): Promise<any> {
-  const token = getAccessToken();
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token ?? null;
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',

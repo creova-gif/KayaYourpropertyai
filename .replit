@@ -41,3 +41,9 @@ externalPort = 3000
 deploymentTarget = "static"
 build = ["npm", "run", "build"]
 publicDir = "dist"
+
+[userenv]
+
+[userenv.shared]
+VITE_DEMO_EMAIL = "demo@kaya.ca"
+VITE_DEMO_PASSWORD = "demo1234"

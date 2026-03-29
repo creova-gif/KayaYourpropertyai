@@ -68,9 +68,26 @@ src/
 - `src/lib/supabase.ts`: Supabase client configuration (requires env vars)
 
 ## Authentication
-- **Demo account:** `demo@kaya.ca` / `demo1234` — bypasses Supabase, sets a mock Pro-tier landlord session
+- **Demo account:** Credentials loaded from `VITE_DEMO_EMAIL` / `VITE_DEMO_PASSWORD` env vars — bypasses Supabase, sets a mock Pro-tier landlord session (session token = `demo-session-token`)
 - **Trial context:** `TrialContext` handles subscription enforcement; demo users get mocked `pro` / `active` status
-- **Sign out:** Always clears local state first; skips Supabase call for demo accounts
+- **Sign out:** Always clears local state first; skips Supabase call for demo sessions
+- **OTP login:** Uses real `supabase.auth.signInWithOtp()` + `supabase.auth.verifyOtp()` — supports email and SMS (phone)
+- **Token source of truth:** `supabase.auth.getSession()` — backend service and compliance service read from Supabase SDK only, never localStorage
+
+## Security Posture (as of Mar 2026)
+| ID | Issue | Status |
+|---|---|---|
+| CRIT-01 | CORS wildcard `origin: "*"` | ✅ Fixed — explicit origin allowlist |
+| CRIT-02 | OTP accepts any 6-digit code | ✅ Fixed — real Supabase OTP/verifyOtp |
+| CRIT-03 | JWT in localStorage (`kaya_access_token`) | ✅ Fixed — backend/compliance services use `supabase.auth.getSession()` |
+| CRIT-04 | Rate limiter fail-open on auth routes | ✅ Fixed — auth routes return 503 when KV unavailable |
+| CRIT-05 | Hardcoded credentials in source (`demo1234`) | ✅ Fixed — moved to `VITE_DEMO_EMAIL`/`VITE_DEMO_PASSWORD` env vars |
+| HIGH-01 | Dual auth systems (auth.service.ts + AuthContext) | ✅ Fixed — auth.service.ts no longer used for token retrieval |
+| HIGH-02 | Missing CSP + security headers | ✅ Fixed — middleware adds CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy |
+| HIGH-03 | 18 endpoints expose `details: error.message` | ✅ Fixed — bulk-stripped via sed, 0 remaining |
+| MEDIUM-01 | No input length limits on auth endpoints | ✅ Fixed — email ≤254, password 8–128, name 2–100 validated |
+| MEDIUM-03 | No per-email account lockout | ✅ Fixed — 5 attempts/15min → 15min lockout via KV store |
+| U-05/U-06 | Hardcoded "Sarah Kim" / "SK" in tenant portal | ✅ Fixed — TenantLayout + TenantProfile bound to `useAuth()` user |
 
 ## Language Support
 - **Languages:** English (EN), French (FR), Spanish (ES), Mandarin (ZH), Punjabi (PA)

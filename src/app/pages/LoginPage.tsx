@@ -3,7 +3,11 @@ import { useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { Building2, Mail, Lock, AlertCircle, Loader2, Users, Home, ChevronRight, ArrowRight, Phone, Shield, Smartphone, KeyRound, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '/src/lib/supabase';
 import { ErrorHandler } from '../utils/errorHandling';
+
+const DEMO_EMAIL = import.meta.env.VITE_DEMO_EMAIL as string | undefined;
+const DEMO_PASSWORD = import.meta.env.VITE_DEMO_PASSWORD as string | undefined;
 
 const G = '#0A7A52';
 const GL = '#E5F4EE';
@@ -79,10 +83,14 @@ export function LoginPage() {
   };
 
   const handleDemoLandlord = async () => {
+    if (!DEMO_EMAIL || !DEMO_PASSWORD) {
+      setError('Demo credentials are not configured. Contact the administrator.');
+      return;
+    }
     setError('');
     setLoading(true);
     try {
-      await signIn('demo@kaya.ca', 'demo1234');
+      await signIn(DEMO_EMAIL, DEMO_PASSWORD);
       ErrorHandler.success('Landlord demo active', 'Welcome to your property portfolio!');
       setTimeout(() => navigate('/app'), 500);
     } catch (err: any) {
@@ -93,10 +101,14 @@ export function LoginPage() {
   };
 
   const handleDemoTenant = async () => {
+    if (!DEMO_EMAIL || !DEMO_PASSWORD) {
+      setError('Demo credentials are not configured. Contact the administrator.');
+      return;
+    }
     setError('');
     setLoading(true);
     try {
-      await signIn('demo@kaya.ca', 'demo1234');
+      await signIn(DEMO_EMAIL, DEMO_PASSWORD);
       ErrorHandler.success('Tenant demo active', 'Welcome to your tenant portal!');
       setTimeout(() => navigate('/tenant'), 500);
     } catch (err: any) {
@@ -107,14 +119,27 @@ export function LoginPage() {
   };
 
   const handleSendOTP = async () => {
-    if (!otpContact.trim()) return;
+    const contact = otpContact.trim();
+    if (!contact) return;
+    setError('');
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1200));
-    setLoading(false);
-    setOtpSent(true);
-    setCountdown(30);
-    setOtpStep('enter-code');
-    setTimeout(() => otpRefs[0]?.current?.focus(), 100);
+    try {
+      const isEmail = contact.includes('@');
+      const opts: Parameters<typeof supabase.auth.signInWithOtp>[0] = isEmail
+        ? { email: contact }
+        : { phone: contact };
+      const { error } = await supabase.auth.signInWithOtp(opts);
+      if (error) throw error;
+      setOtpContactType(isEmail ? 'email' : 'phone');
+      setOtpSent(true);
+      setCountdown(30);
+      setOtpStep('enter-code');
+      setTimeout(() => otpRefs[0]?.current?.focus(), 100);
+    } catch (err: any) {
+      setError(err.message || 'Failed to send code. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleOTPDigit = (idx: number, val: string) => {
@@ -136,23 +161,29 @@ export function LoginPage() {
   };
 
   const handleVerifyOTP = async (code: string) => {
+    if (code.length !== 6) {
+      setError('Please enter the full 6-digit code.');
+      return;
+    }
+    setError('');
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1000));
-    setLoading(false);
-    if (code.length === 6) {
-      setOtpStep('success');
-      setTimeout(async () => {
-        try {
-          await signIn('demo@kaya.ca', 'demo1234');
-          navigate('/tenant');
-        } catch {
-          navigate('/tenant');
-        }
-      }, 1500);
-    } else {
-      setError('Invalid code. Please try again.');
+    try {
+      const contact = otpContact.trim();
+      const isEmail = contact.includes('@');
+      const { data, error } = isEmail
+        ? await supabase.auth.verifyOtp({ email: contact, token: code, type: 'email' })
+        : await supabase.auth.verifyOtp({ phone: contact, token: code, type: 'sms' });
+      if (error) throw error;
+      if (data.user) {
+        setOtpStep('success');
+        setTimeout(() => navigate('/tenant'), 1500);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Invalid or expired code. Please try again.');
       setOtpDigits(['', '', '', '', '', '']);
-      otpRefs[0]?.current?.focus();
+      setTimeout(() => otpRefs[0]?.current?.focus(), 50);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -380,11 +411,6 @@ export function LoginPage() {
                 <p style={{ fontSize: 14, color: MU, marginBottom: 8 }}>
                   We sent a 6-digit code to <strong style={{ color: TX }}>{otpContact}</strong>
                 </p>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 12px', background: GL, border: `1px solid ${G}20`, borderRadius: 99, marginBottom: 28 }}>
-                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: G }} />
-                  <span style={{ fontSize: 11, fontWeight: 700, color: G }}>Demo code: any 6 digits</span>
-                </div>
-
                 {error && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ background: '#FDECEA', border: '1px solid rgba(192,57,43,0.3)', borderRadius: 12, padding: '12px 16px', marginBottom: 20, display: 'flex', gap: 10, alignItems: 'center' }}>
                     <AlertCircle size={16} color="#C0392B" />

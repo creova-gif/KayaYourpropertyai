@@ -150,11 +150,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true);
 
-      // Demo account bypass — no Supabase call needed
-      if (email.toLowerCase() === 'demo@kaya.ca' && password === 'demo1234') {
+      // Demo account — credentials must be set in environment variables
+      // Set VITE_DEMO_EMAIL and VITE_DEMO_PASSWORD in .env to enable demo login
+      const demoEmail = import.meta.env.VITE_DEMO_EMAIL as string | undefined;
+      const demoPassword = import.meta.env.VITE_DEMO_PASSWORD as string | undefined;
+      const isDemoLogin = demoEmail && demoPassword
+        && email.toLowerCase() === demoEmail.toLowerCase()
+        && password === demoPassword;
+
+      if (isDemoLogin) {
         const demoUser = {
           id: 'demo-user-id',
-          email: 'demo@kaya.ca',
+          email: demoEmail,
           name: 'Demo Landlord',
           role: 'landlord',
           phone: '+1 416 555 0100',
@@ -162,7 +169,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           subscriptionStatus: 'active',
         };
         setUser(demoUser);
-        setSession({ access_token: 'demo-access-token' });
+        setSession({ access_token: 'demo-session-token' });
         console.log('✅ Demo login successful');
         return;
       }
@@ -212,8 +219,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       setSession(null);
 
-      // Skip Supabase call for demo account
-      if (session?.access_token !== 'demo-access-token') {
+      // Skip Supabase call for demo session
+      if (session?.access_token !== 'demo-session-token') {
         const { error } = await supabase.auth.signOut();
         if (error) console.error('❌ Sign out error:', error);
       }

@@ -15,17 +15,58 @@ const supabase = createClient(
 // Enable logger
 app.use('*', logger(console.log));
 
-// Enable CORS for all routes and methods
-app.use(
-  "/*",
-  cors({
-    origin: "*",
-    allowHeaders: ["Content-Type", "Authorization"],
-    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    exposeHeaders: ["Content-Length"],
-    maxAge: 600,
-  }),
-);
+// Allowed origins — extend for additional production domains
+const ALLOWED_ORIGINS = [
+  'https://kaya.ca',
+  'https://app.kaya.ca',
+  'https://www.kaya.ca',
+  // Replit preview domains (dev only)
+  /\.replit\.dev$/,
+  /\.repl\.co$/,
+  // Local development
+  'http://localhost:5000',
+  'http://localhost:5173',
+];
+
+function isOriginAllowed(origin: string | null): boolean {
+  if (!origin) return false;
+  return ALLOWED_ORIGINS.some(allowed =>
+    typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
+  );
+}
+
+// Enable CORS — explicit allowlist, no wildcard
+app.use("/*", async (c, next) => {
+  const origin = c.req.header('origin') ?? null;
+  const allowed = isOriginAllowed(origin);
+
+  if (c.req.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 204,
+      headers: {
+        'Access-Control-Allow-Origin': allowed && origin ? origin : '',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Max-Age': '600',
+        'Vary': 'Origin',
+      },
+    });
+  }
+
+  await next();
+
+  if (allowed && origin) {
+    c.res.headers.set('Access-Control-Allow-Origin', origin);
+    c.res.headers.set('Vary', 'Origin');
+  }
+  // Content Security Policy
+  c.res.headers.set('Content-Security-Policy',
+    "default-src 'self'; script-src 'self'; connect-src 'self' https://*.supabase.co; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com"
+  );
+  c.res.headers.set('X-Content-Type-Options', 'nosniff');
+  c.res.headers.set('X-Frame-Options', 'DENY');
+  c.res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+});
 
 // ============================================================================
 // MIDDLEWARE - Authentication
@@ -53,6 +94,50 @@ async function requireAuth(c: any, next: any) {
 }
 
 // ============================================================================
+// ACCOUNT LOCKOUT — per-email brute-force protection
+// 5 failed login attempts within 15 minutes → 15-minute lockout
+// ============================================================================
+
+const LOCKOUT_MAX_ATTEMPTS = 5;
+const LOCKOUT_WINDOW_SECS  = 15 * 60; // 15 minutes
+const LOCKOUT_DURATION_SECS = 15 * 60; // 15 minutes
+
+async function checkAccountLockout(email: string): Promise<{ locked: boolean; retryAfter?: number }> {
+  const key = `lockout:${email.toLowerCase()}`;
+  const record = await kv.get(key) as { attempts: number; lockedUntil?: number } | null;
+  if (!record) return { locked: false };
+  if (record.lockedUntil && Date.now() < record.lockedUntil) {
+    return { locked: true, retryAfter: Math.ceil((record.lockedUntil - Date.now()) / 1000) };
+  }
+  return { locked: false };
+}
+
+async function recordFailedAttempt(email: string): Promise<void> {
+  const key = `lockout:${email.toLowerCase()}`;
+  const now = Date.now();
+  const record = (await kv.get(key) as { attempts: number; windowStart: number; lockedUntil?: number } | null)
+    ?? { attempts: 0, windowStart: now };
+
+  // Reset window if it has expired
+  if (now - record.windowStart > LOCKOUT_WINDOW_SECS * 1000) {
+    record.attempts = 0;
+    record.windowStart = now;
+    delete record.lockedUntil;
+  }
+
+  record.attempts += 1;
+  if (record.attempts >= LOCKOUT_MAX_ATTEMPTS) {
+    record.lockedUntil = now + LOCKOUT_DURATION_SECS * 1000;
+    console.warn(`[lockout] Account locked for ${email} after ${record.attempts} failed attempts`);
+  }
+  await kv.set(key, record);
+}
+
+async function clearFailedAttempts(email: string): Promise<void> {
+  await kv.set(`lockout:${email.toLowerCase()}`, { attempts: 0, windowStart: Date.now() });
+}
+
+// ============================================================================
 // HEALTH CHECK
 // ============================================================================
 
@@ -64,6 +149,54 @@ app.get("/make-server-2071350e/health", (c) => {
 // AUTHENTICATION ROUTES
 // ============================================================================
 
+// Login — with per-email lockout and input validation
+app.post("/make-server-2071350e/auth/login", async (c) => {
+  try {
+    const body = await c.req.json();
+    const { email, password } = body;
+
+    if (!email || !password) {
+      return c.json({ error: 'Email and password are required' }, { status: 400 });
+    }
+    if (typeof email !== 'string' || email.length > 254) {
+      return c.json({ error: 'Invalid email' }, { status: 400 });
+    }
+    if (typeof password !== 'string' || password.length > 128) {
+      return c.json({ error: 'Invalid password' }, { status: 400 });
+    }
+
+    // Check lockout before attempting login
+    const lockout = await checkAccountLockout(email);
+    if (lockout.locked) {
+      return c.json(
+        { error: `Account temporarily locked. Try again in ${Math.ceil((lockout.retryAfter ?? 900) / 60)} minutes.` },
+        { status: 429, headers: { 'Retry-After': String(lockout.retryAfter ?? 900) } }
+      );
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error || !data.session) {
+      await recordFailedAttempt(email);
+      // Use a generic message — don't indicate whether email or password is wrong
+      return c.json({ error: 'Invalid email or password' }, { status: 401 });
+    }
+
+    // Successful login — clear failed attempts
+    await clearFailedAttempts(email);
+
+    const userProfile = await kv.get(`user:${data.user.id}`);
+    return c.json({
+      success: true,
+      user: userProfile,
+      accessToken: data.session.access_token,
+    });
+  } catch (error) {
+    console.error('[auth/login] error:', error);
+    return c.json({ error: 'Authentication failed. Please try again.' }, { status: 500 });
+  }
+});
+
 // Sign up new user
 app.post("/make-server-2071350e/auth/signup", async (c) => {
   try {
@@ -72,6 +205,15 @@ app.post("/make-server-2071350e/auth/signup", async (c) => {
 
     if (!email || !password || !name) {
       return c.json({ error: 'Email, password, and name are required' }, { status: 400 });
+    }
+    if (typeof email !== 'string' || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return c.json({ error: 'Invalid email address' }, { status: 400 });
+    }
+    if (typeof password !== 'string' || password.length < 8 || password.length > 128) {
+      return c.json({ error: 'Password must be 8–128 characters' }, { status: 400 });
+    }
+    if (typeof name !== 'string' || name.trim().length < 2 || name.length > 100) {
+      return c.json({ error: 'Name must be 2–100 characters' }, { status: 400 });
     }
 
     // Create user with Supabase Auth
@@ -1422,7 +1564,7 @@ app.post("/make-server-2071350e/stripe/create-checkout-session", requireAuth, as
 
   } catch (error) {
     console.log('Error creating Stripe checkout session:', error);
-    return c.json({ error: 'Failed to create checkout session', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to create checkout session' }, { status: 500 });
   }
 });
 
@@ -1450,7 +1592,7 @@ app.post("/make-server-2071350e/stripe/create-portal-session", requireAuth, asyn
 
   } catch (error) {
     console.log('Error creating Stripe portal session:', error);
-    return c.json({ error: 'Failed to create portal session', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to create portal session' }, { status: 500 });
   }
 });
 
@@ -1682,7 +1824,7 @@ Format your response in JSON with this structure:
 
   } catch (error) {
     console.log('AI rent estimate error:', error);
-    return c.json({ error: 'Failed to generate rent estimate', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to generate rent estimate' }, { status: 500 });
   }
 });
 
@@ -1768,7 +1910,7 @@ Format your response in JSON with this structure:
 
   } catch (error) {
     console.log('AI comparison error:', error);
-    return c.json({ error: 'Failed to compare listings', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to compare listings' }, { status: 500 });
   }
 });
 
@@ -1840,7 +1982,7 @@ Format as JSON:
 
   } catch (error) {
     console.log('AI lease explanation error:', error);
-    return c.json({ error: 'Failed to explain lease terms', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to explain lease terms' }, { status: 500 });
   }
 });
 
@@ -1942,7 +2084,7 @@ Remember: You're not just answering questions - you're helping landlords run bet
 
   } catch (error) {
     console.log('AI chat error:', error);
-    return c.json({ error: 'Failed to process chat message', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to process chat message' }, { status: 500 });
   }
 });
 
@@ -2037,7 +2179,7 @@ Respond as if you're a knowledgeable assistant speaking directly to the user. Be
 
   } catch (error) {
     console.log('AI voice command error:', error);
-    return c.json({ error: 'Failed to process voice command', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to process voice command' }, { status: 500 });
   }
 });
 
@@ -2117,7 +2259,7 @@ Consider Canadian tenant screening best practices and legal requirements.`;
 
   } catch (error) {
     console.log('AI tenant screening error:', error);
-    return c.json({ error: 'Failed to screen tenant', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to screen tenant' }, { status: 500 });
   }
 });
 
@@ -2138,6 +2280,7 @@ async function rateLimiter(c: any, next: any, limit = 100, windowSecs = 60) {
     || 'unknown';
   const bucket = `ratelimit:${ip}:${Math.floor(Date.now() / (windowSecs * 1000))}`;
 
+  const isAuthRoute = c.req.path.includes('/auth/');
   try {
     const entry = (await kv.get(bucket)) ?? { count: 0, resetAt: Date.now() + windowSecs * 1000 };
     entry.count += 1;
@@ -2151,7 +2294,15 @@ async function rateLimiter(c: any, next: any, limit = 100, windowSecs = 60) {
 
     await kv.set(bucket, entry);
   } catch (_e) {
-    // If KV fails, allow the request through (fail-open) to preserve availability
+    // Auth routes fail-closed: if KV is unavailable, block rather than allow unlimited attempts
+    if (isAuthRoute) {
+      console.error('[rate-limiter] KV unavailable on auth route — blocking request');
+      return c.json(
+        { error: 'Service temporarily unavailable. Please try again in a moment.' },
+        { status: 503 }
+      );
+    }
+    // Non-auth routes fail-open to preserve availability
   }
 
   return next();
@@ -2200,7 +2351,7 @@ app.get('/make-server-2071350e/compliance/audit-log', requireAuth, async (c) => 
     const page = filtered.slice(-Number(limit)).reverse();
     return c.json({ success: true, total: filtered.length, logs: page });
   } catch (error) {
-    return c.json({ error: 'Failed to retrieve audit log', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to retrieve audit log' }, { status: 500 });
   }
 });
 
@@ -2219,7 +2370,7 @@ app.post('/make-server-2071350e/compliance/audit-log', requireAuth, async (c) =>
     await writeAuditLog({ userId, action, resource, resourceId, ip, details });
     return c.json({ success: true });
   } catch (error) {
-    return c.json({ error: 'Failed to write audit log', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to write audit log' }, { status: 500 });
   }
 });
 
@@ -2276,7 +2427,7 @@ app.post('/make-server-2071350e/compliance/consent', requireAuth, async (c) => {
 
     return c.json({ success: true, consent: existing[type] });
   } catch (error) {
-    return c.json({ error: 'Failed to record consent', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to record consent' }, { status: 500 });
   }
 });
 
@@ -2287,7 +2438,7 @@ app.get('/make-server-2071350e/compliance/consent', requireAuth, async (c) => {
     const consents: Record<string, any> = (await kv.get(`consent:${userId}`)) ?? {};
     return c.json({ success: true, consents });
   } catch (error) {
-    return c.json({ error: 'Failed to retrieve consents', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to retrieve consents' }, { status: 500 });
   }
 });
 
@@ -2316,7 +2467,7 @@ app.delete('/make-server-2071350e/compliance/consent/:type', requireAuth, async 
     await writeAuditLog({ userId, action: 'consent_revoked', resource: 'consent', resourceId: type, ip });
     return c.json({ success: true, message: `Consent for '${type}' revoked` });
   } catch (error) {
-    return c.json({ error: 'Failed to revoke consent', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to revoke consent' }, { status: 500 });
   }
 });
 
@@ -2377,7 +2528,7 @@ app.delete('/make-server-2071350e/compliance/users/:id/data', requireAuth, async
       erasedAt: anonymized.erasedAt,
     });
   } catch (error) {
-    return c.json({ error: 'Failed to execute erasure', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to execute erasure' }, { status: 500 });
   }
 });
 
@@ -2459,7 +2610,7 @@ app.get('/make-server-2071350e/compliance/rent-increase/validate', requireAuth, 
       },
     });
   } catch (error) {
-    return c.json({ error: 'Failed to validate rent increase', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to validate rent increase' }, { status: 500 });
   }
 });
 
@@ -2540,7 +2691,7 @@ app.post('/make-server-2071350e/compliance/notices/track', requireAuth, async (c
       message: `Notice ${noticeType} delivery recorded via ${method}. This receipt is admissible as evidence at the LTB.`,
     });
   } catch (error) {
-    return c.json({ error: 'Failed to record notice delivery', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to record notice delivery' }, { status: 500 });
   }
 });
 
@@ -2555,7 +2706,7 @@ app.get('/make-server-2071350e/compliance/notices/track', requireAuth, async (c)
     const page = filtered.slice(-Number(limit)).reverse();
     return c.json({ success: true, total: filtered.length, deliveries: page });
   } catch (error) {
-    return c.json({ error: 'Failed to retrieve delivery records', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to retrieve delivery records' }, { status: 500 });
   }
 });
 
@@ -2569,7 +2720,7 @@ app.get('/make-server-2071350e/compliance/notices/track/:noticeId', requireAuth,
     }
     return c.json({ success: true, delivery: record });
   } catch (error) {
-    return c.json({ error: 'Failed to retrieve delivery record', details: error.message }, { status: 500 });
+    return c.json({ error: 'Failed to retrieve delivery record' }, { status: 500 });
   }
 });
 

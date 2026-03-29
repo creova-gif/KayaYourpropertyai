@@ -1,9 +1,10 @@
 import { Outlet, Link, useLocation, useNavigate } from "react-router";
 import {
-  Home, CreditCard, FileText, Wrench, Menu, X, ClipboardList, Building2, Sparkles,
+  Home, CreditCard, FileText, Wrench, Menu, X, ClipboardList, Building2,
   Receipt, CheckSquare, Bell, RefreshCw, Scale, User,
 } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 import { RoleSwitcher } from "../../components/RoleSwitcher";
 import { GlobalAIAssistant } from "../../components/GlobalAIAssistant";
 import { AICommandPalette } from "../../components/AICommandPalette";
@@ -62,7 +63,11 @@ const BOTTOM_NAV = [
 export function TenantLayout() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const displayName = user?.name || user?.email?.split('@')[0] || 'Tenant';
+  const initials = displayName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
   const isActive = (path: string) => {
     if (path === "/tenant") return location.pathname === "/tenant";
@@ -73,8 +78,8 @@ export function TenantLayout() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#F8F7F4", fontFamily: SANS }}>
-      <GlobalAIAssistant pageContext="Tenant Portal" userContext="Tenant" userId="demo-tenant" />
-      <AICommandPalette userId="demo-tenant" />
+      <GlobalAIAssistant pageContext="Tenant Portal" userContext="Tenant" userId={user?.id || 'tenant'} />
+      <AICommandPalette userId={user?.id || 'tenant'} />
 
       {/* ── Mobile header ── */}
       <div className="lg:hidden" style={{
@@ -157,10 +162,10 @@ export function TenantLayout() {
         {/* Tenant info */}
         <div style={{ padding: "12px 14px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "rgba(255,255,255,0.06)", borderRadius: 10 }}>
-            <div style={{ width: 34, height: 34, borderRadius: "50%", background: `linear-gradient(135deg, ${G}, #065E3C)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "#fff", flexShrink: 0 }}>SK</div>
+            <div style={{ width: 34, height: 34, borderRadius: "50%", background: `linear-gradient(135deg, ${G}, #065E3C)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "#fff", flexShrink: 0 }}>{initials}</div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontSize: 13, fontWeight: 600, color: "#fff", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Sarah Kim</p>
-              <p style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", margin: 0 }}>Unit 4A · 123 King St</p>
+              <p style={{ fontSize: 13, fontWeight: 600, color: "#fff", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{displayName}</p>
+              <p style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", margin: 0 }}>Tenant Portal</p>
             </div>
             <div style={{ width: 7, height: 7, borderRadius: "50%", background: G, flexShrink: 0 }} />
           </div>

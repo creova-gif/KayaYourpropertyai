@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Sparkles, Moon, Sun, Copy, Check, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "../../contexts/AuthContext";
 
 /* ── Design tokens ── */
 const G = "#0A7A52";
@@ -80,7 +81,20 @@ function Sparkline({ data, color }: { data: number[]; color: string }) {
 
 export function TenantProfile() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const fileRef = useRef<HTMLInputElement>(null);
+
+  /* ── Derived user identity ── */
+  const authName = user?.name || user?.email?.split('@')[0] || 'Tenant';
+  const authEmail = user?.email || '';
+  const authInitials = authName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+  // Deterministic referral code from user id (first 8 chars uppercased)
+  const authReferralCode = user?.id
+    ? user.id.replace(/-/g, '').slice(0, 8).toUpperCase()
+    : 'KAYA0000';
+  const authReferralLink = `kaya.ca/join?ref=${authReferralCode}`;
+  const authPassportSlug = authName.toLowerCase().replace(/\s+/g, '-') + '-' + authReferralCode.slice(0, 4).toLowerCase();
+  const authPassportLink = `kaya.ca/passport/${authPassportSlug}`;
 
   /* ── State ── */
   const [modal, setModal] = useState<ModalType>(null);
@@ -93,8 +107,8 @@ export function TenantProfile() {
   const [lang, setLang] = useState("English (Canada)");
 
   /* profile fields */
-  const [profileName, setProfileName] = useState("Sarah Kim");
-  const [profileEmail, setProfileEmail] = useState("sarah.kim@email.com");
+  const [profileName, setProfileName] = useState(() => authName);
+  const [profileEmail, setProfileEmail] = useState(() => authEmail);
   const [profilePhone, setProfilePhone] = useState("+1 (416) 555-0123");
   const [emergencyName, setEmergencyName] = useState("James Kim");
   const [emergencyPhone, setEmergencyPhone] = useState("+1 (416) 555-0199");
@@ -135,7 +149,7 @@ export function TenantProfile() {
   }
 
   function copyReferral() {
-    navigator.clipboard.writeText("kaya.ca/join?ref=SARAH-XK7T").then(() => { setReferralCopied(true); setTimeout(() => setReferralCopied(false), 2000); toast.success("Referral link copied!"); });
+    navigator.clipboard.writeText(authReferralLink).then(() => { setReferralCopied(true); setTimeout(() => setReferralCopied(false), 2000); toast.success("Referral link copied!"); });
   }
 
   const closeModal = () => {
@@ -171,7 +185,7 @@ export function TenantProfile() {
               <p style={{ fontFamily: SERIF, fontSize: 22, color: "#fff", margin: 0 }}>{profileName}</p>
               <span style={{ fontSize: 9, fontWeight: 700, color: "#fff", background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 99, padding: "3px 10px" }}>✓ Verified</span>
             </div>
-            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.65)", margin: 0 }}>Unit 4A · 123 King Street, Toronto</p>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.65)", margin: 0 }}>Tenant</p>
             <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", margin: "2px 0 0" }}>{profileEmail} · {profilePhone}</p>
           </div>
 
@@ -373,7 +387,7 @@ export function TenantProfile() {
           <p style={{ fontSize: 11, color: "rgba(255,255,255,0.75)", marginBottom: 12, lineHeight: 1.5 }}>Refer a friend to Kaya. When they sign their first lease, you both get $25 credit.</p>
           <div style={{ display: "flex", gap: 8 }}>
             <div style={{ flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "9px 13px", display: "flex", alignItems: "center", border: "1px solid rgba(255,255,255,0.2)" }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#fff", fontFamily: "monospace", letterSpacing: "0.5px" }}>kaya.ca/join?ref=SARAH-XK7T</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#fff", fontFamily: "monospace", letterSpacing: "0.5px" }}>{authReferralLink}</span>
             </div>
             <button onClick={copyReferral} style={{ padding: "9px 13px", background: "#fff", color: G, border: "none", borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
               {referralCopied ? <Check size={13} /> : <Copy size={13} />} {referralCopied ? "Copied!" : "Copy"}
@@ -566,7 +580,7 @@ export function TenantProfile() {
                   {/* Avatar in modal */}
                   <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18, padding: "13px", background: T.metaBg, borderRadius: 11 }}>
                     <div style={{ width: 52, height: 52, borderRadius: "50%", background: avatarSrc ? "transparent" : T.glBg, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 700, color: G, flexShrink: 0 }}>
-                      {avatarSrc ? <img src={avatarSrc} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="avatar" /> : "SK"}
+                      {avatarSrc ? <img src={avatarSrc} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="avatar" /> : authInitials}
                     </div>
                     <div>
                       <p style={{ fontSize: 12, fontWeight: 600, color: T.tx, margin: 0 }}>Profile photo</p>
@@ -646,9 +660,9 @@ export function TenantProfile() {
                   <p style={{ fontSize: 12, fontWeight: 700, color: T.mu, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 8 }}>Shareable link</p>
                   <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
                     <div style={{ flex: 1, background: T.metaBg, border: `1px solid ${T.cardBorder}`, borderRadius: 9, padding: "10px 13px", fontSize: 12, color: T.mu, fontFamily: "monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                      kaya.ca/passport/sarah-kim-xk7t
+                      {authPassportLink}
                     </div>
-                    <button onClick={() => { navigator.clipboard.writeText("kaya.ca/passport/sarah-kim-xk7t"); toast.success("Passport link copied!"); }} style={{ padding: "10px 14px", background: G, color: "#fff", border: "none", borderRadius: 9, fontSize: 12, fontWeight: 700, cursor: "pointer", flexShrink: 0 }}>Copy</button>
+                    <button onClick={() => { navigator.clipboard.writeText(authPassportLink); toast.success("Passport link copied!"); }} style={{ padding: "10px 14px", background: G, color: "#fff", border: "none", borderRadius: 9, fontSize: 12, fontWeight: 700, cursor: "pointer", flexShrink: 0 }}>Copy</button>
                   </div>
                   <div style={{ padding: "11px 14px", background: T.metaBg, borderRadius: 10, marginBottom: 14, fontSize: 11, color: T.mu }}>
                     🔒 The link expires after 30 days · Only shows verified data · You can revoke access at any time
@@ -712,7 +726,7 @@ export function TenantProfile() {
                     </select>
                   </div>
                   <div style={{ padding: "11px 14px", background: T.metaBg, borderRadius: 10, marginBottom: 14 }}>
-                    {[["Tenant", profileName + " · Unit 4A"], ["Property", "123 King Street, Toronto"], ["Notice date", "Today (Mar 25, 2026)"], ["Termination date", new Date(moveDate).toLocaleDateString("en-CA", { month: "long", day: "numeric", year: "numeric" })]].map(r => (
+                    {[["Tenant", profileName], ["Notice date", new Date().toLocaleDateString("en-CA", { month: "long", day: "numeric", year: "numeric" })], ["Termination date", new Date(moveDate).toLocaleDateString("en-CA", { month: "long", day: "numeric", year: "numeric" })]].map(r => (
                       <div key={r[0]} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: `1px solid ${T.rowBorder}` }}>
                         <span style={{ fontSize: 11, color: T.mu }}>{r[0]}</span>
                         <span style={{ fontSize: 11, fontWeight: 600, color: T.tx }}>{r[1]}</span>
