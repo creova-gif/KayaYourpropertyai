@@ -15,7 +15,7 @@ type ItemStatus = { checked: boolean; condition: Condition | null; note: string;
 
 const COND_COLOR: Record<Condition, { bg: string; text: string; label: string }> = {
   excellent: { bg: GL, text: G, label: "Excellent" },
-  good:      { bg: "#E8F4FD", text: "#1D4ED8", label: "Good" },
+  good:      { bg: GL,        text: G,          label: "Good" },
   fair:      { bg: "#FEF3C7", text: "#B45309", label: "Fair" },
   damaged:   { bg: "#FEF2F2", text: "#DC2626", label: "Damaged" },
 };
@@ -123,7 +123,7 @@ export function TenantChecklist() {
           {[
             { label: "Inspected", value: checkedCount, bg: GL, text: G, icon: CheckCircle2 },
             { label: "Remaining", value: allItems.length - checkedCount, bg: "#F8F7F4", text: MU, icon: Clock },
-            { label: "Photos Taken", value: Object.values(items).filter(i => i.hasPhoto).length, bg: "#EFF6FF", text: "#1D4ED8", icon: Camera },
+            { label: "Photos Taken", value: Object.values(items).filter(i => i.hasPhoto).length, bg: GL, text: G, icon: Camera },
           ].map(s => (
             <div key={s.label} style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1px solid rgba(0,0,0,0.07)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 8 }}>

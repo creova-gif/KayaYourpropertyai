@@ -1,23 +1,17 @@
 import { useState, useEffect } from "react";
 import {
-  Search,
-  Filter,
-  Wrench,
-  Star,
-  MapPin,
-  Phone,
-  Mail,
-  Briefcase,
-  CheckCircle,
-  TrendingUp,
-  Clock,
-  DollarSign,
-  Users,
-  Award,
-  Plus,
+  Search, Filter, Wrench, Star, MapPin, Phone, Mail,
+  Briefcase, CheckCircle, Clock, DollarSign, Users, Award, Plus,
 } from "lucide-react";
 import { MarketplaceAPI } from "../services/backend.service";
 import { toast } from "sonner";
+
+const G = "#0A7A52";
+const GL = "#E5F4EE";
+const TX = "#0E0F0C";
+const MU = "#767570";
+const SANS = "'DM Sans', system-ui, sans-serif";
+const SERIF = "'Instrument Serif', Georgia, serif";
 
 interface Contractor {
   id: string;
@@ -36,6 +30,12 @@ interface Contractor {
   createdAt: string;
 }
 
+const tierStyle = (tier: string) => {
+  if (tier === "enterprise") return { bg: GL, color: G, border: `${G}30` };
+  if (tier === "pro") return { bg: "#FEF3C7", color: "#B45309", border: "rgba(180,83,9,0.2)" };
+  return { bg: "#F8F7F4", color: MU, border: "rgba(0,0,0,0.1)" };
+};
+
 export function ContractorMarketplace() {
   const [contractors, setContractors] = useState<Contractor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,12 +45,12 @@ export function ContractorMarketplace() {
 
   const trades = [
     { value: "all", label: "All Trades" },
-    { value: "plumbing", label: "Plumbing", icon: Wrench },
-    { value: "electrical", label: "Electrical", icon: Wrench },
-    { value: "hvac", label: "HVAC", icon: Wrench },
-    { value: "general", label: "General", icon: Wrench },
-    { value: "painting", label: "Painting", icon: Wrench },
-    { value: "carpentry", label: "Carpentry", icon: Wrench },
+    { value: "plumbing", label: "Plumbing" },
+    { value: "electrical", label: "Electrical" },
+    { value: "hvac", label: "HVAC" },
+    { value: "general", label: "General" },
+    { value: "painting", label: "Painting" },
+    { value: "carpentry", label: "Carpentry" },
   ];
 
   useEffect(() => {
@@ -63,7 +63,6 @@ export function ContractorMarketplace() {
       const filters: any = {};
       if (filterTrade !== "all") filters.trade = filterTrade;
       if (verifiedOnly) filters.verified = true;
-
       const data = await MarketplaceAPI.contractors.getAll(filters);
       setContractors(data);
     } catch (error) {
@@ -88,126 +87,68 @@ export function ContractorMarketplace() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#F8F7F4" }}>
+    <div style={{ background: "#F8F7F4", minHeight: "100vh", fontFamily: SANS }}>
       <div className="max-w-7xl mx-auto px-6 py-8">
+
         {/* Header */}
         <div className="mb-8">
-          <p className="text-[10px] font-semibold text-[#767570] uppercase tracking-wider mb-2">
-            Marketplace
-          </p>
-          <h1
-            className="text-[48px] font-normal text-[#0E0F0C] tracking-tight mb-2"
-            style={{
-              fontFamily: "'Instrument Serif', Georgia, serif",
-              letterSpacing: "-1px",
-            }}
-          >
-            Find Contractors
-          </h1>
-          <p className="text-[14px] text-[#767570] max-w-2xl">
-            Browse verified contractors for property maintenance and repairs.
-            All contractors are pre-screened and rated by landlords.
+          <p style={{ fontSize: 10, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 8 }}>Marketplace</p>
+          <h1 style={{ fontFamily: SERIF, fontSize: 48, fontWeight: 400, color: TX, letterSpacing: "-1px", marginBottom: 8 }}>Find Contractors</h1>
+          <p style={{ fontSize: 14, color: MU, maxWidth: 560, margin: 0 }}>
+            Browse verified contractors for property maintenance and repairs. All contractors are pre-screened and rated by landlords.
           </p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-6 hover:border-[#0A7A52]/20 transition-all">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2.5 rounded-xl bg-[#0A7A52]/5">
-                <Users className="size-5 text-[#0A7A52]" />
+          {[
+            { Icon: Users, label: "Total Contractors", value: stats.total, bg: GL, color: G },
+            { Icon: CheckCircle, label: "Verified", value: stats.verified, bg: GL, color: G },
+            { Icon: Star, label: "Avg Rating", value: `${stats.avgRating}/5.0`, bg: "#FEF3C7", color: "#B45309" },
+            { Icon: Briefcase, label: "Jobs Completed", value: stats.activeJobs, bg: GL, color: G },
+          ].map(s => (
+            <div key={s.label} style={{ background: "#fff", borderRadius: 16, border: `1px solid ${G}15`, padding: 24 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+                <div style={{ width: 38, height: 38, borderRadius: 10, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <s.Icon size={18} color={s.color} strokeWidth={2} />
+                </div>
+                <span style={{ fontSize: 13, fontWeight: 500, color: MU }}>{s.label}</span>
               </div>
-              <span className="text-sm font-medium text-slate-600">
-                Total Contractors
-              </span>
+              <p style={{ fontFamily: SERIF, fontSize: 30, fontWeight: 400, color: TX, margin: 0 }}>{s.value}</p>
             </div>
-            <p className="text-3xl font-serif font-semibold text-slate-900">
-              {stats.total}
-            </p>
-          </div>
-
-          <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-6 hover:border-[#0A7A52]/20 transition-all">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2.5 rounded-xl bg-emerald-50">
-                <CheckCircle className="size-5 text-emerald-600" />
-              </div>
-              <span className="text-sm font-medium text-slate-600">
-                Verified
-              </span>
-            </div>
-            <p className="text-3xl font-serif font-semibold text-slate-900">
-              {stats.verified}
-            </p>
-          </div>
-
-          <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-6 hover:border-[#0A7A52]/20 transition-all">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2.5 rounded-xl bg-amber-50">
-                <Star className="size-5 text-amber-600" />
-              </div>
-              <span className="text-sm font-medium text-slate-600">
-                Avg Rating
-              </span>
-            </div>
-            <p className="text-3xl font-serif font-semibold text-slate-900">
-              {stats.avgRating}
-              <span className="text-lg text-slate-500">/5.0</span>
-            </p>
-          </div>
-
-          <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-6 hover:border-[#0A7A52]/20 transition-all">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2.5 rounded-xl bg-blue-50">
-                <Briefcase className="size-5 text-blue-600" />
-              </div>
-              <span className="text-sm font-medium text-slate-600">
-                Jobs Completed
-              </span>
-            </div>
-            <p className="text-3xl font-serif font-semibold text-slate-900">
-              {stats.activeJobs}
-            </p>
-          </div>
+          ))}
         </div>
 
         {/* Search & Filters */}
-        <div className="bg-[#F8F7F4] rounded-2xl border border-[#0A7A52]/10 p-5 mb-6">
+        <div style={{ background: "#fff", borderRadius: 16, border: `1px solid ${G}15`, padding: 20, marginBottom: 24 }}>
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-[#767570]" />
+              <Search size={15} color={MU} strokeWidth={2.5} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
               <input
                 type="text"
                 placeholder="Search contractors by name or trade..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-[#0A7A52]/20 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#0A7A52] focus:border-[#0A7A52] hover:border-[#0A7A52]/40 transition-all text-sm font-medium text-slate-700"
+                style={{ width: "100%", paddingLeft: 40, paddingRight: 16, paddingTop: 10, paddingBottom: 10, border: `1.5px solid ${G}20`, borderRadius: 11, background: "#F8F7F4", outline: "none", fontSize: 13, fontWeight: 500, color: TX, fontFamily: SANS, boxSizing: "border-box" }}
               />
             </div>
-
-            <div className="flex items-center gap-4">
-              <Filter className="size-5 text-[#0A7A52]" />
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <Filter size={15} color={G} strokeWidth={2.5} />
               <select
                 value={filterTrade}
                 onChange={(e) => setFilterTrade(e.target.value)}
-                className="px-4 py-2.5 border border-[#0A7A52]/20 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#0A7A52] focus:border-[#0A7A52] hover:border-[#0A7A52]/40 transition-all text-sm font-medium text-slate-700"
+                style={{ padding: "10px 16px", border: `1.5px solid ${G}20`, borderRadius: 11, background: "#fff", outline: "none", fontSize: 13, fontWeight: 500, color: TX, fontFamily: SANS, cursor: "pointer" }}
               >
-                {trades.map((trade) => (
-                  <option key={trade.value} value={trade.value}>
-                    {trade.label}
-                  </option>
-                ))}
+                {trades.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
               </select>
-
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label style={{ display: "flex", alignItems: "center", gap: 7, cursor: "pointer" }}>
                 <input
                   type="checkbox"
                   checked={verifiedOnly}
                   onChange={(e) => setVerifiedOnly(e.target.checked)}
-                  className="w-4 h-4 rounded border-[#0A7A52]/20 text-[#0A7A52] focus:ring-[#0A7A52]"
+                  style={{ width: 16, height: 16, accentColor: G, cursor: "pointer" }}
                 />
-                <span className="text-sm font-medium text-slate-700">
-                  Verified Only
-                </span>
+                <span style={{ fontSize: 13, fontWeight: 500, color: TX }}>Verified Only</span>
               </label>
             </div>
           </div>
@@ -215,128 +156,97 @@ export function ContractorMarketplace() {
 
         {/* Contractors Grid */}
         {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-[#0A7A52] border-t-transparent"></div>
-            <p className="mt-4 text-sm text-slate-600">Loading contractors...</p>
+          <div style={{ textAlign: "center", padding: "48px 0" }}>
+            <div style={{ display: "inline-block", width: 32, height: 32, borderRadius: "50%", border: `4px solid ${G}`, borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
+            <p style={{ marginTop: 16, fontSize: 13, color: MU }}>Loading contractors...</p>
           </div>
         ) : filteredContractors.length === 0 ? (
-          <div className="text-center py-12">
-            <Users className="size-12 text-slate-300 mx-auto mb-4" />
-            <p className="text-slate-600">No contractors found</p>
-            <p className="text-sm text-slate-500 mt-2">
-              Try adjusting your search filters
-            </p>
+          <div style={{ textAlign: "center", padding: "48px 0" }}>
+            <Users size={48} color="rgba(0,0,0,0.12)" strokeWidth={1.5} style={{ margin: "0 auto 16px" }} />
+            <p style={{ fontSize: 15, color: TX, fontWeight: 600 }}>No contractors found</p>
+            <p style={{ fontSize: 13, color: MU, marginTop: 6 }}>Try adjusting your search filters</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredContractors.map((contractor) => (
-              <div
-                key={contractor.id}
-                className="bg-white rounded-2xl border border-[#0A7A52]/10 p-6 hover:border-[#0A7A52]/30 hover:shadow-lg transition-all"
-              >
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-lg font-semibold text-slate-900">
-                        {contractor.name}
-                      </h3>
-                      {contractor.verified && (
-                        <CheckCircle className="size-5 text-emerald-500" />
-                      )}
+              <div key={contractor.id} style={{ background: "#fff", borderRadius: 20, border: `1px solid ${G}15`, padding: 24, transition: "all 0.2s" }}>
+                {/* Card Header */}
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 16 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                      <h3 style={{ fontSize: 16, fontWeight: 600, color: TX, margin: 0 }}>{contractor.name}</h3>
+                      {contractor.verified && <CheckCircle size={16} color={G} strokeWidth={2.5} />}
                     </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="inline-flex px-3 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider bg-[#0A7A52]/5 text-[#0A7A52] border border-[#0A7A52]/20">
+                    <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+                      <span style={{ display: "inline-flex", padding: "4px 10px", borderRadius: 11, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", background: GL, color: G, border: `1px solid ${G}25` }}>
                         {contractor.trade}
                       </span>
-                      {contractor.subscriptionTier && (
-                        <span className={`inline-flex px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${
-                          contractor.subscriptionTier === 'enterprise'
-                            ? 'bg-purple-50 text-purple-700 border-purple-200'
-                            : contractor.subscriptionTier === 'pro'
-                            ? 'bg-amber-50 text-amber-700 border-amber-200'
-                            : 'bg-slate-50 text-slate-600 border-slate-200'
-                        }`}>
-                          {contractor.subscriptionTier}
-                        </span>
-                      )}
+                      {contractor.subscriptionTier && (() => {
+                        const ts = tierStyle(contractor.subscriptionTier);
+                        return (
+                          <span style={{ display: "inline-flex", padding: "3px 8px", borderRadius: 8, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", background: ts.bg, color: ts.color, border: `1px solid ${ts.border}` }}>
+                            {contractor.subscriptionTier}
+                          </span>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
 
                 {/* Rating */}
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="flex items-center gap-1">
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
                     {[...Array(5)].map((_, i) => (
                       <Star
-                        key={i}
-                        className={`size-4 ${
-                          i < Math.floor(contractor.avgRating)
-                            ? "fill-amber-400 text-amber-400"
-                            : "text-slate-300"
-                        }`}
+                        key={i} size={14}
+                        color={i < Math.floor(contractor.avgRating) ? "#B45309" : "rgba(0,0,0,0.12)"}
+                        fill={i < Math.floor(contractor.avgRating) ? "#B45309" : "none"}
+                        strokeWidth={2}
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-semibold text-slate-700">
-                    {contractor.avgRating.toFixed(1)}
-                  </span>
-                  <span className="text-xs text-slate-500">
-                    ({contractor.jobsCompleted} jobs)
-                  </span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: TX }}>{contractor.avgRating.toFixed(1)}</span>
+                  <span style={{ fontSize: 12, color: MU }}>({contractor.jobsCompleted} jobs)</span>
                 </div>
 
                 {/* Details */}
-                <div className="space-y-3 mb-4">
-                  <div className="flex items-center gap-3 text-sm text-slate-600">
-                    <Clock className="size-4 text-slate-400" />
-                    <span>
-                      Responds in ~{contractor.responseTimeHours} hours
-                    </span>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: MU }}>
+                    <Clock size={14} color="rgba(0,0,0,0.25)" strokeWidth={2.5} />
+                    <span>Responds in ~{contractor.responseTimeHours} hours</span>
                   </div>
-                  <div className="flex items-center gap-3 text-sm text-slate-600">
-                    <MapPin className="size-4 text-slate-400" />
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: MU }}>
+                    <MapPin size={14} color="rgba(0,0,0,0.25)" strokeWidth={2.5} />
                     <span>{contractor.serviceRadiusKm} km service radius</span>
                   </div>
-                  <div className="flex items-center gap-3 text-sm text-slate-600">
-                    <DollarSign className="size-4 text-slate-400" />
-                    <span>
-                      ${contractor.priceRange.min} - ${contractor.priceRange.max}
-                      /hr
-                    </span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: MU }}>
+                    <DollarSign size={14} color="rgba(0,0,0,0.25)" strokeWidth={2.5} />
+                    <span>${contractor.priceRange.min} – ${contractor.priceRange.max}/hr</span>
                   </div>
                   {contractor.licenseNumber && (
-                    <div className="flex items-center gap-3 text-sm text-slate-600">
-                      <Award className="size-4 text-slate-400" />
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: MU }}>
+                      <Award size={14} color="rgba(0,0,0,0.25)" strokeWidth={2.5} />
                       <span>License: {contractor.licenseNumber}</span>
                     </div>
                   )}
                 </div>
 
                 {/* Contact */}
-                <div className="border-t border-slate-200 pt-4 space-y-2">
-                  <div className="flex items-center gap-3 text-sm">
-                    <Phone className="size-4 text-slate-400" />
-                    <a
-                      href={`tel:${contractor.phone}`}
-                      className="text-[#0A7A52] hover:underline"
-                    >
-                      {contractor.phone}
-                    </a>
+                <div style={{ borderTop: "1px solid rgba(0,0,0,0.06)", paddingTop: 16, display: "flex", flexDirection: "column", gap: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
+                    <Phone size={14} color="rgba(0,0,0,0.25)" strokeWidth={2.5} />
+                    <a href={`tel:${contractor.phone}`} style={{ color: G, textDecoration: "none" }}>{contractor.phone}</a>
                   </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <Mail className="size-4 text-slate-400" />
-                    <a
-                      href={`mailto:${contractor.email}`}
-                      className="text-[#0A7A52] hover:underline truncate"
-                    >
-                      {contractor.email}
-                    </a>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
+                    <Mail size={14} color="rgba(0,0,0,0.25)" strokeWidth={2.5} />
+                    <a href={`mailto:${contractor.email}`} style={{ color: G, textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{contractor.email}</a>
                   </div>
                 </div>
 
-                {/* Action Button */}
-                <button onClick={() => toast.success(`Message sent to ${contractor.name}`)} className="w-full mt-4 px-4 py-2.5 bg-[#0A7A52] text-white rounded-xl font-medium hover:bg-[#085D3D] transition-colors">
+                <button
+                  onClick={() => toast.success(`Message sent to ${contractor.name}`)}
+                  style={{ width: "100%", marginTop: 16, padding: "11px 16px", background: G, color: "#fff", border: "none", borderRadius: 12, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}
+                >
                   Contact Contractor
                 </button>
               </div>
@@ -345,72 +255,54 @@ export function ContractorMarketplace() {
         )}
 
         {/* Register as Contractor CTA */}
-        <div className="mt-12 bg-gradient-to-br from-[#0A7A52] to-[#085D3D] rounded-2xl p-8 text-white">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2
-              className="text-3xl font-normal mb-3 text-[#ffffff]"
-              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
-            >
-              Are you a contractor?
-            </h2>
-            <p className="text-white/90 mb-2 text-lg">
-              Join KAYA's contractor marketplace and connect with property owners
-              across Ontario.
+        <div style={{ marginTop: 48, background: `linear-gradient(135deg, ${G} 0%, #065E3C 100%)`, borderRadius: 20, padding: 32, color: "#fff" }}>
+          <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
+            <h2 style={{ fontFamily: SERIF, fontSize: 32, fontWeight: 400, color: "#fff", marginBottom: 10 }}>Are you a contractor?</h2>
+            <p style={{ color: "rgba(255,255,255,0.85)", marginBottom: 6, fontSize: 16 }}>
+              Join Kaya's contractor marketplace and connect with property owners across Ontario.
             </p>
-            <p className="text-white/80 text-sm mb-6">
-              Subscription plans starting at $29/month • Get verified • Build your reputation • Accept jobs 24/7
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 24 }}>
+              Subscription plans starting at $29/month · Get verified · Build your reputation · Accept jobs 24/7
             </p>
-            
-            {/* Pricing Tiers */}
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 border border-white/20">
-                <h3 className="font-semibold text-lg mb-1 text-[#ffffff]">Basic</h3>
-                <p className="text-3xl font-bold mb-2 text-[#fff5f5]">$29<span className="text-sm font-normal">/mo</span></p>
-                <ul className="text-sm text-white/90 space-y-2 text-left">
-                  <li>✓ Profile listing</li>
-                  <li>✓ Contact requests</li>
-                  <li>✓ Job notifications</li>
-                  <li>✓ Basic analytics</li>
+              <div style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", borderRadius: 14, padding: 20, border: "1px solid rgba(255,255,255,0.2)" }}>
+                <h3 style={{ fontWeight: 600, fontSize: 17, marginBottom: 4, color: "#fff" }}>Basic</h3>
+                <p style={{ fontSize: 28, fontWeight: 700, marginBottom: 8, color: "#fff" }}>$29<span style={{ fontSize: 13, fontWeight: 400 }}>/mo</span></p>
+                <ul style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", textAlign: "left", display: "flex", flexDirection: "column", gap: 6, listStyle: "none", padding: 0, margin: 0 }}>
+                  <li>✓ Profile listing</li><li>✓ Contact requests</li><li>✓ Job notifications</li><li>✓ Basic analytics</li>
                 </ul>
               </div>
-
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-5 border-2 border-white/40 relative">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-amber-400 text-[#0A7A52] rounded-full text-xs font-bold">
-                  POPULAR
-                </div>
-                <h3 className="font-semibold text-lg mb-1 text-[#fff6f6]">Pro</h3>
-                <p className="text-3xl font-bold mb-2 text-[#ffffff]">$79<span className="text-sm font-normal">/mo</span></p>
-                <ul className="text-sm text-white/90 space-y-2 text-left">
-                  <li>✓ Everything in Basic</li>
-                  <li>✓ <strong>Verified badge</strong></li>
-                  <li>✓ Featured placement</li>
-                  <li>✓ Priority support</li>
-                  <li>✓ Advanced analytics</li>
+              <div style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(8px)", borderRadius: 14, padding: 20, border: "2px solid rgba(255,255,255,0.4)", position: "relative" }}>
+                <div style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", padding: "3px 12px", background: "#fff", color: G, borderRadius: 99, fontSize: 10, fontWeight: 700 }}>POPULAR</div>
+                <h3 style={{ fontWeight: 600, fontSize: 17, marginBottom: 4, color: "#fff" }}>Pro</h3>
+                <p style={{ fontSize: 28, fontWeight: 700, marginBottom: 8, color: "#fff" }}>$79<span style={{ fontSize: 13, fontWeight: 400 }}>/mo</span></p>
+                <ul style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", textAlign: "left", display: "flex", flexDirection: "column", gap: 6, listStyle: "none", padding: 0, margin: 0 }}>
+                  <li>✓ Everything in Basic</li><li>✓ <strong>Verified badge</strong></li><li>✓ Featured placement</li><li>✓ Priority support</li><li>✓ Advanced analytics</li>
                 </ul>
               </div>
-
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 border border-white/20">
-                <h3 className="font-semibold text-lg mb-1 text-[#ffffff]">Enterprise</h3>
-                <p className="text-3xl font-bold mb-2 text-[#fffefe]">$199<span className="text-sm font-normal">/mo</span></p>
-                <ul className="text-sm text-white/90 space-y-2 text-left">
-                  <li>✓ Everything in Pro</li>
-                  <li>✓ Multiple team members</li>
-                  <li>✓ API access</li>
-                  <li>✓ White-label options</li>
-                  <li>✓ Dedicated account manager</li>
+              <div style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", borderRadius: 14, padding: 20, border: "1px solid rgba(255,255,255,0.2)" }}>
+                <h3 style={{ fontWeight: 600, fontSize: 17, marginBottom: 4, color: "#fff" }}>Enterprise</h3>
+                <p style={{ fontSize: 28, fontWeight: 700, marginBottom: 8, color: "#fff" }}>$199<span style={{ fontSize: 13, fontWeight: 400 }}>/mo</span></p>
+                <ul style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", textAlign: "left", display: "flex", flexDirection: "column", gap: 6, listStyle: "none", padding: 0, margin: 0 }}>
+                  <li>✓ Everything in Pro</li><li>✓ Multiple team members</li><li>✓ API access</li><li>✓ White-label options</li><li>✓ Dedicated account manager</li>
                 </ul>
               </div>
             </div>
 
-            <button onClick={() => toast.success("Redirecting to contractor subscription plans…")} className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#0A7A52] rounded-xl font-semibold hover:bg-[#F8F7F4] transition-colors shadow-lg">
-              <Plus className="size-5" />
+            <button
+              onClick={() => toast.success("Redirecting to contractor subscription plans…")}
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", background: "#fff", color: G, border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: SANS, boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}
+            >
+              <Plus size={18} strokeWidth={2.5} />
               Start Your Contractor Subscription
             </button>
-            <p className="text-white/70 text-xs mt-3">
-              14-day free trial • No credit card required • Cancel anytime
+            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, marginTop: 10 }}>
+              14-day free trial · No credit card required · Cancel anytime
             </p>
           </div>
         </div>
+
       </div>
     </div>
   );

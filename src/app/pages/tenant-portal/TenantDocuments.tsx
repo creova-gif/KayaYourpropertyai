@@ -16,8 +16,8 @@ const getDocStyle = (type: string): { color: string; bg: string; icon: LIcon } =
   switch (type) {
     case "lease": return { color: G, bg: GL, icon: FileText };
     case "receipt": return { color: G, bg: GL, icon: Receipt };
-    case "inspection": return { color: "#1D4ED8", bg: "#EFF6FF", icon: Clipboard };
-    case "insurance": return { color: "#7C3AED", bg: "#F5F3FF", icon: Shield };
+    case "inspection": return { color: G, bg: GL, icon: Clipboard };
+    case "insurance": return { color: "#B45309", bg: "#FEF3C7", icon: Shield };
     default: return { color: MU, bg: "#F8F7F4", icon: Folder };
   }
 };
@@ -120,7 +120,7 @@ export function TenantDocuments() {
           <p style={{ fontSize: 12, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 12 }}>Tenant Passport</p>
           <div style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 16, padding: 16, cursor: "pointer" }} onClick={() => setPassportModal(true)}>
             <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-              <div style={{ width: 64, height: 64, borderRadius: "50%", background: "linear-gradient(135deg,#7C3AED,#9F5AFF)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 0 0 0 rgba(124,58,237,0.4)", animation: "ringPulse 2s infinite" }}>
+              <div style={{ width: 64, height: 64, borderRadius: "50%", background: `linear-gradient(135deg,${G},#065E3C)`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: `0 0 0 0 ${G}40`, animation: "ringPulse 2s infinite" }}>
                 <p style={{ fontFamily: SERIF, fontSize: 22, color: "#fff", lineHeight: 1, margin: 0 }}>87</p>
                 <p style={{ fontSize: 8, color: "rgba(255,255,255,0.7)", fontWeight: 700, margin: 0 }}>SCORE</p>
               </div>
@@ -205,11 +205,11 @@ export function TenantDocuments() {
                 <button onClick={() => setPassportModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: MU, display: "flex" }}><X size={18} /></button>
               </div>
               <div style={{ textAlign: "center", marginBottom: 18 }}>
-                <div style={{ width: 100, height: 100, borderRadius: "50%", background: "linear-gradient(135deg,#7C3AED,#9F5AFF)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", margin: "0 auto" }}>
+                <div style={{ width: 100, height: 100, borderRadius: "50%", background: `linear-gradient(135deg,${G},#065E3C)`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", margin: "0 auto" }}>
                   <p style={{ fontFamily: SERIF, fontSize: 36, color: "#fff", lineHeight: 1, margin: 0 }}>87</p>
                   <p style={{ fontSize: 9, color: "rgba(255,255,255,0.7)", fontWeight: 700, margin: 0 }}>/ 100</p>
                 </div>
-                <p style={{ fontSize: 12, fontWeight: 600, color: "#7C3AED", marginTop: 10 }}>↑ +4 points this month</p>
+                <p style={{ fontSize: 12, fontWeight: 600, color: G, marginTop: 10 }}>↑ +4 points this month</p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
                 {[
@@ -221,16 +221,16 @@ export function TenantDocuments() {
                   <div key={s.label}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                       <span style={{ fontSize: 12, fontWeight: 600, color: TX }}>{s.label}</span>
-                      <span style={{ fontSize: 11, fontWeight: 700, color: "#7C3AED" }}>{s.score}/{s.max}</span>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: G }}>{s.score}/{s.max}</span>
                     </div>
-                    <div style={{ height: 6, background: "#F3F0FF", borderRadius: 3, overflow: "hidden" }}>
-                      <div style={{ width: `${Math.round(s.score / s.max * 100)}%`, height: "100%", background: "linear-gradient(90deg,#7C3AED,#9F5AFF)", borderRadius: 3 }} />
+                    <div style={{ height: 6, background: GL, borderRadius: 3, overflow: "hidden" }}>
+                      <div style={{ width: `${Math.round(s.score / s.max * 100)}%`, height: "100%", background: `linear-gradient(90deg,${G},#2DA878)`, borderRadius: 3 }} />
                     </div>
                     <p style={{ fontSize: 10, color: MU, marginTop: 2 }}>{s.desc}</p>
                   </div>
                 ))}
               </div>
-              <button onClick={() => setPassportModal(false)} style={{ width: "100%", padding: 13, background: "#7C3AED", color: "#fff", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}>Close</button>
+              <button onClick={() => setPassportModal(false)} style={{ width: "100%", padding: 13, background: G, color: "#fff", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}>Close</button>
             </motion.div>
           </div>
         )}

@@ -14,7 +14,7 @@ type NoticeType = "maintenance" | "emergency" | "info" | "community";
 const TYPE_CONFIG: Record<NoticeType, { bg: string; border: string; text: string; icon: React.ComponentType<any>; label: string }> = {
   maintenance: { bg: "#FEF3C7", border: "rgba(180,83,9,0.15)", text: "#B45309", icon: Wrench, label: "Maintenance" },
   emergency:   { bg: "#FEF2F2", border: "rgba(220,38,38,0.15)", text: "#DC2626", icon: AlertTriangle, label: "Emergency" },
-  info:        { bg: "#EFF6FF", border: "rgba(29,78,216,0.12)", text: "#1D4ED8", icon: Info, label: "Info" },
+  info:        { bg: GL,        border: `${G}22`,               text: G,         icon: Info, label: "Info" },
   community:   { bg: GL,        border: `${G}22`,               text: G,         icon: Megaphone, label: "Community" },
 };
 

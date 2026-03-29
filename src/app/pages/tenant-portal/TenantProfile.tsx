@@ -121,7 +121,7 @@ export function TenantProfile() {
   const [referralCopied, setReferralCopied] = useState(false);
 
   /* plan */
-  const plan = { name: "Starter", color: "#1D4ED8", bg: "#EFF6FF", nextBilling: "Aug 1, 2026", amount: "$0/mo" };
+  const plan = { name: "Starter", color: G, bg: GL, nextBilling: "Aug 1, 2026", amount: "$0/mo" };
 
   const flip = useCallback((key: keyof Toggles) => setToggles(t => ({ ...t, [key]: !t[key] })), []);
 
@@ -187,15 +187,15 @@ export function TenantProfile() {
       <div style={{ maxWidth: 600, margin: "0 auto", padding: "16px 20px" }}>
 
         {/* ── Tenant Passport Card ── */}
-        <div style={{ background: T.cardBg, border: `1px solid ${T.cardBorder}`, borderLeft: "4px solid #7C3AED", borderRadius: 16, padding: 16, marginBottom: 12, cursor: "pointer" }} onClick={() => setModal("passport")}>
+        <div style={{ background: T.cardBg, border: `1px solid ${T.cardBorder}`, borderLeft: `4px solid ${G}`, borderRadius: 16, padding: 16, marginBottom: 12, cursor: "pointer" }} onClick={() => setModal("passport")}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
             <div>
               <p style={{ fontSize: 13, fontWeight: 700, color: T.tx, margin: 0 }}>Tenant Passport</p>
               <p style={{ fontSize: 11, color: T.mu }}>Your portable rental reputation · ↑ +4 this month</p>
             </div>
             <div style={{ textAlign: "right" }}>
-              <p style={{ fontFamily: SERIF, fontSize: 30, color: "#7C3AED", lineHeight: 1, margin: 0 }}>87</p>
-              <p style={{ fontSize: 9, color: "#7C3AED", margin: 0 }}>/ 100</p>
+              <p style={{ fontFamily: SERIF, fontSize: 30, color: G, lineHeight: 1, margin: 0 }}>87</p>
+              <p style={{ fontSize: 9, color: G, margin: 0 }}>/ 100</p>
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
@@ -207,13 +207,13 @@ export function TenantProfile() {
             ))}
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={e => { e.stopPropagation(); setModal("passport"); }} style={{ flex: 1, padding: "7px", background: "#F3F0FF", color: "#7C3AED", border: "none", borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}>View Breakdown</button>
+            <button onClick={e => { e.stopPropagation(); setModal("passport"); }} style={{ flex: 1, padding: "7px", background: GL, color: G, border: "none", borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}>View Breakdown</button>
             <button onClick={e => { e.stopPropagation(); setModal("passportshare"); }} style={{ flex: 1, padding: "7px", background: T.metaBg, color: T.tx, border: `1px solid ${T.cardBorder}`, borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>🔗 Share Passport</button>
           </div>
         </div>
 
         {/* ── Equifax Credit Builder ── */}
-        <div style={{ background: T.cardBg, border: `1px solid ${T.cardBorder}`, borderLeft: "4px solid #1D4ED8", borderRadius: 14, padding: "13px 16px", marginBottom: 12, cursor: "pointer" }} onClick={() => setModal("equifax")}>
+        <div style={{ background: T.cardBg, border: `1px solid ${T.cardBorder}`, borderLeft: `4px solid ${G}`, borderRadius: 14, padding: "13px 16px", marginBottom: 12, cursor: "pointer" }} onClick={() => setModal("equifax")}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               <p style={{ fontSize: 13, fontWeight: 700, color: T.tx, margin: 0 }}>Credit Bureau Reporting</p>
@@ -255,8 +255,8 @@ export function TenantProfile() {
         <div style={{ background: T.cardBg, border: `1px solid ${T.cardBorder}`, borderRadius: 14, marginBottom: 12 }}>
           {[
             { icon: "🔐", label: "Two-factor authentication", val: "✓ Active", bg: T.glBg, action: () => setModal("otp") },
-            { icon: "🔒", label: "Change password", val: "Last changed 30 days ago", bg: "#EBF2FB", action: () => setModal("password") },
-            { icon: "🫆", label: "Passkey / Face ID", val: "Sign in without a password", bg: "#F5F3FF", action: () => setModal("passkey") },
+            { icon: "🔒", label: "Change password", val: "Last changed 30 days ago", bg: T.metaBg, action: () => setModal("password") },
+            { icon: "🫆", label: "Passkey / Face ID", val: "Sign in without a password", bg: T.metaBg, action: () => setModal("passkey") },
             { icon: "📱", label: "Trusted devices", val: "1 active device", bg: T.metaBg, action: () => setModal("devices") },
             { icon: "🕵️", label: "Login history", val: "View all sessions", bg: T.metaBg, action: () => setModal("history") },
           ].map((r, i) => (
@@ -368,14 +368,14 @@ export function TenantProfile() {
 
         {/* ── Referral Card ── */}
         <SectionLabel color={T.sectionLabel}>Refer a Friend</SectionLabel>
-        <div style={{ background: "linear-gradient(135deg,#7C3AED,#9F5AFF)", borderRadius: 14, padding: "16px", marginBottom: 12 }}>
+        <div style={{ background: `linear-gradient(135deg,${G},#065E3C)`, borderRadius: 14, padding: "16px", marginBottom: 12 }}>
           <p style={{ fontSize: 13, fontWeight: 700, color: "#fff", margin: "0 0 4px" }}>Give $25, Get $25</p>
           <p style={{ fontSize: 11, color: "rgba(255,255,255,0.75)", marginBottom: 12, lineHeight: 1.5 }}>Refer a friend to Kaya. When they sign their first lease, you both get $25 credit.</p>
           <div style={{ display: "flex", gap: 8 }}>
             <div style={{ flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "9px 13px", display: "flex", alignItems: "center", border: "1px solid rgba(255,255,255,0.2)" }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: "#fff", fontFamily: "monospace", letterSpacing: "0.5px" }}>kaya.ca/join?ref=SARAH-XK7T</span>
             </div>
-            <button onClick={copyReferral} style={{ padding: "9px 13px", background: "#fff", color: "#7C3AED", border: "none", borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
+            <button onClick={copyReferral} style={{ padding: "9px 13px", background: "#fff", color: G, border: "none", borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
               {referralCopied ? <Check size={13} /> : <Copy size={13} />} {referralCopied ? "Copied!" : "Copy"}
             </button>
           </div>
@@ -396,7 +396,7 @@ export function TenantProfile() {
           </div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "13px 16px", cursor: "pointer", borderTop: `1px solid ${T.rowBorder}` }} onClick={() => setModal("downloaddata")}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 34, height: 34, borderRadius: 9, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>💾</div>
+              <div style={{ width: 34, height: 34, borderRadius: 9, background: GL, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>💾</div>
               <div>
                 <p style={{ fontSize: 13, fontWeight: 600, color: T.tx, margin: 0 }}>Download My Data</p>
                 <p style={{ fontSize: 11, color: T.mu }}>PIPEDA right to portability · includes all records</p>
@@ -590,18 +590,18 @@ export function TenantProfile() {
                 <>
                   <MH title="Tenant Passport" subtitle="Your portable rental reputation" onClose={closeModal} />
                   <div style={{ textAlign: "center", marginBottom: 18 }}>
-                    <div style={{ width: 100, height: 100, borderRadius: "50%", background: "linear-gradient(135deg,#7C3AED,#9F5AFF)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", margin: "0 auto 8px" }}>
+                    <div style={{ width: 100, height: 100, borderRadius: "50%", background: `linear-gradient(135deg,${G},#065E3C)`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", margin: "0 auto 8px" }}>
                       <p style={{ fontFamily: SERIF, fontSize: 36, color: "#fff", lineHeight: 1, margin: 0 }}>87</p>
                       <p style={{ fontSize: 9, color: "rgba(255,255,255,0.7)", fontWeight: 700, margin: 0 }}>/ 100</p>
                     </div>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: "#7C3AED" }}>↑ +4 points this month</p>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: G }}>↑ +4 points this month</p>
                   </div>
                   {/* Score history graph */}
-                  <div style={{ background: "#F3F0FF", borderRadius: 12, padding: "12px 14px", marginBottom: 14 }}>
-                    <p style={{ fontSize: 10, fontWeight: 700, color: "#7C3AED", marginBottom: 4 }}>6-MONTH SCORE HISTORY</p>
-                    <Sparkline data={SCORE_HISTORY} color="#7C3AED" />
+                  <div style={{ background: GL, borderRadius: 12, padding: "12px 14px", marginBottom: 14 }}>
+                    <p style={{ fontSize: 10, fontWeight: 700, color: G, marginBottom: 4 }}>6-MONTH SCORE HISTORY</p>
+                    <Sparkline data={SCORE_HISTORY} color={G} />
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      {SCORE_MONTHS.map((m, i) => <span key={m} style={{ fontSize: 9, color: "#9F5AFF", fontWeight: i === SCORE_MONTHS.length - 1 ? 700 : 400 }}>{m}</span>)}
+                      {SCORE_MONTHS.map((m, i) => <span key={m} style={{ fontSize: 9, color: "#3D6B55", fontWeight: i === SCORE_MONTHS.length - 1 ? 700 : 400 }}>{m}</span>)}
                     </div>
                   </div>
                   {[
@@ -613,10 +613,10 @@ export function TenantProfile() {
                     <div key={s.label} style={{ marginBottom: 12 }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                         <span style={{ fontSize: 12, fontWeight: 600, color: T.tx }}>{s.label}</span>
-                        <span style={{ fontSize: 11, fontWeight: 700, color: "#7C3AED" }}>{s.score}/{s.max}</span>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: G }}>{s.score}/{s.max}</span>
                       </div>
-                      <div style={{ height: 6, background: "#F3F0FF", borderRadius: 3, overflow: "hidden" }}>
-                        <div style={{ width: `${Math.round(s.score / s.max * 100)}%`, height: "100%", background: "linear-gradient(90deg,#7C3AED,#9F5AFF)", borderRadius: 3 }} />
+                      <div style={{ height: 6, background: GL, borderRadius: 3, overflow: "hidden" }}>
+                        <div style={{ width: `${Math.round(s.score / s.max * 100)}%`, height: "100%", background: `linear-gradient(90deg,${G},#2DA878)`, borderRadius: 3 }} />
                       </div>
                       <p style={{ fontSize: 10, color: T.mu, marginTop: 2 }}>{s.desc}</p>
                     </div>
@@ -626,7 +626,7 @@ export function TenantProfile() {
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                     <button onClick={closeModal} style={{ padding: 12, background: T.metaBg, color: T.tx, border: `1.5px solid ${T.cardBorder}`, borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: SANS }}>Close</button>
-                    <button onClick={() => { closeModal(); setModal("passportshare"); }} style={{ padding: 12, background: "#7C3AED", color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}>🔗 Share</button>
+                    <button onClick={() => { closeModal(); setModal("passportshare"); }} style={{ padding: 12, background: G, color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: SANS }}>🔗 Share</button>
                   </div>
                 </>
               )}
@@ -635,7 +635,7 @@ export function TenantProfile() {
               {modal === "passportshare" && (
                 <>
                   <MH title="Share Your Passport" subtitle="Send to prospective landlords" onClose={closeModal} />
-                  <div style={{ background: "linear-gradient(135deg,#7C3AED,#9F5AFF)", borderRadius: 14, padding: 16, marginBottom: 16, textAlign: "center" }}>
+                  <div style={{ background: `linear-gradient(135deg,${G},#065E3C)`, borderRadius: 14, padding: 16, marginBottom: 16, textAlign: "center" }}>
                     <p style={{ fontSize: 28, margin: "0 0 6px" }}>⭐</p>
                     <p style={{ fontFamily: SERIF, fontSize: 20, color: "#fff", margin: 0 }}>{profileName}</p>
                     <p style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", marginBottom: 8 }}>Tenant Score: 87/100</p>

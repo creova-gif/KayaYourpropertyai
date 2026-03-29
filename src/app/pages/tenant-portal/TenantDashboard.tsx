@@ -1,7 +1,15 @@
-import { Home, CreditCard, FileText, Wrench, Calendar, Bell, Star, Zap } from "lucide-react";
+import { Home, CreditCard, FileText, Wrench, Calendar, Bell, Sparkles } from "lucide-react";
 import { Link } from "react-router";
+import { motion } from "motion/react";
 import { TenantApplicationProgress } from "../../components/TenantApplicationProgress";
 import { GamificationBadge } from "../../components/GamificationBadge";
+
+const G = "#0A7A52";
+const GL = "#E5F4EE";
+const TX = "#0E0F0C";
+const MU = "#767570";
+const SANS = "'DM Sans', system-ui, sans-serif";
+const SERIF = "'Instrument Serif', Georgia, serif";
 
 export function TenantDashboard() {
   const leaseInfo = {
@@ -10,20 +18,20 @@ export function TenantDashboard() {
     rent: 2300,
     leaseStart: "Jan 1, 2025",
     leaseEnd: "Dec 31, 2025",
-    daysRemaining: 292
+    daysRemaining: 292,
   };
 
   const upcomingPayment = {
     amount: 2300,
     dueDate: "Apr 1, 2026",
     daysUntil: 18,
-    autoPayEnabled: true
+    autoPayEnabled: true,
   };
 
   const quickActions = [
-    { name: "Make Payment", icon: CreditCard, href: "/tenant/payments", color: "indigo" },
-    { name: "View Documents", icon: FileText, href: "/tenant/documents", color: "purple" },
-    { name: "Maintenance", icon: Wrench, href: "/tenant/maintenance", color: "blue" },
+    { name: "Make Payment", icon: CreditCard, href: "/tenant/payments" },
+    { name: "View Documents", icon: FileText, href: "/tenant/documents" },
+    { name: "Maintenance", icon: Wrench, href: "/tenant/maintenance" },
   ];
 
   const tenantBadges = [
@@ -33,96 +41,123 @@ export function TenantDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div style={{ fontFamily: SANS, background: "#F8F7F4", minHeight: "100vh" }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Welcome back, John!</h1>
-          <p className="mt-2 text-slate-600">Here's everything about your rental</p>
-        </div>
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <p style={{ fontSize: 11, fontWeight: 700, color: MU, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 4 }}>Home</p>
+          <h1 style={{ fontFamily: SERIF, fontSize: 36, fontWeight: 400, color: TX, letterSpacing: "-1px", lineHeight: 1 }}>Welcome back, Sarah!</h1>
+          <p style={{ fontSize: 14, color: MU, marginTop: 6 }}>Here's everything about your rental</p>
+        </motion.div>
 
         {/* Gamification Badges */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           {tenantBadges.map((badge, idx) => (
-            <GamificationBadge
-              key={idx}
-              type={badge.type}
-              value={badge.value}
-              label={badge.label}
-            />
+            <GamificationBadge key={idx} type={badge.type} value={badge.value} label={badge.label} />
           ))}
         </div>
 
         {/* Lease Info Card */}
-        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-6 text-white mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-lg bg-white/20 backdrop-blur-sm">
-              <Home className="size-6" />
+        <motion.div
+          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          style={{ background: `linear-gradient(135deg, ${G} 0%, #065E3C 100%)`, borderRadius: 20, padding: 24, color: "#fff", marginBottom: 20, boxShadow: `0 12px 40px ${G}30` }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Home size={20} color="#fff" strokeWidth={2} />
             </div>
             <div>
-              <h2 className="text-xl font-semibold">Your Home</h2>
-              <p className="text-white/80 text-sm">{leaseInfo.address}</p>
+              <p style={{ fontFamily: SERIF, fontSize: 20, color: "#fff", margin: 0 }}>{leaseInfo.unit}</p>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", margin: 0 }}>{leaseInfo.address}</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
             <div>
-              <p className="text-white/70 text-sm mb-1">Monthly Rent</p>
-              <p className="text-2xl font-bold">${leaseInfo.rent.toLocaleString()}</p>
+              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 4 }}>Monthly Rent</p>
+              <p style={{ fontFamily: SERIF, fontSize: 28, color: "#fff", margin: 0 }}>${leaseInfo.rent.toLocaleString()}</p>
             </div>
             <div>
-              <p className="text-white/70 text-sm mb-1">Lease Period</p>
-              <p className="text-lg font-semibold">{leaseInfo.leaseStart} - {leaseInfo.leaseEnd}</p>
+              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 4 }}>Lease Period</p>
+              <p style={{ fontSize: 15, fontWeight: 600, color: "#fff", margin: 0 }}>{leaseInfo.leaseStart} – {leaseInfo.leaseEnd}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
-            <Calendar className="size-5" />
-            <span className="text-sm">{leaseInfo.daysRemaining} days remaining in lease</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "11px 14px", background: "rgba(255,255,255,0.12)", borderRadius: 11 }}>
+            <Calendar size={16} color="rgba(255,255,255,0.7)" strokeWidth={2.5} />
+            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.8)" }}>{leaseInfo.daysRemaining} days remaining in lease</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Upcoming Payment Card */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-lg bg-indigo-50">
-              <CreditCard className="size-5 text-indigo-600" />
+        <motion.div
+          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+          style={{ background: "#fff", borderRadius: 20, border: "1px solid rgba(0,0,0,0.07)", padding: 24, marginBottom: 20 }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: GL, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <CreditCard size={20} color={G} strokeWidth={2} />
             </div>
             <div>
-              <h2 className="text-xl font-semibold">Upcoming Payment</h2>
-              <p className="text-slate-500 text-sm">Next payment due on {upcomingPayment.dueDate}</p>
+              <p style={{ fontSize: 15, fontWeight: 700, color: TX, margin: 0 }}>Upcoming Payment</p>
+              <p style={{ fontSize: 13, color: MU, margin: 0 }}>Due on {upcomingPayment.dueDate}</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
             <div>
-              <p className="text-slate-500 text-sm mb-1">Amount Due</p>
-              <p className="text-2xl font-bold">${upcomingPayment.amount.toLocaleString()}</p>
+              <p style={{ fontSize: 11, color: MU, fontWeight: 500, marginBottom: 4 }}>Amount Due</p>
+              <p style={{ fontFamily: SERIF, fontSize: 28, color: TX, margin: 0 }}>${upcomingPayment.amount.toLocaleString()}</p>
             </div>
             <div>
-              <p className="text-slate-500 text-sm mb-1">Days Until Due</p>
-              <p className="text-lg font-semibold">{upcomingPayment.daysUntil} days</p>
+              <p style={{ fontSize: 11, color: MU, fontWeight: 500, marginBottom: 4 }}>Days Until Due</p>
+              <p style={{ fontFamily: SERIF, fontSize: 28, color: TX, margin: 0 }}>{upcomingPayment.daysUntil}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
-            <Bell className="size-5" />
-            <span className="text-sm">Auto-pay is {upcomingPayment.autoPayEnabled ? "enabled" : "disabled"}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "11px 14px", background: GL, borderRadius: 11, border: `1px solid ${G}20` }}>
+            <Bell size={16} color={G} strokeWidth={2.5} />
+            <span style={{ fontSize: 13, color: "#085040" }}>Auto-pay is {upcomingPayment.autoPayEnabled ? "enabled" : "disabled"}</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Quick Actions */}
-        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-6 text-white">
-          <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {quickActions.map((action, idx) => (
-              <Link key={idx} to={action.href} className="flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-sm transition-colors">
-                <action.icon className="size-5" />
-                <span className="font-medium">{action.name}</span>
-              </Link>
-            ))}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+          style={{ background: `linear-gradient(135deg, #085040 0%, ${G} 100%)`, borderRadius: 20, padding: 24, boxShadow: `0 8px 28px ${G}25` }}
+        >
+          <p style={{ fontFamily: SERIF, fontSize: 22, color: "#fff", marginBottom: 16 }}>Quick Actions</p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+            {quickActions.map((action, idx) => {
+              const Icon = action.icon;
+              return (
+                <Link key={idx} to={action.href} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "16px 12px", background: "rgba(255,255,255,0.12)", borderRadius: 14, border: "1px solid rgba(255,255,255,0.15)", textDecoration: "none", color: "#fff", transition: "all 0.15s" }}>
+                  <Icon size={20} color="#fff" strokeWidth={2} />
+                  <span style={{ fontSize: 12, fontWeight: 600 }}>{action.name}</span>
+                </Link>
+              );
+            })}
           </div>
-        </div>
+        </motion.div>
+
+        {/* AI Nudge */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+          style={{ background: GL, borderRadius: 14, padding: "18px 22px", border: `1px solid ${G}20`, cursor: "pointer", marginTop: 16 }}
+          onClick={() => window.dispatchEvent(new CustomEvent("openAIWithQuery", { detail: { query: "What should I know about my current lease?" } }))}
+        >
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+            <div style={{ width: 34, height: 34, borderRadius: 9, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 6px rgba(0,0,0,0.06)" }}>
+              <Sparkles size={16} color={G} strokeWidth={2.5} />
+            </div>
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 700, color: TX, margin: "0 0 4px" }}>Have a question about your lease?</p>
+              <p style={{ fontSize: 13, color: "#3D6B55", margin: 0, lineHeight: 1.5 }}>Kaya AI can explain your rights, upcoming rent increases, and more. Tap to ask.</p>
+            </div>
+          </div>
+        </motion.div>
+
       </div>
     </div>
   );

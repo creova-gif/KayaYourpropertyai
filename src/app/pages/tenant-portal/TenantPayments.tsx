@@ -142,19 +142,19 @@ export function TenantPayments() {
         </motion.div>
 
         {/* Credit builder */}
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} style={{ background: "#fff", borderRadius: 16, border: "1px solid rgba(0,0,0,0.07)", borderLeft: "4px solid #7C3AED", padding: "16px 20px", marginBottom: 16 }}>
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} style={{ background: "#fff", borderRadius: 16, border: "1px solid rgba(0,0,0,0.07)", borderLeft: `4px solid ${G}`, padding: "16px 20px", marginBottom: 16 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
             <div>
               <p style={{ fontSize: 13, fontWeight: 700, color: TX, marginBottom: 2 }}>Credit Builder</p>
               <p style={{ fontSize: 11, color: MU }}>Your on-time payments boost your credit score</p>
             </div>
-            <span style={{ fontFamily: SERIF, fontSize: 22, color: "#7C3AED" }}>+340</span>
+            <span style={{ fontFamily: SERIF, fontSize: 22, color: G }}>+340</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-            <div style={{ flex: 1, height: 6, background: "#F3F0FF", borderRadius: 3, overflow: "hidden" }}>
-              <div style={{ width: "68%", height: "100%", background: "linear-gradient(90deg,#7C3AED,#9F5AFF)", borderRadius: 3 }} />
+            <div style={{ flex: 1, height: 6, background: GL, borderRadius: 3, overflow: "hidden" }}>
+              <div style={{ width: "68%", height: "100%", background: `linear-gradient(90deg,${G},#2DA878)`, borderRadius: 3 }} />
             </div>
-            <span style={{ fontSize: 11, fontWeight: 600, color: "#7C3AED" }}>68%</span>
+            <span style={{ fontSize: 11, fontWeight: 600, color: G }}>68%</span>
           </div>
           <p style={{ fontSize: 10, color: MU }}>Reported monthly to Equifax & TransUnion · Next report July 1</p>
         </motion.div>

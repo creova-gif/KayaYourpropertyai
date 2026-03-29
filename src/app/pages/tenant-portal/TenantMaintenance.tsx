@@ -23,14 +23,14 @@ interface Ticket {
 
 const STATUS_COLORS: Record<TicketStatus, { bg: string; text: string; border: string; label: string }> = {
   open: { bg: "#FEF3C7", text: "#B45309", border: "rgba(180,83,9,0.15)", label: "Open" },
-  progress: { bg: "#EFF6FF", text: "#1D4ED8", border: "rgba(29,78,216,0.15)", label: "In Progress" },
+  progress: { bg: GL,        text: G,          border: "rgba(10,122,82,0.15)", label: "In Progress" },
   resolved: { bg: GL, text: G, border: "rgba(10,122,82,0.15)", label: "✓ Resolved" },
   closed: { bg: "#F8F7F4", text: MU, border: "rgba(0,0,0,0.07)", label: "Closed" },
 };
 
 const LEFT_COLORS: Record<TicketStatus, string> = {
   open: "#B45309",
-  progress: "#1D4ED8",
+  progress: G,
   resolved: G,
   closed: "#AEADA8",
 };
@@ -151,7 +151,7 @@ export function TenantMaintenance() {
                       <span style={{ fontSize: 9, fontWeight: 700, color: sc.text, background: sc.bg, borderRadius: 99, padding: "3px 10px", flexShrink: 0 }}>{sc.label}</span>
                     </div>
                     {t.landlordNote && (
-                      <div style={{ background: "#F8F7F4", borderRadius: 8, padding: 9, fontSize: 11, color: MU, borderLeft: `2px solid ${t.status === "resolved" ? G : "#1D4ED8"}` }}>
+                      <div style={{ background: "#F8F7F4", borderRadius: 8, padding: 9, fontSize: 11, color: MU, borderLeft: `2px solid ${G}` }}>
                         <strong style={{ color: TX }}>Landlord: </strong>{t.landlordNote}
                       </div>
                     )}

@@ -30,10 +30,10 @@ interface Application {
 
 const STATUS_CONFIG = {
   pending:   { bg: "#FEF3C7", text: "#B45309", border: "rgba(180,83,9,0.15)",   label: "Pending Review",  Icon: Clock },
-  reviewing: { bg: "#EFF6FF", text: "#1D4ED8", border: "rgba(29,78,216,0.12)",  label: "Under Review",    Icon: TrendingUp },
+  reviewing: { bg: GL,        text: G,          border: `${G}22`,                label: "Under Review",    Icon: TrendingUp },
   approved:  { bg: GL,        text: G,          border: `${G}22`,                label: "Approved",        Icon: CheckCircle2 },
   rejected:  { bg: "#FEF2F2", text: "#DC2626",  border: "rgba(220,38,38,0.12)", label: "Not Selected",    Icon: XCircle },
-  waitlist:  { bg: "#F5F3FF", text: "#7C3AED",  border: "rgba(124,58,237,0.12)",label: "Waitlisted",      Icon: AlertTriangle },
+  waitlist:  { bg: "#FEF3C7", text: "#B45309",  border: "rgba(180,83,9,0.15)",  label: "Waitlisted",      Icon: AlertTriangle },
 };
 
 export function TenantApplications() {
@@ -93,9 +93,9 @@ export function TenantApplications() {
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Active", count: applications.filter(a => a.status === "reviewing" || a.status === "pending").length, Icon: TrendingUp, color: "#1D4ED8", bg: "#EFF6FF" },
+            { label: "Active", count: applications.filter(a => a.status === "reviewing" || a.status === "pending").length, Icon: TrendingUp, color: G, bg: GL },
             { label: "Approved", count: applications.filter(a => a.status === "approved").length, Icon: CheckCircle2, color: G, bg: GL },
-            { label: "Waitlist", count: applications.filter(a => a.status === "waitlist").length, Icon: AlertTriangle, color: "#7C3AED", bg: "#F5F3FF" },
+            { label: "Waitlist", count: applications.filter(a => a.status === "waitlist").length, Icon: AlertTriangle, color: "#B45309", bg: "#FEF3C7" },
             { label: "Total", count: applications.length, Icon: FileText, color: TX, bg: "#F8F7F4" },
           ].map(s => (
             <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
@@ -277,7 +277,7 @@ export function TenantApplications() {
                     <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
                       <div style={{
                         width: 30, height: 30, borderRadius: 8, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-                        background: step.done ? GL : step.warn ? "#FEF3C7" : step.err ? "#FEF2F2" : "#EFF6FF",
+                        background: step.done ? GL : step.warn ? "#FEF3C7" : step.err ? "#FEF2F2" : GL,
                       }}>
                         {step.done
                           ? <CheckCircle2 size={14} color={G} strokeWidth={2.5} />
@@ -285,7 +285,7 @@ export function TenantApplications() {
                           ? <FileText size={14} color="#B45309" strokeWidth={2.5} />
                           : step.err
                           ? <XCircle size={14} color="#DC2626" strokeWidth={2.5} />
-                          : <Clock size={14} color="#1D4ED8" strokeWidth={2.5} />}
+                          : <Clock size={14} color={G} strokeWidth={2.5} />}
                       </div>
                       <div>
                         <p style={{ fontSize: 13, fontWeight: 600, color: TX, margin: "4px 0 2px" }}>{step.label}</p>
@@ -298,12 +298,12 @@ export function TenantApplications() {
 
               {/* Landlord message */}
               {selectedApp.landlordMessage && (
-                <div style={{ padding: "12px 14px", background: "#EFF6FF", borderRadius: 10, border: "1px solid rgba(29,78,216,0.12)", marginBottom: 18 }}>
+                <div style={{ padding: "12px 14px", background: GL, borderRadius: 10, border: `1px solid ${G}22`, marginBottom: 18 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 6 }}>
-                    <MessageSquare size={14} color="#1D4ED8" strokeWidth={2.5} />
-                    <h3 style={{ fontSize: 12, fontWeight: 700, color: "#1E3A8A", margin: 0 }}>Message from Landlord</h3>
+                    <MessageSquare size={14} color={G} strokeWidth={2.5} />
+                    <h3 style={{ fontSize: 12, fontWeight: 700, color: "#085040", margin: 0 }}>Message from Landlord</h3>
                   </div>
-                  <p style={{ fontSize: 12, color: "#1D4ED8", margin: 0, lineHeight: 1.6 }}>{selectedApp.landlordMessage}</p>
+                  <p style={{ fontSize: 12, color: "#3D6B55", margin: 0, lineHeight: 1.6 }}>{selectedApp.landlordMessage}</p>
                 </div>
               )}
 
