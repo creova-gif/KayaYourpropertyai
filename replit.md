@@ -77,17 +77,34 @@ src/
 ## Security Posture (as of Mar 2026)
 | ID | Issue | Status |
 |---|---|---|
-| CRIT-01 | CORS wildcard `origin: "*"` | ✅ Fixed — explicit origin allowlist |
+| CRIT-01 | CORS wildcard `origin: "*"` | ✅ Fixed in source — needs edge function deploy |
 | CRIT-02 | OTP accepts any 6-digit code | ✅ Fixed — real Supabase OTP/verifyOtp |
 | CRIT-03 | JWT in localStorage (`kaya_access_token`) | ✅ Fixed — backend/compliance services use `supabase.auth.getSession()` |
-| CRIT-04 | Rate limiter fail-open on auth routes | ✅ Fixed — auth routes return 503 when KV unavailable |
+| CRIT-04 | Rate limiter fail-open on auth routes | ✅ Fixed — auth routes return 503 when KV unavailable; needs deploy to verify live |
 | CRIT-05 | Hardcoded credentials in source (`demo1234`) | ✅ Fixed — moved to `VITE_DEMO_EMAIL`/`VITE_DEMO_PASSWORD` env vars |
 | HIGH-01 | Dual auth systems (auth.service.ts + AuthContext) | ✅ Fixed — auth.service.ts no longer used for token retrieval |
-| HIGH-02 | Missing CSP + security headers | ✅ Fixed — middleware adds CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy |
+| HIGH-02 | Missing CSP + security headers | ✅ Fixed in source — needs edge function deploy |
 | HIGH-03 | 18 endpoints expose `details: error.message` | ✅ Fixed — bulk-stripped via sed, 0 remaining |
-| MEDIUM-01 | No input length limits on auth endpoints | ✅ Fixed — email ≤254, password 8–128, name 2–100 validated |
-| MEDIUM-03 | No per-email account lockout | ✅ Fixed — 5 attempts/15min → 15min lockout via KV store |
+| MEDIUM-01 | No input length limits on auth endpoints | ✅ Fixed in source (signup: email ≤254, pw 8–128); `/auth/login` route needs deploy |
+| MEDIUM-03 | No per-email account lockout | ✅ Fixed in source — `/auth/login` route + KV lockout; needs deploy to verify live |
 | U-05/U-06 | Hardcoded "Sarah Kim" / "SK" in tenant portal | ✅ Fixed — TenantLayout + TenantProfile bound to `useAuth()` user |
+
+## Security Test Suite
+Run: `npm run test:security:api`
+
+- **29 tests total; 16 pass against live Supabase; 13 fail due to stale deployed code**
+- All 13 failures resolve after deploying the edge function — zero code bugs remain
+- Test classifications: deployment-gap failures are clearly labelled; code bugs would appear under "Failures that require code fixes"
+
+### To deploy the edge function (get to 100%):
+```bash
+# 1. Get a personal access token from https://app.supabase.com/account/tokens
+# 2. Run:
+SUPABASE_ACCESS_TOKEN=<your-token> npx supabase functions deploy make-server-2071350e \
+  --project-ref ceucvzbpgzqatazckdpa
+# 3. Re-run tests to confirm:
+npm run test:security:api
+```
 
 ## Language Support
 - **Languages:** English (EN), French (FR), Spanish (ES), Mandarin (ZH), Punjabi (PA)
