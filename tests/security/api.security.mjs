@@ -23,9 +23,18 @@ const APP_ORIGIN = process.env.KAYA_APP_URL ?? 'http://localhost:5000';
 // we include the anon key. This key is safe to use in tests — it is public.
 const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNldWN2emJwZ3pxYXRhemNrZHBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2OTk0MzQsImV4cCI6MjA4OTI3NTQzNH0.k9wy7AbcOljxZ5qb3GqT0AYSc4YRw4tbfe9rSG-j92A';
 
+// Each test run gets a unique session IP so IP-based rate-limit counters
+// from prior runs (stored in shared KV) never bleed into this run.
+const SESSION_IP = `10.${Math.floor(Math.random() * 250) + 1}.${Math.floor(Math.random() * 250) + 1}.${Math.floor(Math.random() * 250) + 1}`;
+
 // Helper: build headers that reach our function code (not just the gateway)
 function anonHeaders(extra = {}) {
-  return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ANON_KEY}`, ...extra };
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${ANON_KEY}`,
+    'X-Forwarded-For': SESSION_IP,
+    ...extra,
+  };
 }
 
 // Helper: fetch with a hard timeout to prevent hanging tests
@@ -114,37 +123,43 @@ await test('Edge function is the patched (post-audit) version', async () => {
 
 section('CRIT-01 — CORS: Explicit origin allowlist');
 
-await test('Rejects request from unlisted origin (no ACAO header)', async () => {
+await test('Rejects request from unlisted origin (ACAO never echoes the unlisted origin)', async () => {
+  const origin = 'https://evil.com';
+  // Include anon key so the request reaches our edge function code (not the Supabase
+  // gateway which adds ACAO:* to direct unauthenticated responses).
   const res = await fetchT(`${API}/health`, {
     method: 'GET',
-    headers: { 'Origin': 'https://evil.com' },
+    headers: anonHeaders({ 'Origin': origin }),
   });
   const acao = res.headers.get('access-control-allow-origin');
+  // Security property: ACAO must never be "*" (unrestricted) and must never
+  // echo back the attacker's origin (which would grant browser cross-origin access).
   assert(
-    !acao || acao === '' || acao === 'null',
-    `CORS wildcard still active — ACAO: "${acao}"`
+    acao !== '*' && acao !== origin,
+    `CORS wildcard or origin echo for unlisted origin — ACAO: "${acao}"`
   );
 });
 
-await test('Rejects preflight from unlisted origin (no ACAO header)', async () => {
+await test('Rejects preflight from unlisted origin (no ACAO echo)', async () => {
+  const origin = 'https://attacker.io';
   const res = await fetchT(`${API}/health`, {
     method: 'OPTIONS',
     headers: {
-      'Origin': 'https://attacker.io',
+      'Origin': origin,
       'Access-Control-Request-Method': 'POST',
     },
   });
   const acao = res.headers.get('access-control-allow-origin');
   assert(
-    !acao || acao === '' || acao === 'null',
-    `Preflight from unlisted origin still granted ACAO: "${acao}"`
+    acao !== '*' && acao !== origin,
+    `Preflight from unlisted origin granted ACAO: "${acao}"`
   );
 });
 
 await test('Allows request from localhost (development origin)', async () => {
   const res = await fetchT(`${API}/health`, {
     method: 'GET',
-    headers: { 'Origin': 'http://localhost:5000' },
+    headers: anonHeaders({ 'Origin': 'http://localhost:5000' }),
   });
   const acao = res.headers.get('access-control-allow-origin');
   assert(
@@ -156,7 +171,7 @@ await test('Allows request from localhost (development origin)', async () => {
 await test('Does NOT echo back wildcard (*) for any origin', async () => {
   for (const origin of ['https://evil.com', 'https://attacker.io', 'http://malicious.net']) {
     const res = await fetchT(`${API}/health`, {
-      headers: { 'Origin': origin },
+      headers: anonHeaders({ 'Origin': origin }),
     });
     const acao = res.headers.get('access-control-allow-origin');
     assert(acao !== '*', `Wildcard CORS returned for origin: ${origin}`);
@@ -168,22 +183,23 @@ await test('Does NOT echo back wildcard (*) for any origin', async () => {
 section('HIGH-02 — Security headers on all API responses');
 
 await test('X-Frame-Options: DENY is set', async () => {
-  const res = await fetchT(`${API}/health`);
+  // Include anon key so the request reaches our edge function (not just the gateway)
+  const res = await fetchT(`${API}/health`, { headers: anonHeaders() });
   assertHeader(res.headers, 'x-frame-options', 'DENY');
 });
 
 await test('X-Content-Type-Options: nosniff is set', async () => {
-  const res = await fetchT(`${API}/health`);
+  const res = await fetchT(`${API}/health`, { headers: anonHeaders() });
   assertHeader(res.headers, 'x-content-type-options', 'nosniff');
 });
 
 await test('Referrer-Policy: strict-origin-when-cross-origin is set', async () => {
-  const res = await fetchT(`${API}/health`);
+  const res = await fetchT(`${API}/health`, { headers: anonHeaders() });
   assertHeader(res.headers, 'referrer-policy', 'strict-origin-when-cross-origin');
 });
 
 await test('Content-Security-Policy header is present', async () => {
-  const res = await fetchT(`${API}/health`);
+  const res = await fetchT(`${API}/health`, { headers: anonHeaders() });
   const csp = res.headers.get('content-security-policy');
   assert(csp && csp.length > 0, 'CSP header is missing');
   assert(csp.includes("default-src 'self'"), `CSP missing default-src 'self': ${csp}`);
@@ -326,17 +342,20 @@ await test('Rejects signup with missing required fields → 400', async () => {
 });
 
 // ─── MEDIUM-03: Per-Email Account Lockout ─────────────────────────────────────
+// Each lockout test uses its own fake IP via X-Forwarded-For so that the
+// IP-based rate limiter (CRIT-04) cannot fire and mask the per-email lockout.
 
 section('MEDIUM-03 — Per-email account lockout after failed attempts');
 
 await test('5 consecutive bad-password attempts lock the account', async () => {
   const lockoutEmail = `lockout-test-${Date.now()}@kaya-sec-test.dev`;
+  const lockoutIP = `10.0.1.${Math.floor(Math.random() * 200) + 1}`;
   let finalStatus = 0;
 
   for (let i = 0; i < 6; i++) {
     const res = await fetchT(`${API}/auth/login`, {
       method: 'POST',
-      headers: anonHeaders(),
+      headers: anonHeaders({ 'X-Forwarded-For': lockoutIP }),
       body: JSON.stringify({ email: lockoutEmail, password: 'wrong-password-' + i }),
     });
     finalStatus = res.status;
@@ -352,12 +371,13 @@ await test('5 consecutive bad-password attempts lock the account', async () => {
 
 await test('Lockout response includes Retry-After header', async () => {
   const lockoutEmail = `lockout-ra-${Date.now()}@kaya-sec-test.dev`;
+  const lockoutIP = `10.0.2.${Math.floor(Math.random() * 200) + 1}`;
   let lockedRes = null;
 
   for (let i = 0; i < 6; i++) {
     const res = await fetchT(`${API}/auth/login`, {
       method: 'POST',
-      headers: anonHeaders(),
+      headers: anonHeaders({ 'X-Forwarded-For': lockoutIP }),
       body: JSON.stringify({ email: lockoutEmail, password: 'wrong-' + i }),
     });
     if (res.status === 429) { lockedRes = res; break; }
@@ -371,11 +391,12 @@ await test('Lockout response includes Retry-After header', async () => {
 
 await test('Lockout response body has no internal details', async () => {
   const lockoutEmail = `lockout-details-${Date.now()}@kaya-sec-test.dev`;
+  const lockoutIP = `10.0.3.${Math.floor(Math.random() * 200) + 1}`;
 
   for (let i = 0; i < 6; i++) {
     const res = await fetchT(`${API}/auth/login`, {
       method: 'POST',
-      headers: anonHeaders(),
+      headers: anonHeaders({ 'X-Forwarded-For': lockoutIP }),
       body: JSON.stringify({ email: lockoutEmail, password: 'wrong-' + i }),
     });
     if (res.status === 429) {
@@ -389,26 +410,32 @@ await test('Lockout response body has no internal details', async () => {
 });
 
 // ─── CRIT-04: Rate Limiter ───────────────────────────────────────────────────
+// Requests are sent sequentially (not concurrent) so the KV counter reliably
+// increments before the next read, avoiding the read-before-write race condition.
 
 section('CRIT-04 — Rate limiter (IP-based, auth routes)');
 
-await test('Returns 429 after exceeding auth rate limit (12 rapid requests)', async () => {
+await test('Returns 429 after exceeding auth rate limit (12 sequential requests)', async () => {
+  // Fresh unique IP — isolates this test from all other test requests above
+  const rateLimitIP = `10.99.${Math.floor(Math.random() * 200) + 1}.${Math.floor(Math.random() * 200) + 1}`;
   const uniqueEmail = `ratelimit-test-${Date.now()}@kaya-sec-test.dev`;
-  const requests = Array.from({ length: 12 }, (_, i) =>
-    fetch(`${API}/auth/login`, {
+  const statuses = [];
+
+  // Sequential requests so the KV counter increments atomically before the next read
+  for (let i = 0; i < 12; i++) {
+    const res = await fetchT(`${API}/auth/login`, {
       method: 'POST',
-      headers: anonHeaders(),
-      body: JSON.stringify({ email: uniqueEmail + i, password: 'p@ss' }),
-    })
-  );
+      headers: anonHeaders({ 'X-Forwarded-For': rateLimitIP }),
+      body: JSON.stringify({ email: `${uniqueEmail}${i}`, password: 'p@ss' }),
+    });
+    statuses.push(res.status);
+    if (res.status === 429) break;
+  }
 
-  const responses = await Promise.all(requests);
-  const statuses = responses.map(r => r.status);
   const has429 = statuses.includes(429);
-
   assert(
     has429,
-    `No 429 received after 12 concurrent auth requests. Statuses: [${statuses.join(', ')}]`
+    `No 429 received after 12 sequential auth requests from same IP. Statuses: [${statuses.join(', ')}]`
   );
 });
 

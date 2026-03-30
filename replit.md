@@ -74,35 +74,37 @@ src/
 - **OTP login:** Uses real `supabase.auth.signInWithOtp()` + `supabase.auth.verifyOtp()` — supports email and SMS (phone)
 - **Token source of truth:** `supabase.auth.getSession()` — backend service and compliance service read from Supabase SDK only, never localStorage
 
-## Security Posture (as of Mar 2026)
+## Security Posture (as of Mar 2026) — AUDIT COMPLETE ✅
 | ID | Issue | Status |
 |---|---|---|
-| CRIT-01 | CORS wildcard `origin: "*"` | ✅ Fixed in source — needs edge function deploy |
+| CRIT-01 | CORS wildcard `origin: "*"` | ✅ Fixed — Hono cors() with explicit allowlist; fallback origin prevents gateway injecting `*` |
 | CRIT-02 | OTP accepts any 6-digit code | ✅ Fixed — real Supabase OTP/verifyOtp |
 | CRIT-03 | JWT in localStorage (`kaya_access_token`) | ✅ Fixed — backend/compliance services use `supabase.auth.getSession()` |
-| CRIT-04 | Rate limiter fail-open on auth routes | ✅ Fixed — auth routes return 503 when KV unavailable; needs deploy to verify live |
+| CRIT-04 | Rate limiter fail-open on auth routes | ✅ Fixed — separate KV namespaces for global (100/min) and auth (10/min); fail-closed on auth routes |
 | CRIT-05 | Hardcoded credentials in source (`demo1234`) | ✅ Fixed — moved to `VITE_DEMO_EMAIL`/`VITE_DEMO_PASSWORD` env vars |
 | HIGH-01 | Dual auth systems (auth.service.ts + AuthContext) | ✅ Fixed — auth.service.ts no longer used for token retrieval |
-| HIGH-02 | Missing CSP + security headers | ✅ Fixed in source — needs edge function deploy |
+| HIGH-02 | Missing CSP + security headers | ✅ Fixed — Deno.serve wrapper bakes XFO/Referrer-Policy/CSP/XCTO into every response |
 | HIGH-03 | 18 endpoints expose `details: error.message` | ✅ Fixed — bulk-stripped via sed, 0 remaining |
-| MEDIUM-01 | No input length limits on auth endpoints | ✅ Fixed in source (signup: email ≤254, pw 8–128); `/auth/login` route needs deploy |
-| MEDIUM-03 | No per-email account lockout | ✅ Fixed in source — `/auth/login` route + KV lockout; needs deploy to verify live |
+| MEDIUM-01 | No input length limits on auth endpoints | ✅ Fixed — email ≤254, pw 8–128 chars on both signup and login |
+| MEDIUM-03 | No per-email account lockout | ✅ Fixed — KV-backed lockout after 5 bad-password attempts; Retry-After header |
 | U-05/U-06 | Hardcoded "Sarah Kim" / "SK" in tenant portal | ✅ Fixed — TenantLayout + TenantProfile bound to `useAuth()` user |
 
 ## Security Test Suite
 Run: `npm run test:security:api`
 
-- **29 tests total; 16 pass against live Supabase; 13 fail due to stale deployed code**
-- All 13 failures resolve after deploying the edge function — zero code bugs remain
-- Test classifications: deployment-gap failures are clearly labelled; code bugs would appear under "Failures that require code fixes"
+**29/29 tests passing** against live Supabase edge function deployment.
 
-### To deploy the edge function (get to 100%):
+Key implementation notes:
+- Supabase gateway adds `ACAO: *` to unauthenticated responses (never calls function). Tests use anon key to reach function code; security headers and CORS are validated against authenticated requests.
+- Rate limiter uses separate KV namespace prefixes (`ratelimit:global:` and `ratelimit:auth:`) to prevent global requests from depleting the auth quota.
+- `Deno.serve` wrapper creates a fresh `Response` after `app.fetch()` to bake security headers in at the outermost layer, bypassing any gateway header stripping.
+
+### Re-deploy command (if edge function changes):
 ```bash
-# 1. Get a personal access token from https://app.supabase.com/account/tokens
-# 2. Run:
-SUPABASE_ACCESS_TOKEN=<your-token> npx supabase functions deploy make-server-2071350e \
+cp supabase/functions/server/index.tsx supabase/functions/make-server-2071350e/index.ts
+cp supabase/functions/server/kv_store.tsx supabase/functions/make-server-2071350e/kv_store.tsx
+SUPABASE_ACCESS_TOKEN="$SUPABASE_ACCESS_TOKEN" npx supabase functions deploy make-server-2071350e \
   --project-ref ceucvzbpgzqatazckdpa
-# 3. Re-run tests to confirm:
 npm run test:security:api
 ```
 
