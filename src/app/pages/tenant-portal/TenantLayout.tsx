@@ -165,7 +165,7 @@ export function TenantLayout() {
             <div style={{ width: 34, height: 34, borderRadius: "50%", background: `linear-gradient(135deg, ${G}, #065E3C)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "#fff", flexShrink: 0 }}>{initials}</div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ fontSize: 13, fontWeight: 600, color: "#fff", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{displayName}</p>
-              <p style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", margin: 0 }}>Tenant Portal</p>
+              <p style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", margin: 0 }}>Active Tenant</p>
             </div>
             <div style={{ width: 7, height: 7, borderRadius: "50%", background: G, flexShrink: 0 }} />
           </div>

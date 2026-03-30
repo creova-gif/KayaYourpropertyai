@@ -46,7 +46,7 @@ function OTPDigitInput({ value, onChange, onKeyDown, inputRef, disabled }: {
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const { signIn, loading: authLoading } = useAuth();
+  const { signIn, signInDemoTenant, loading: authLoading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -101,14 +101,10 @@ export function LoginPage() {
   };
 
   const handleDemoTenant = async () => {
-    if (!DEMO_EMAIL || !DEMO_PASSWORD) {
-      setError('Demo credentials are not configured. Contact the administrator.');
-      return;
-    }
     setError('');
     setLoading(true);
     try {
-      await signIn(DEMO_EMAIL, DEMO_PASSWORD);
+      await signInDemoTenant();
       ErrorHandler.success('Tenant demo active', 'Welcome to your tenant portal!');
       setTimeout(() => navigate('/tenant'), 500);
     } catch (err: any) {

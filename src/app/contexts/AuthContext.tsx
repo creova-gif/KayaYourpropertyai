@@ -22,6 +22,7 @@ interface AuthContextType {
   loading: boolean;
   signUp: (email: string, password: string, name: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
+  signInDemoTenant: () => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
 }
@@ -219,8 +220,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       setSession(null);
 
-      // Skip Supabase call for demo session
-      if (session?.access_token !== 'demo-session-token') {
+      // Skip Supabase call for demo sessions
+      const isDemoSession = session?.access_token === 'demo-session-token'
+        || session?.access_token === 'demo-tenant-session-token';
+      if (!isDemoSession) {
         const { error } = await supabase.auth.signOut();
         if (error) console.error('❌ Sign out error:', error);
       }
@@ -256,12 +259,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signInDemoTenant = async (): Promise<void> => {
+    const demoEmail = import.meta.env.VITE_DEMO_EMAIL as string | undefined;
+    setUser({
+      id: 'demo-tenant-id',
+      email: demoEmail || 'tenant@kaya.ca',
+      name: 'Demo Tenant',
+      role: 'tenant',
+      phone: '+1 647 555 0199',
+      subscriptionTier: 'pro',
+      subscriptionStatus: 'active',
+    });
+    setSession({ access_token: 'demo-tenant-session-token' });
+    console.log('✅ Demo tenant login successful');
+  };
+
   const value: AuthContextType = {
     user,
     session,
     loading,
     signUp,
     signIn,
+    signInDemoTenant,
     signOut,
     resetPassword,
   };
