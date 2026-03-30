@@ -1,7 +1,7 @@
 import { Outlet, Link, useLocation, useNavigate } from "react-router";
 import {
   Home, CreditCard, FileText, Wrench, Menu, X, ClipboardList, Building2,
-  Receipt, CheckSquare, Bell, RefreshCw, Scale, User,
+  Receipt, CheckSquare, Bell, RefreshCw, Scale, User, Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
