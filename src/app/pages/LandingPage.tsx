@@ -57,10 +57,10 @@ export function LandingPage() {
   ];
 
   const stats = [
-    { value: "12,000+", label: "Active landlords" },
-    { value: "98%", label: "Tenant satisfaction" },
-    { value: "$2.8B", label: "Properties managed" },
-    { value: "15 hrs", label: "Saved per week" }
+    { value: "AI", label: "Tenant screening" },
+    { value: "ON", label: "Built for Ontario law" },
+    { value: "24/7", label: "AI assistant access" },
+    { value: "Early", label: "Access — building now" }
   ];
 
   return (
@@ -344,13 +344,13 @@ export function LandingPage() {
             lineHeight: 1.1,
             marginBottom: 48
           }}>
-            Trusted by Ontario's <em style={{ fontStyle: "italic", color: G }}>top landlords</em>
+            Built for <em style={{ fontStyle: "italic", color: G }}>Ontario landlords</em>
           </h2>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 24 }}>
             {[
-              { icon: <Building2 size={20} />, stat: "12,000+", label: "Active properties" },
-              { icon: <Users size={20} />, stat: "45,000+", label: "Screened tenants" },
+              { icon: <Building2 size={20} />, stat: "AI-scored", label: "Applicant screening" },
+              { icon: <Users size={20} />, stat: "Ontario", label: "N4/N5 notice generation" },
               { icon: <FileText size={20} />, stat: "100%", label: "Digital lease signing" }
             ].map((item, i) => (
               <motion.div
